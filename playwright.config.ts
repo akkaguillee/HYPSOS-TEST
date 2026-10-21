@@ -18,8 +18,10 @@ export default defineConfig({
     launchOptions: process.env.PLAYWRIGHT_CHROMIUM_PATH ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH } : undefined,
   },
   projects: [
-    { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } },
-    { name: 'mobile', use: { ...devices['Pixel 7'] } },
+    { name: 'desktop', testIgnore: /landscape\.spec/, use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } },
+    { name: 'mobile', testIgnore: /landscape\.spec/, use: { ...devices['Pixel 7'] } },
+    // Móvil en horizontal (obligatorio en el brief): solo su batería específica.
+    { name: 'landscape', testMatch: /landscape\.spec/, use: { ...devices['Pixel 7 landscape'] } },
   ],
   webServer: {
     command: 'node dist-server/index.js',
@@ -32,6 +34,8 @@ export default defineConfig({
       DATABASE_PATH: ':memory:',
       STRIPE_SECRET_KEY: '',
       STRIPE_WEBHOOK_SECRET: '',
+      // Toda la batería sale de la misma IP: se elevan los límites por IP solo en las pruebas.
+      RATE_LIMIT_SCALE: '50',
     },
   },
 });

@@ -23,8 +23,8 @@
   opacity: 0;
   transform: translate3d(-16px, 0, 0);
   transition:
-    opacity var(--dur-enter) var(--ease-out),
-    transform var(--dur-enter) var(--ease-out);
+    opacity var(--dur-panel) var(--ease-out),
+    transform var(--dur-panel) var(--ease-drawer);
   transition-delay: calc(var(--i) * 40ms + 120ms);
 }
 

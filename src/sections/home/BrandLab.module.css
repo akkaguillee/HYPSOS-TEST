@@ -1,19 +1,18 @@
 .section {
   position: relative;
   overflow: hidden;
-  background: #000;
 }
 
 .grid {
   display: grid;
-  gap: var(--space-7);
+  gap: var(--space-8);
   align-items: center;
 }
 
 @media (min-width: 1024px) {
   .grid {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: var(--space-9);
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--space-10);
   }
 }
 
@@ -24,67 +23,45 @@
   }
 }
 
-.stage {
-  height: clamp(340px, 52vw, 640px);
-  background:
-    radial-gradient(55% 55% at 50% 58%, rgb(200 16 46 / 0.16), transparent 70%),
-    radial-gradient(80% 80% at 50% 50%, #0d0d0d, #000);
-  border: 1px solid var(--line);
-}
-
-@media (orientation: landscape) and (max-height: 520px) {
-  .stage {
-    height: 72svh;
-  }
+.title {
+  font-size: clamp(2.5rem, 3.6vw + 1rem, 5rem);
 }
 
 .copy {
   display: grid;
   gap: var(--space-5);
+  justify-items: start;
 }
 
-.marks {
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* Retícula 2×2 de planos de marca con separación mínima, como un pliego impreso. */
+.tiles {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-2);
+  gap: var(--space-4) var(--space-2);
 }
 
-.mark {
-  display: grid;
-  place-items: center;
-  gap: var(--space-3);
-  aspect-ratio: 1;
-  padding: var(--space-4);
-  border: 1px solid var(--line);
-  background: var(--c-black-2);
-  transition: border-color var(--dur-hover) var(--ease-out);
+.tile {
+  position: relative;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .mark:hover {
-    border-color: var(--line-strong);
-  }
-
-  .mark:hover svg {
-    transform: rotate(-4deg) scale(1.04);
-  }
+.tileLink {
+  display: block;
 }
 
-.mark svg {
-  width: 72%;
-  height: auto;
-  transition: transform var(--dur-editorial) var(--ease-out);
+.panel {
+  aspect-ratio: 1 / 1;
 }
 
-.markStar {
-  color: var(--c-red);
-}
-
-.markMascot {
-  color: var(--c-white);
-}
-
-.markLabel {
+/* Pie de cada pieza, fuera del plano para no tapar la marca. */
+.tileLabel {
+  display: block;
+  padding-top: var(--space-2);
   font-size: var(--fs-2xs);
   font-weight: 700;
   letter-spacing: var(--tracking-label);
@@ -92,8 +69,17 @@
   color: var(--fg-muted);
 }
 
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
+.tileLink:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tileLink [data-brand-mark] > svg {
+    transition: transform var(--dur-editorial) var(--ease-out);
+  }
+
+  .tileLink:hover [data-brand-mark] > svg {
+    transform: scale(1.06);
+  }
 }

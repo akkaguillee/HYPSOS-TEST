@@ -1,11 +1,11 @@
 /* Transiciones entre páginas (View Transitions API, mejora progresiva). */
 
 ::view-transition-old(root) {
-  animation: 220ms var(--ease-in) both page-out;
+  animation: 180ms var(--ease-out) both page-out;
 }
 
 ::view-transition-new(root) {
-  animation: 420ms var(--ease-out) both page-in;
+  animation: 380ms var(--ease-out) both page-in;
 }
 
 /* El header permanece fijo durante la transición. */

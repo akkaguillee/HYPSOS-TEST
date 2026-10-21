@@ -22,6 +22,9 @@ interface SplitHeadlineProps {
 export function SplitHeadline({ as: Tag = 'h2', className, children, trigger = 'scroll', delay = 0, id, onReady }: SplitHeadlineProps) {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
+  // SplitText reescribe el DOM del titular y fija su aria-label: si el texto cambia, el elemento
+  // se vuelve a montar (key) y se divide de nuevo, para no dejar un nombre accesible obsoleto.
+  const text = typeof children === 'string' ? children : '';
 
   useGSAP(
     () => {
@@ -48,11 +51,11 @@ export function SplitHeadline({ as: Tag = 'h2', className, children, trigger = '
       });
       return () => split.revert();
     },
-    { scope: ref, dependencies: [reduced], revertOnUpdate: true },
+    { scope: ref, dependencies: [reduced, text], revertOnUpdate: true },
   );
 
   return (
-    <Tag ref={ref} className={className} id={id}>
+    <Tag key={text} ref={ref} className={className} id={id}>
       {children}
     </Tag>
   );

@@ -9,8 +9,8 @@
   visibility: hidden;
   opacity: 0;
   transition:
-    opacity var(--dur-enter) var(--ease-out),
-    visibility 0s linear var(--dur-enter);
+    opacity var(--dur-panel) var(--ease-out),
+    visibility 0s linear var(--dur-panel);
 }
 
 .root[data-open='true'] {

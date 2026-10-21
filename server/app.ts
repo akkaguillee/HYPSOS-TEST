@@ -1,4 +1,5 @@
-import { Hono } from 'hono';
+import { getConnInfo } from '@hono/node-server/conninfo';
+import { Hono, type Context } from 'hono';
 import { bodyLimit } from 'hono/body-limit';
 import { secureHeaders } from 'hono/secure-headers';
 import { shippingMethods as configuredShipping } from '../shared/config';
@@ -18,7 +19,7 @@ export function createApi(input: Omit<AppDeps, 'clientIp' | 'logger' | 'mailer' 
     mailer: null,
     shippingMethods: configuredShipping,
     logger: console,
-    clientIp: (c) => (input.env.TRUST_PROXY ? c.req.header('x-forwarded-for')?.split(',')[0]?.trim() : undefined) ?? 'local',
+    clientIp: (c) => (input.env.TRUST_PROXY ? c.req.header('x-forwarded-for')?.split(',')[0]?.trim() : undefined) ?? socketAddress(c),
     ...input,
   };
   const { env, repos, logger } = deps;
@@ -85,4 +86,13 @@ export function createApi(input: Omit<AppDeps, 'clientIp' | 'logger' | 'mailer' 
   });
 
   return api;
+}
+
+/** IP de la conexión TCP (servidor Node). Fuera de él (pruebas con app.request) no existe. */
+function socketAddress(c: Context): string {
+  try {
+    return getConnInfo(c).remote.address ?? 'local';
+  } catch {
+    return 'local';
+  }
 }

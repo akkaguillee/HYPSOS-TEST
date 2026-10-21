@@ -22,8 +22,8 @@ function escapeJsonForScript(value: unknown): string {
  * para que buscadores y redes sociales vean título, descripción e imagen correctos
  * sin necesidad de ejecutar JavaScript.
  */
-export function renderHtml(template: string, pathname: string, publicUrl: string, stock?: StockLookup): string {
-  const meta = metaForPath(pathname, publicUrl, stock);
+export function renderHtml(template: string, pathname: string, publicUrl: string, stock?: StockLookup, search = ''): string {
+  const meta = metaForPath(pathname, publicUrl, stock, search);
   const url = `${publicUrl}${pathname === '/' ? '' : pathname}`;
   const image = `${publicUrl}${meta.image}`;
   const tags = [
@@ -38,6 +38,11 @@ export function renderHtml(template: string, pathname: string, publicUrl: string
     `<meta property="og:image" content="${escapeHtml(image)}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     meta.noindex ? `<meta name="robots" content="noindex" />` : '',
+    meta.preloadImage
+      ? `<link rel="preload" as="image" href="${escapeHtml(meta.preloadImage.href)}"${
+          meta.preloadImage.srcset ? ` imagesrcset="${escapeHtml(meta.preloadImage.srcset)}" imagesizes="${escapeHtml(meta.preloadImage.sizes)}"` : ''
+        } fetchpriority="high" />`
+      : '',
     ...(meta.jsonLd ?? []).map((data) => `<script type="application/ld+json">${escapeJsonForScript(data)}</script>`),
   ].filter(Boolean);
   return template.replace(META_BLOCK, `<!--meta:start-->\n    ${tags.join('\n    ')}\n    <!--meta:end-->`);

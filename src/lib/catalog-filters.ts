@@ -1,4 +1,5 @@
 import { categories, isProductAvailable } from '@shared/catalog';
+import { sortFeatured } from '@shared/catalog/listing';
 import type { CategoryHandle, ColorOption, Product, StockLookup } from '@shared/types';
 
 /** Filtros y orden del catálogo, sincronizados con la URL (?talla=M,L&orden=precio-asc). */
@@ -108,10 +109,8 @@ export function sortProducts(products: Product[], sort: SortKey, stock: StockLoo
     case 'precio-desc':
       return sorted.sort((a, b) => b.price - a.price || a.featuredRank - b.featuredRank);
     default:
-      // Destacados, con los agotados al final.
-      return sorted.sort(
-        (a, b) => Number(isProductAvailable(b, stock)) - Number(isProductAvailable(a, stock)) || a.featuredRank - b.featuredRank,
-      );
+      // Destacados, con los agotados al final (misma regla que la precarga del servidor).
+      return sortFeatured(sorted, stock);
   }
 }
 

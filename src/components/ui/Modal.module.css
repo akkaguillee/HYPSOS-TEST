@@ -7,7 +7,7 @@
   padding: var(--gutter);
   visibility: hidden;
   pointer-events: none;
-  transition: visibility 0s linear var(--dur-enter);
+  transition: visibility 0s linear var(--dur-panel);
 }
 
 .root[data-open='true'] {
@@ -21,7 +21,7 @@
   inset: 0;
   background: rgb(0 0 0 / 0.7);
   opacity: 0;
-  transition: opacity var(--dur-enter) var(--ease-out);
+  transition: opacity var(--dur-panel) var(--ease-out);
 }
 
 .root[data-open='true'] .overlay {
@@ -40,8 +40,8 @@
   opacity: 0;
   transform: translate3d(0, 24px, 0) scale(0.98);
   transition:
-    opacity var(--dur-enter) var(--ease-out),
-    transform var(--dur-enter) var(--ease-out);
+    opacity var(--dur-panel) var(--ease-out),
+    transform var(--dur-panel) var(--ease-out);
   outline: none;
 }
 

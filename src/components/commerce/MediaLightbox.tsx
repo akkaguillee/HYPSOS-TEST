@@ -174,7 +174,7 @@ export function MediaLightbox({ product, media, colorId, open, index, onIndexCha
                 onIndexChange(position);
               }}
             >
-              <ProductMedia product={product} media={item} colorId={colorId} compact decorative sizes="48px" />
+              <ProductMedia product={product} media={item} colorId={colorId} decorative sizes="48px" />
             </button>
           ))}
         </div>

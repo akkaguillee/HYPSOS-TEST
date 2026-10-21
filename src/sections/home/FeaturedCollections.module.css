@@ -1,150 +1,91 @@
-.panels {
+/*
+ * Tres colecciones: carrusel con scroll-snap en móvil (sin JS) y tres columnas desde tableta.
+ * El carrusel se alinea con el contenedor y deja asomar la siguiente tarjeta.
+ */
+.track {
   display: grid;
-  gap: var(--space-3);
+  grid-auto-flow: column;
+  grid-auto-columns: min(82%, 380px);
+  gap: var(--space-4);
+  padding-inline: var(--gutter);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
 }
 
-@media (min-width: 1024px) {
-  /* Paneles que se expanden al pasar el cursor o al enfocar. */
-  .panels {
-    display: flex;
-    height: clamp(520px, 64svh, 720px);
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 768px), (orientation: landscape) and (max-height: 520px) {
+  .track {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5);
+    width: 100%;
+    max-width: calc(var(--container) + var(--gutter) * 2);
+    margin-inline: auto;
+    overflow: visible;
   }
 }
 
-.panel {
+.card {
   position: relative;
   display: grid;
-  align-content: end;
-  min-height: 420px;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  background: #000;
-  isolation: isolate;
-}
-
-@media (min-width: 1024px) {
-  .panel {
-    flex: 1 1 0;
-    min-width: 0;
-    min-height: 0;
-    transition: flex-grow var(--dur-editorial) var(--ease-out);
-  }
-
-  .panels:focus-within .panel {
-    flex-grow: 0.75;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .panels:hover .panel {
-      flex-grow: 0.75;
-    }
-  }
-
-  .panels .panel:focus-within {
-    flex-grow: 1.9;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .panels .panel:hover {
-      flex-grow: 1.9;
-    }
-  }
-}
-
-/* Horizontal con poca altura: paneles en fila más bajos. */
-@media (orientation: landscape) and (max-height: 520px) and (max-width: 1023px) {
-  .panels {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .panel {
-    min-height: 78svh;
-  }
+  gap: var(--space-5);
+  align-content: start;
+  scroll-snap-align: start;
 }
 
 .art {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  display: grid;
-  place-items: center;
-  transition: transform 1.4s var(--ease-out);
+  aspect-ratio: 4 / 5;
 }
 
-.panel:focus-within .art {
-  transform: scale(1.05);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .panel:hover .art {
-    transform: scale(1.05);
+@media (orientation: landscape) and (max-height: 520px) {
+  .art {
+    aspect-ratio: 1 / 1;
   }
-}
-
-.art > * {
-  max-width: 88%;
-  max-height: 70%;
-}
-
-.chrome {
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
-  object-fit: cover;
-  object-position: 60% 40%;
-}
-
-.star {
-  width: 80%;
-  color: var(--c-red);
-  transform: rotate(-8deg);
-}
-
-.mascot {
-  width: 62%;
-  color: var(--c-white);
-}
-
-.shade {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(to top, rgb(0 0 0 / 0.95) 0%, rgb(0 0 0 / 0.55) 40%, transparent 72%);
 }
 
 .copy {
   display: grid;
-  gap: var(--space-3);
-  padding: var(--space-5);
+  gap: var(--space-2);
 }
 
-@media (min-width: 1024px) {
-  .copy {
-    padding: var(--space-6);
-  }
+.meta {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--fg-muted);
 }
 
 .name {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 2.4vw + 1.2rem, 3.5rem);
+  font-size: var(--fs-h2);
   font-weight: 850;
   font-stretch: var(--stretch-display);
-  line-height: 0.92;
+  line-height: var(--lh-tight);
   letter-spacing: var(--tracking-display);
   text-transform: uppercase;
 }
 
 .tagline {
-  max-width: 32ch;
+  max-width: 34ch;
   font-size: var(--fs-sm);
-  color: rgb(245 245 245 / 0.78);
+  color: var(--fg-muted);
 }
 
 .cta {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+  margin-top: var(--space-2);
   font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: var(--tracking-label);
@@ -157,13 +98,7 @@
   transition: transform var(--dur-hover) var(--ease-out);
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .panel:hover .cta svg {
-    transform: translateX(6px);
-  }
-}
-
-/* Enlace estirado: todo el panel es clicable. */
+/* Enlace estirado: toda la tarjeta es clicable. */
 .link::after {
   content: '';
   position: absolute;
@@ -177,17 +112,19 @@
 
 .link:focus-visible::after {
   outline: 2px solid var(--focus-ring);
-  outline-offset: -4px;
+  outline-offset: 4px;
 }
 
-.count {
-  position: absolute;
-  top: var(--space-4);
-  left: var(--space-5);
-  right: var(--space-5);
-  font-size: var(--fs-2xs);
-  font-weight: 700;
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: rgb(245 245 245 / 0.7);
+@media (hover: hover) and (pointer: fine) {
+  .card [data-brand-mark] {
+    transition: transform var(--dur-editorial) var(--ease-out);
+  }
+
+  .card:hover [data-brand-mark] {
+    transform: scale(1.04) translate3d(-1.5%, 1.5%, 0);
+  }
+
+  .card:hover .cta svg {
+    transform: translate3d(6px, 0, 0);
+  }
 }

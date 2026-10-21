@@ -12,7 +12,7 @@ import { useDeferredValue, useEffect, useId, useRef, useState, type KeyboardEven
 import { useNavigate } from 'react-router';
 import styles from './SearchPanel.module.css';
 
-const suggestions = ['Sudadera', 'Camiseta', 'Cromo', 'Signal', 'Gorra', 'Stickers'];
+const suggestions = ['Sudadera', 'Camiseta', 'Monogram', 'Signal', 'Gorra', 'Stickers'];
 
 export function SearchPanel() {
   const open = useUi((state) => state.panel === 'search');
@@ -141,11 +141,11 @@ export function SearchPanel() {
                 aria-selected={index === active}
                 className={styles.result}
                 data-active={index === active}
-                onPointerEnter={() => setActive(index)}
+                onPointerMove={() => active !== index && setActive(index)}
                 onClick={() => openProduct(product.handle)}
               >
                 <span className={styles.resultMedia}>
-                  <ProductMedia product={product} media={product.media[0]} compact decorative sizes="200px" />
+                  <ProductMedia product={product} media={product.media[0]} decorative sizes="200px" />
                 </span>
                 <span className={styles.resultName}>{product.name}</span>
                 <Price amount={product.price} className="t-muted" />

@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { formatPrice } from '../../shared/pricing';
 import { checkoutRequestSchema, fieldErrors } from '../../shared/schemas';
-import { readJson, type AppDeps, type AppEnv } from '../context';
+import { readJson, scaledLimit, type AppDeps, type AppEnv } from '../context';
 import { InsufficientStockError, type OrderRecord } from '../db';
 import { stockSnapshot } from '../inventory';
 import { buildOrderDraft, CheckoutError, newOrderRecord, sameItems } from '../orders';
@@ -10,7 +10,7 @@ import { rateLimit } from '../rate-limit';
 export function checkoutRoutes(deps: AppDeps) {
   const { env, repos, payments, mailer, shippingMethods, logger } = deps;
   const app = new Hono<AppEnv>();
-  const limit = rateLimit({ windowMs: 60 * 1000, max: 12, keyFor: deps.clientIp });
+  const limit = rateLimit({ windowMs: 60 * 1000, max: scaledLimit(deps, 12), keyFor: deps.clientIp });
 
   app.post('/checkout/session', limit, async (c) => {
     const parsed = checkoutRequestSchema.safeParse(await readJson(c));

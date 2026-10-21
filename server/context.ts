@@ -34,3 +34,8 @@ export const requireUser: MiddlewareHandler<AppEnv> = async (c, next) => {
   if (!c.get('user')) return c.json({ error: 'unauthorized', message: 'Inicia sesión para continuar.' }, 401);
   await next();
 };
+
+/** Límite de peticiones por IP escalado con RATE_LIMIT_SCALE (1 en producción). */
+export function scaledLimit(deps: Pick<AppDeps, 'env'>, max: number): number {
+  return max * (deps.env.RATE_LIMIT_SCALE || 1);
+}

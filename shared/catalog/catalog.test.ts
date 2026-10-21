@@ -34,7 +34,7 @@ describe('integridad del catálogo', () => {
 
   it('busca sin distinguir acentos ni mayúsculas', () => {
     expect(searchProducts('TECNICO').map((p) => p.handle)).toContain('jogger-tecnico');
-    expect(searchProducts('sudadera cromo')[0].handle).toBe('sudadera-capucha-cromo');
+    expect(searchProducts('sudadera monogram')[0].handle).toBe('sudadera-capucha-monogram');
     expect(searchProducts('   ')).toEqual([]);
   });
 

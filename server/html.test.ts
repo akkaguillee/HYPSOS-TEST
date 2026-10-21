@@ -17,7 +17,20 @@ describe('renderHtml', () => {
     expect(html).toContain('noindex');
   });
 
-  it('publica la disponibilidad real si recibe el stock', () => {
+  it('precarga la imagen principal (LCP) de fichas y listados con el mismo srcset que la interfaz', () => {
+    const product = renderHtml(template, '/products/sudadera-capucha-ascenso', 'https://hypsos.com');
+    expect(product).toContain('<link rel="preload" as="image" href="/assets/products/mockups/sudadera-capucha-ascenso/negro-front-960.webp"');
+    expect(product).toContain('imagesizes="(min-width: 1024px) 58vw, 100vw"');
+    const listing = renderHtml(template, '/collections/camisetas', 'https://hypsos.com');
+    expect(listing).toContain('rel="preload" as="image"');
+    expect(renderHtml(template, '/pages/faq', 'https://hypsos.com')).not.toContain('rel="preload"');
+    // Con filtros u otro orden la primera tarjeta cambia: no se precarga nada.
+    expect(renderHtml(template, '/collections/camisetas', 'https://hypsos.com', undefined, '?orden=precio-asc')).not.toContain('rel="preload"');
+    // ?color= elige la imagen precargada de la ficha.
+    expect(renderHtml(template, '/products/llavero-monogram', 'https://hypsos.com', undefined, '?color=rojo')).toContain('llavero-monogram/rojo-front-960.webp');
+  });
+
+    it('publica la disponibilidad real si recibe el stock', () => {
     const html = renderHtml(template, '/products/sudadera-capucha-ascenso', 'https://hypsos.com', () => 0);
     expect(html).toContain('https://schema.org/OutOfStock');
   });

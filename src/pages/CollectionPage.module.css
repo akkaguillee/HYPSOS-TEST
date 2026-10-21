@@ -254,7 +254,7 @@
   width: 64px;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: #141414;
+  background: var(--c-studio);
 }
 
 .collectionThumb > * {
@@ -292,14 +292,12 @@
 }
 
 .labStage {
-  height: clamp(280px, 42vw, 560px);
-  background: radial-gradient(60% 60% at 50% 55%, rgb(200 16 46 / 0.12), transparent 70%), #000;
-  border: 1px solid var(--line);
+  height: clamp(240px, 36vw, 480px);
 }
 
 @media (orientation: landscape) and (max-height: 500px) {
   .labStage {
-    height: 70svh;
+    height: 60svh;
   }
 }
 

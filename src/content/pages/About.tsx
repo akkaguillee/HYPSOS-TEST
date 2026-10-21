@@ -1,5 +1,5 @@
 import { Mascot, Monogram, Star } from '@/components/brand/BrandVector';
-import { ChromeMonogram } from '@/components/brand/ChromeMonogram';
+import { BrandPanel } from '@/components/brand/BrandPanel';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Parallax } from '@/components/motion/Parallax';
 import { Reveal } from '@/components/motion/Reveal';
@@ -38,7 +38,7 @@ export function AboutPage() {
       <section className={styles.visualSection}>
         <Reveal variant="mask" className={styles.visual}>
           <Parallax className={styles.visualInner} amount={7}>
-            <ChromeMonogram className={styles.chrome} sizes="100vw" alt="" />
+            <BrandPanel tone="red" mark="wordmark" accent className={styles.banner} />
           </Parallax>
         </Reveal>
       </section>

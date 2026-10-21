@@ -1,4 +1,4 @@
-import type { CategoryHandle, Product, StockLookup } from '../types';
+import type { CategoryHandle, MediaView, Product, StockLookup } from '../types';
 import { products as allProducts } from './products';
 
 export { categories, getCategory, isCategoryHandle } from './categories';
@@ -142,4 +142,9 @@ export function searchProducts(query: string): Product[] {
     .filter((result): result is { product: Product; score: number } => result !== null)
     .sort((a, b) => b.score - a.score || a.product.featuredRank - b.product.featuredRank)
     .map(({ product }) => product);
+}
+
+/** Ruta pública de un mockup generado (ver scripts/mockups). */
+export function mockupSrc(product: Pick<Product, 'handle'>, colorId: string, view: MediaView, width: 480 | 960): string {
+  return `/assets/products/mockups/${product.handle}/${colorId}-${view}-${width}.webp`;
 }

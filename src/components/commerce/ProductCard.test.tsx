@@ -23,16 +23,16 @@ describe('ProductCard', () => {
   });
 
   it('muestra nombre, precio, etiquetas y enlace a la ficha', () => {
-    renderCard('sudadera-capucha-cromo');
-    const link = screen.getByRole('link', { name: 'Sudadera Capucha Cromo' });
-    expect(link).toHaveAttribute('href', '/products/sudadera-capucha-cromo');
+    renderCard('sudadera-capucha-monogram');
+    const link = screen.getByRole('link', { name: 'Sudadera Capucha Monogram' });
+    expect(link).toHaveAttribute('href', '/products/sudadera-capucha-monogram');
     expect(screen.getByText('Edición limitada')).toBeInTheDocument();
     expect(screen.getByText(/95,00/)).toBeInTheDocument();
   });
 
-  it('identifica la imagen como marcador de posición', () => {
+  it('identifica la imagen como mockup digital', () => {
     renderCard('gorra-monogram');
-    expect(screen.getAllByRole('img', { name: /Imagen pendiente/ })[0]).toBeInTheDocument();
+    expect(screen.getAllByRole('img', { name: /^Mockup digital de Gorra Monogram/ })[0]).toBeInTheDocument();
   });
 
   it('el añadido rápido usa la talla elegida y abre el carrito', async () => {

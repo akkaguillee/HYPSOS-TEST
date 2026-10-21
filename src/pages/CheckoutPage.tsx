@@ -335,7 +335,7 @@ export default function CheckoutPage() {
             {lines.map((line) => (
               <li key={line.id} className={styles.summaryLine}>
                 <span className={styles.summaryThumb}>
-                  <ProductMedia product={line.product} media={mediaForColor(line.product, line.colorId)[0]} colorId={line.colorId} compact decorative sizes="56px" />
+                  <ProductMedia product={line.product} media={mediaForColor(line.product, line.colorId)[0]} colorId={line.colorId} decorative sizes="56px" />
                   <span className={styles.qty} aria-label={`${line.quantity} unidades`}>
                     {line.quantity}
                   </span>

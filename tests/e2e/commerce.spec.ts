@@ -83,7 +83,8 @@ test('variantes agotadas: color sin stock no seleccionable y aviso de reposició
   await expect(page.getByRole('radio', { name: 'Talla XS, agotada' })).toBeDisabled();
   await page.getByRole('button', { name: /Avísame cuando vuelva/ }).click();
   const form = page.getByRole('form', { name: 'Avísame cuando vuelva' });
-  await form.getByLabel('Email').fill(`aviso-${Date.now()}@example.com`);
+  await form.getByLabel('Email', { exact: true }).fill(`aviso-${Date.now()}@example.com`);
+  await form.getByRole('checkbox', { name: /solo para este aviso/ }).check();
   await form.getByRole('button', { name: 'Avísame' }).click();
   await expect(page.getByText('Te avisaremos')).toBeVisible();
 });

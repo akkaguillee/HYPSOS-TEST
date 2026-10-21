@@ -104,7 +104,7 @@ if (env.NODE_ENV === 'production' && existsSync(distDir)) {
   app.get('*', (c) => {
     const pathname = new URL(c.req.url).pathname;
     c.header('Cache-Control', 'no-cache');
-    return c.html(renderHtml(template, pathname, env.PUBLIC_URL, stockSnapshot(repos)), isKnownRoute(pathname) ? 200 : 404);
+    return c.html(renderHtml(template, pathname, env.PUBLIC_URL, stockSnapshot(repos), new URL(c.req.url).search), isKnownRoute(pathname) ? 200 : 404);
   });
 }
 

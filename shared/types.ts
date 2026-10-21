@@ -47,23 +47,18 @@ export interface ProductImage {
   colorId?: string;
 }
 
-/** Marcador de posición hasta que existan fotografías reales. */
-export interface ProductPlaceholder {
-  type: 'placeholder';
+/**
+ * Mockup digital 2D generado con `pnpm mockups` (scripts/mockups): una imagen por color y vista
+ * hasta que existan fotografías reales. Se presenta siempre como mockup, nunca como foto.
+ */
+export interface ProductMockup {
+  type: 'mockup';
   view: MediaView;
 }
 
-export type ProductMedia = ProductImage | ProductPlaceholder;
+export type ProductMedia = ProductImage | ProductMockup;
 
 export type PublicationStatus = 'published' | 'draft';
-
-/** Modelo 3D real del producto (GLB/GLTF) para el visor interactivo. */
-export interface ProductModel {
-  src: string;
-  /** Imagen de respaldo si el dispositivo no puede renderizar WebGL. */
-  poster?: string;
-  alt: string;
-}
 
 export interface Product {
   id: string;
@@ -99,7 +94,6 @@ export interface Product {
   silhouette: Silhouette;
   sizeGuide?: SizeGuideType;
   media: ProductMedia[];
-  model?: ProductModel;
   /** Tirada total si es edición limitada. */
   editionSize?: number;
   /** Vista previa digital para stickers y gráficos (recurso oficial de marca). */

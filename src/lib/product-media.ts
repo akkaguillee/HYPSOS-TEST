@@ -5,7 +5,7 @@ import type { Product, ProductMedia, StockLookup } from '@shared/types';
 export function mediaForColor(product: Product, colorId: string): ProductMedia[] {
   const specific = product.media.filter((media) => media.type === 'image' && media.colorId === colorId);
   if (specific.length > 0) return specific;
-  return product.media.filter((media) => media.type === 'placeholder' || !media.colorId);
+  return product.media.filter((media) => media.type === 'mockup' || !media.colorId);
 }
 
 /** Etiquetas visibles de un producto (máximo dos). */

@@ -1,14 +1,19 @@
 # HYPSOS — Web y tienda online
 
-Web de marca y e-commerce de **HYPSOS**: experiencia editorial con motion design (GSAP), catálogo con filtros, ficha de producto, carrito, checkout preparado para Stripe y API propia con base de datos.
+Web de marca y e-commerce de **HYPSOS**:
 
-> **Estado:** funcional de extremo a extremo con un **catálogo de ejemplo**. Antes de vender hay que completar los puntos de [Pendientes antes de publicar](#pendientes-antes-de-publicar).
+- **Experiencia:** motion graphics construidos con las marcas planas oficiales.
+- **Catálogo:** filtros, paginación, búsqueda con teclado y fichas con zoom y variantes agotadas.
+- **Compra:** carrito, checkout con Stripe Checkout, inventario real con reservas y cuentas de usuario.
+- **Backend:** API propia con base de datos.
+
+> **Estado:** funcional de extremo a extremo con un **catálogo de demostración** (productos, precios y stock no son reales, y se avisa en toda la web). Antes de vender hay que completar los [pendientes](#pendientes-antes-de-publicar).
 
 ---
 
 ## Puesta en marcha
 
-Requisitos: **Node ≥ 22.13** (usa `node:sqlite`, incluido en Node) y **pnpm 10** (`corepack enable`).
+Requisitos: **Node ≥ 22.13** (usa `node:sqlite`) y **pnpm 10** (`corepack enable`).
 
 ```bash
 pnpm install
@@ -16,7 +21,10 @@ cp .env.example .env      # opcional en local: los valores por defecto funcionan
 pnpm dev                  # web en http://localhost:5173 + API en :8787
 ```
 
-Sin claves de Stripe todo funciona salvo el pago: el checkout valida el pedido y responde que los pagos no están activados (no se crea ningún pedido ni se simula un cobro).
+Sin configuración, la tienda funciona salvo lo que depende de servicios externos, y lo dice claramente:
+
+- **Sin tarifas de envío ni Stripe:** el checkout responde «Envíos aún no configurados» o «Pagos online aún no disponibles». No se crea ningún pedido ni se simula ningún cobro.
+- **Sin proveedor de email:** en desarrollo los emails se escriben en la consola. En producción la recuperación de contraseña indica que no está disponible, en lugar de fingir que ha enviado el email.
 
 ### Scripts
 
@@ -25,10 +33,13 @@ Sin claves de Stripe todo funciona salvo el pago: el checkout valida el pedido y
 | `pnpm dev` | Vite + API con recarga en caliente |
 | `pnpm build` | Typecheck, build de la web, bundle de la API y `sitemap.xml` |
 | `pnpm start` | Producción: un único proceso Node sirve la web (`dist/`) y la API |
-| `pnpm test` | Tests unitarios y de componentes (Vitest) |
-| `pnpm test:e2e` | Build + tests E2E con Playwright (escritorio y móvil) y auditoría de accesibilidad axe |
+| `pnpm test` | Tests unitarios, de API y de componentes (Vitest) |
+| `pnpm test:e2e` | Build + Playwright en escritorio, móvil vertical y **móvil horizontal**, con axe |
 | `pnpm lint` / `pnpm typecheck` | ESLint / TypeScript |
-| `pnpm assets:brand` | Regenera los recursos de marca desde los originales (requiere `potrace`) |
+| `pnpm admin …` | Administración por terminal: `stock`, `stock:set <SKU> <n>` (avisa a quien pidió «Avísame»), `orders`, `order <nº>`, `order:status <nº> <shipped\|cancelled>` |
+| `pnpm assets:brand` | Regenera vectores, favicon, iconos y Open Graph desde los originales (requiere `potrace`) |
+| `pnpm mockups` | Regenera los mockups 2D de producto (`--only <ids>`, `--preview <carpeta>`) |
+| `node scripts/responsive-audit.mjs` | Auditoría responsive en 12 tamaños (320–1920 px y 3 móviles en horizontal) con capturas |
 
 ---
 
@@ -36,101 +47,155 @@ Sin claves de Stripe todo funciona salvo el pago: el checkout valida el pedido y
 
 ```
 assets/brand/original/   Archivos oficiales de marca, intactos
-public/                  Favicon, iconos, OG, robots, imágenes optimizadas (media/)
-scripts/                 Pipeline de marca y generador de sitemap
-shared/                  Código común web + API: tipos, catálogo, precios, validación (zod), rutas, SEO
-server/                  API Hono: checkout, webhook de pagos, newsletter, contacto, SQLite, cabeceras de seguridad
+public/assets/brand/     Logotipos SVG para uso externo
+public/assets/products/  Mockups generados (mockups/<handle>/<color>-<vista>-<480|960>.webp)
+scripts/                 Pipeline de marca, mockups, sitemap, administración y auditoría responsive
+shared/                  Común web + API: tipos, catálogo, precios, validación (zod), rutas, SEO
+server/                  API Hono + node:sqlite: catálogo/stock, checkout, webhook, cuentas, formularios
 src/
-  assets/brand/          Vectores oficiales generados (no editar a mano)
-  components/
-    brand/               Logotipo, monograma, estrella, mascota, monograma cromado
-    commerce/            Tarjeta, grid, carrusel, filtros, selectores de variante, carrito, guía de tallas
-    layout/              Header + mega menú, menú móvil, buscador, footer, cabecera de página
-    motion/              Reveal, SplitHeadline, Parallax, Marquee, intro de marca
-    ui/                  Botones, campos, drawer, modal, acordeón…
-  content/               Navegación, guía de tallas, páginas de contenido y textos legales
-  hooks/  lib/  store/   Accesibilidad, motion, API, filtros; estado (carrito, favoritos) con zustand
-  pages/                 Páginas (cargadas bajo demanda, salvo la portada)
+  components/brand/      Logotipo, monograma, estrella, mascota y planos de marca (BrandPanel)
+  components/commerce/   Tarjeta, grid, filtros, variantes, carrito, zoom, avisos de stock
+  components/layout/     Header + mega menú, menú móvil, buscador, footer, consentimiento de cookies
+  components/motion/     Reveal, SplitHeadline, Parallax, Marquee, intro de marca
+  content/               Textos editables (campaign.ts), navegación, guía de tallas, páginas legales
+  pages/                 Páginas (bajo demanda) y cuenta de usuario (pages/account)
   sections/home/         Secciones de la portada
-  styles/                Tokens de diseño, base, tipografía, layout, transiciones
+  store/                 Estado con zustand: carrito, favoritos, stock en vivo, sesión, consentimiento
+  styles/                Tokens, base, tipografía, layout, transiciones
 tests/e2e/               Playwright
 ```
 
-**Stack:** React 19 + TypeScript + Vite 7 · React Router 7 · GSAP 3 (ScrollTrigger, SplitText) · zustand · zod · Hono + `node:sqlite` · Stripe Checkout · Lucide · Inter + Archivo (autoalojadas, sin peticiones a Google).
+**Stack:** React 19, TypeScript, Vite 7, React Router 7, GSAP 3 (ScrollTrigger, SplitText), zustand, zod 4, Hono, `node:sqlite`, Stripe Checkout, Resend (opcional), Lucide, Inter y Archivo autoalojadas.
 
 Decisiones relevantes:
 
-- **Precios siempre en el servidor.** El cliente solo envía `producto + color + talla + cantidad`; la API recalcula precios, envío y stock con el catálogo (`server/orders.ts`). Probado contra manipulación de precios.
-- **SEO en una SPA:** el servidor inyecta título, descripción, canonical, Open Graph y JSON-LD de producto en el HTML de cada ruta, y responde **404 reales** a rutas inexistentes. `sitemap.xml` y `robots.txt` se generan en el build.
-- **Sin 3D en tiempo real (Three.js):** el monograma cromado oficial ya aporta la profundidad; un motor 3D añadiría ~150 KB sin beneficio claro.
-- **Rendimiento:** la portada carga ~50 KB gzip de código propio + React (102 KB) + GSAP (49 KB), cada uno en su chunk cacheable; zod y el resto de páginas se cargan bajo demanda. Imágenes AVIF/WebP responsive con dimensiones fijas (sin saltos de layout).
-- **Seguridad:** CSP estricta para scripts, HSTS, `nosniff`, límite de tamaño de peticiones, rate limiting en formularios y checkout, honeypot anti-spam, firma verificada en el webhook, consultas SQL parametrizadas.
+- **El servidor manda:** el cliente solo envía `producto + color + talla + cantidad`. La API recalcula precios, envío y stock (`server/orders.ts`), y está probado contra manipulación de precios.
+- **Inventario real:** el stock vive en la base de datos.
+  - Se **reserva** al crear la sesión de pago, en una transacción `BEGIN IMMEDIATE`, así que no hay dos compras de la última unidad.
+  - Se **libera** si el pago caduca o falla (webhook o barrido cada 60 s) y se **confirma** con el webhook firmado.
+  - Cada intento de checkout lleva un `checkoutId`, de modo que repetir la petición reutiliza la sesión y nunca duplica pedidos.
+- **SEO en una SPA:** el servidor inyecta en el HTML de cada ruta:
+  - título, descripción, canonical y Open Graph;
+  - JSON-LD (Organization, WebSite con SearchAction, Product con ofertas por variante, BreadcrumbList);
+  - la **precarga de la imagen LCP**.
+
+  Además devuelve 404 reales. Mientras `demoCatalog` esté activo, las fichas llevan `noindex`.
+- **Seguridad:**
+  - Contraseñas con scrypt; sesiones opacas en cookie `HttpOnly; SameSite=Lax` (`Secure` en producción).
+  - CSRF por `Origin`/`Sec-Fetch-Site` y solo JSON; rate limiting por IP.
+  - CSP estricta, HSTS y límite de tamaño de peticiones.
+  - Webhook verificado, SQL parametrizado, honeypot anti-spam y ninguna clave en el frontend.
+- **Analítica opcional y con consentimiento:**
+  - Plausible o GA4 se activan por variable de entorno.
+  - El banner de cookies solo aparece si hay proveedor; «Aceptar» y «Rechazar» tienen el mismo peso.
+  - `purchase` solo se registra con el pago confirmado.
 
 ---
 
-## Sistema de diseño
+## Sistema de diseño y motion
 
-Todos los valores viven en `src/styles/tokens.css`: paleta (negro `#080808`, blanco, rojo `#C8102E` como acento), espaciado en base 4 px, márgenes laterales adaptativos (16 → 48 px), escala tipográfica fluida, duraciones y curvas de animación, capas. Las secciones con `data-theme="light"` invierten los tokens para las pausas editoriales en claro.
+Todos los valores viven en `src/styles/tokens.css`:
 
-Tipografía: **Archivo** expandida (titulares) + **Inter** (texto). Clases de jerarquía en `src/styles/typography.css` (`t-campaign`, `t-display`, `t-h1`… `t-label`).
+- **Paleta:** `#080808`, `#F5F5F5`, rojo `#C8102E` como acento, `#242424`, grises, y `--c-studio` para el fondo de las imágenes de producto.
+- **Espaciado:** base 4 px, con márgenes laterales de 16 a 48 px y ritmo vertical de sección fluido.
+- **Tipografía:** escala fluida con Archivo expandida para titulares e Inter para texto.
+- **Motion:** duraciones `--dur-ui` (200 ms), `--dur-panel` (380 ms) y `--dur-enter`/`--dur-editorial`, con curvas `--ease-out` y `--ease-drawer`.
+- **Capas:** tokens de `z-index`.
 
-Motion: duraciones espejo en `src/lib/motion.ts`. Todo respeta `prefers-reduced-motion` (sin parallax, sin bucles, contenido visible). La intro de marca solo aparece en la primera visita de la sesión a la portada, dura ~1,6 s, se puede saltar y nunca bloquea la carga.
+**Motion graphics** (solo `transform`, `opacity` y `clip-path`):
+
+- **Hero:** cartel rojo con el monograma H plano. Al terminar la intro, las marcas de corte se dibujan, un barrido de color descubre el cartel, el monograma sube, la estrella gira hasta su sitio y el titular se revela por líneas. Al hacer scroll hay paralaje por capas, y con ratón un paralaje leve.
+- **«Sistema gráfico»:** las cuatro marcas en planos de color se descubren con un barrido escalonado, y cada una se mueve a su ritmo con el scroll.
+- **Colecciones:** tarjetas con planos de marca (carrusel con scroll-snap en móvil).
+
+Accesibilidad y plataforma:
+
+- Todo respeta `prefers-reduced-motion`: contenido estático y visible.
+- Los `:hover` solo se aplican con ratón (`hover: hover` y `pointer: fine`).
+- Controles táctiles sin retardo (`touch-action: manipulation`), campos de 16 px y márgenes seguros en horizontal.
+
+Los textos de campaña (avisos, hero, rótulos del cartel, ticker, manifiesto) se editan en `src/content/campaign.ts`. El hero acepta una foto o un vídeo de campaña en `hero.media`: en cuanto exista, sustituye al cartel.
 
 ---
 
 ## Recursos de marca
 
-Los archivos recibidos están en `assets/brand/original/` y **no se modifican**. `pnpm assets:brand` genera:
+Los originales están en `assets/brand/original/` y **no se modifican**. La web usa **solo las versiones planas** (logotipo, monograma H, estrella y mascota) en colores sólidos de la paleta: no hay versión metálica ni 3D del logotipo.
 
-- **Vectores SVG** del logotipo, monograma H, estrella y mascota, trazados con potrace a partir de los píxeles originales. El script verifica la fidelidad comparando cada vector con su original (IoU 99,45–99,96 %) y falla si baja del 98,5 %. Se pintan con `currentColor`, así que el **mismo trazado** se presenta en negro sobre claro o en blanco sobre oscuro sin alterar la forma.
-- **Mascota:** además del trazo blanco se calcula su silueta exterior (relleno negro), igual que en el archivo original, para que se lea sobre cualquier fondo.
-- **Monograma cromado** en AVIF/WebP (640/1080/1480 px), favicon (monograma, adaptado a modo claro/oscuro del navegador), iconos de app e imagen Open Graph.
-
-> Solo recibimos el logotipo en negro. La versión blanca de la web es ese mismo trazado coloreado con CSS; si existe una versión oficial para fondos oscuros, basta con sustituir el original y ejecutar `pnpm assets:brand`.
+`pnpm assets:brand` traza los vectores con potrace y verifica su fidelidad frente al original (IoU ≥ 98,5 %, actualmente 99,45–99,96 %). Se pintan con `currentColor`, sin alterar forma ni proporciones. El script también genera el favicon, los iconos de app y la imagen Open Graph (monograma blanco sobre plano rojo + logotipo).
 
 ---
 
-## Catálogo y fotografías
+## Catálogo e imágenes
 
-El catálogo está en `shared/catalog/` (`products.ts`, `categories.ts`, `collections.ts`). **Productos, precios, textos y stock son de ejemplo.**
+El catálogo está en `shared/catalog/`. Cada producto tiene:
 
-Mientras no hay fotos, cada producto muestra un **boceto técnico vectorial** en el color elegido, marcado como «IMAGEN PENDIENTE». Para usar fotografías reales:
+- id, slug, nombre, descripciones, categoría y colecciones;
+- precio en céntimos y moneda;
+- colores, tallas y stock inicial por variante (SKU);
+- estado de publicación, etiquetas, composición, cuidados y referencia comercial.
 
-1. Guarda las imágenes en `public/media/products/<handle>/` (recomendado: 1600×2000 px, 4:5, WebP/AVIF).
-2. Sustituye en el producto `media: placeholderViews` por:
+**Productos, precios, textos y stock son de ejemplo** (`store.demoCatalog = true` en `shared/config.ts`).
+
+**Mockups 2D:** mientras no haya fotografía, cada producto muestra un mockup digital en flat lay de estudio, en el color elegido y en tres vistas (delantera, trasera y detalle). Los genera `pnpm mockups` (`scripts/mockups/`):
+
+- Usa las marcas oficiales como serigrafía, bordado o etiqueta tejida, sin redibujarlas.
+- Se rasteriza con Chromium a WebP de 480 y 960 px: 108 imágenes, unos 4,5 MB en el repositorio y unos 9 KB por imagen en móvil.
+- El texto alternativo dice «Mockup digital de…» y la ficha indica «Producto de demostración».
+
+Para usar fotografías reales, sustituye en el producto `media: mockupViews` por:
 
 ```ts
 media: [
-  { type: 'image', src: '/media/products/sudadera-capucha-ascenso/negro-1.webp', alt: 'Sudadera Ascenso negra, vista frontal', width: 1600, height: 2000, colorId: 'negro' },
-  { type: 'image', src: '/media/products/sudadera-capucha-ascenso/negro-2.webp', alt: 'Detalle del bordado', width: 1600, height: 2000, colorId: 'negro' },
+  { type: 'image', src: '/assets/products/sudadera-capucha-ascenso/negro-1.webp', alt: 'Sudadera Ascenso negra, vista frontal', width: 1600, height: 2000, colorId: 'negro' },
 ],
 ```
 
-Las imágenes con `colorId` se muestran al elegir ese color; sin `colorId` valen para todos. Los tests de `shared/catalog/catalog.test.ts` comprueban que no falten variantes de stock ni haya referencias duplicadas.
+**Políticas comerciales** (envíos, devoluciones, contacto, redes) en `shared/config.ts`:
 
-Envíos, umbral de envío gratis, países, plazo de devolución y redes sociales: `shared/config.ts`.
+- No hay ninguna inventada. Mientras `shippingMethods` esté vacío, el checkout no acepta pedidos y las páginas muestran «pendiente de confirmar».
+- El único plazo que aparece es el legal de desistimiento (14 días).
 
 ---
 
 ## Pagos (Stripe)
 
-1. Crea las claves en <https://dashboard.stripe.com/apikeys> (empieza en modo test).
-2. En `.env`: `STRIPE_SECRET_KEY=sk_test_…` y el secreto del webhook.
-3. Webhook en local: `stripe listen --forward-to localhost:8787/api/webhooks/stripe` (copia el `whsec_…` que imprime). En producción, crea el endpoint `https://TU-DOMINIO/api/webhooks/stripe` con los eventos `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed` y `checkout.session.expired`.
+1. Crea las claves en <https://dashboard.stripe.com/apikeys> (empieza en modo test) y define `STRIPE_SECRET_KEY` y `STRIPE_WEBHOOK_SECRET` en `.env`.
+2. Webhook en local: `stripe listen --forward-to localhost:8787/api/webhooks/stripe`. En producción, el endpoint es `https://TU-DOMINIO/api/webhooks/stripe` con estos eventos:
+   - `checkout.session.completed`
+   - `checkout.session.async_payment_succeeded`
+   - `checkout.session.async_payment_failed`
+   - `checkout.session.expired`
+3. Configura las tarifas de envío reales en `shippingMethods` (`shared/config.ts`).
 
-Flujo: el checkout valida datos y stock → la API crea el pedido (`pending_payment`) y una sesión de Stripe Checkout → el cliente paga en la página de Stripe → el webhook firmado marca el pedido como `paid` → `/checkout/success` muestra la confirmación y vacía el carrito. Los métodos de pago (tarjeta, Apple Pay, Google Pay…) se activan desde el panel de Stripe.
+Flujo de un pedido:
+
+1. Se valida el pedido y se reserva el stock.
+2. Se crea la sesión de Stripe Checkout (caduca a los 31 minutos).
+3. El webhook firmado marca el pedido como pagado (idempotente) y envía la confirmación por email si hay proveedor.
+4. `/checkout/success` muestra el pedido y registra `purchase` en la analítica, si hay consentimiento.
 
 ---
 
+## Cuentas de usuario
+
+- **Acceso:** registro, inicio de sesión, cierre de sesión y recuperación de contraseña. El enlace de recuperación es de un solo uso, caduca a los 60 min y requiere `RESEND_API_KEY`.
+- **Perfil:** datos personales, cambio de contraseña y borrado de cuenta.
+- **Direcciones** guardadas (precargan el checkout), **historial de pedidos** y **favoritos sincronizados** entre dispositivos (los invitados los guardan en el navegador).
+
 ## Base de datos
 
-SQLite (`DATABASE_PATH`, por defecto `./data/hypsos.db`) con migraciones automáticas al arrancar. Tablas: `orders`, `newsletter_subscribers`, `contact_messages`. Toda la persistencia pasa por la interfaz `Repositories` de `server/db.ts`: para escalar a varias instancias, se sustituye por Postgres sin tocar las rutas.
+SQLite (`DATABASE_PATH`) con migraciones automáticas (`user_version`). Tablas:
+
+- `orders`, `inventory`
+- `users`, `sessions`, `password_resets`, `addresses`, `wishlists`
+- `stock_alerts`, `newsletter_subscribers`, `contact_messages`
+
+Toda la persistencia pasa por la interfaz `Repositories` (`server/db.ts`). Para escalar a varias instancias se puede sustituir por Postgres sin tocar las rutas.
 
 ---
 
 ## Despliegue
-
-Un único proceso Node sirve web y API:
 
 ```bash
 pnpm install --frozen-lockfile
@@ -138,32 +203,54 @@ pnpm build
 NODE_ENV=production PUBLIC_URL=https://tu-dominio.com pnpm start
 ```
 
-- Necesita un host con **disco persistente** para SQLite (Render, Railway, Fly.io, un VPS…). En plataformas serverless (Vercel, Netlify) hay que migrar antes la base de datos a Postgres.
-- Detrás de un proxy propio (Nginx, Render, Fly…) define `TRUST_PROXY=true` para que el rate limiting use la IP real.
-- Sirve siempre por HTTPS (se envía HSTS).
+- Necesita **disco persistente** para SQLite (Render, Railway, Fly.io, un VPS…). En plataformas serverless, migra antes a Postgres.
+- Detrás de un proxy propio, define `TRUST_PROXY=true`. Sin él, el rate limiting usa la IP de la conexión.
+- Sirve siempre por HTTPS (se envía HSTS y la cookie de sesión es `Secure`).
 
-Variables: ver `.env.example`.
+Variables: ver `.env.example`. No hay secretos en el repositorio.
 
 ---
 
-## Calidad
+## Calidad (verificado en este entorno)
 
-- `pnpm test`: 60 tests (API, cálculo de precios, stock, carrito, filtros, validación, integridad del catálogo, componentes).
-- `pnpm test:e2e`: 39 escenarios en escritorio y móvil sobre el build de producción: navegación, todas las rutas, 404 reales, SEO, filtros sincronizados con la URL, compra completa hasta el pago, favoritos, newsletter, contacto, teclado, movimiento reducido y **axe (WCAG 2.1 AA) sin infracciones graves**.
+- **`pnpm test`:** 81 tests. Cubren:
+  - API: checkout, idempotencia, carrera por la última unidad, webhook repetido, CSRF, rate limiting y cuentas;
+  - precios, stock, carrito, filtros e integridad del catálogo;
+  - HTML/SEO y componentes.
+- **`pnpm test:e2e`:** 65 escenarios (62 se ejecutan y 3 se omiten por aplicar solo a escritorio o a móvil) sobre el build de producción. Cubren:
+  - navegación, todas las rutas, 404 reales y SEO;
+  - filtros en la URL, paginación, variantes agotadas y «Avísame», zoom de galería;
+  - compra hasta el aviso honesto de checkout no configurado;
+  - cuentas, recuperación de contraseña, favoritos, buscador con teclado, newsletter y contacto;
+  - ausencia de scripts de terceros sin consentimiento y movimiento reducido;
+  - **axe (WCAG 2.1 AA) sin infracciones graves**;
+  - una batería específica en **móvil horizontal**.
+- **Auditoría responsive** (`scripts/responsive-audit.mjs`): 11 rutas × 12 tamaños (320, 375, 390, 430, 768, 1024, 1280, 1440, 1920, y 667×375, 844×390 y 932×430 en horizontal) sin scroll horizontal ni elementos fuera de pantalla.
+- **Core Web Vitals medidos en laboratorio:** build de producción, Chromium emulando un Pixel 7, CPU 4× más lenta, mediana de 3 cargas de `/`, `/collections/all` y una ficha:
 
-En este entorno los E2E usan el Chromium del sistema: `PLAYWRIGHT_CHROMIUM_PATH=/ruta/a/chromium pnpm test:e2e`. En una máquina normal basta `npx playwright install chromium`.
+  | Red | LCP | CLS | INP (abrir menú) |
+  | --- | --- | --- | --- |
+  | 4G rápida (9 Mbps, 40 ms) | 1,44–1,55 s ✓ | 0–0,003 ✓ | 80–96 ms ✓ |
+  | 4G lenta (1,6 Mbps, 150 ms; perfil tipo Lighthouse móvil) | 2,6–3,0 s ✗ | 0–0,003 ✓ | 80–104 ms ✓ |
+
+  Con red lenta el LCP **no** cumple los 2,5 s. Ya se aplicaron dos mejoras:
+  - las entradas animadas del contenido sobre el pliegue no lo ocultan;
+  - el HTML precarga la imagen principal.
+
+  El límite restante es que la web se renderiza en el cliente y necesita ~200 KB gzip de JS (React 102 KB, código 52 KB, GSAP 48 KB) antes de pintar. Ver pendientes. No son datos de campo: hay que confirmarlos con usuarios reales (CrUX o la analítica).
+
+Los E2E de este entorno usan el Chromium del sistema: `PLAYWRIGHT_CHROMIUM_PATH=/ruta/a/chromium pnpm test:e2e`. En una máquina normal basta con `npx playwright install chromium`. **No se ha probado en dispositivos físicos**: el tacto, el notch y el teclado virtual deben revisarse en un móvil real.
 
 ---
 
 ## Pendientes antes de publicar
 
-1. **Catálogo real**: productos, precios, descripciones, composiciones, tallas y stock (`shared/catalog/products.ts`).
-2. **Fotografías** de producto y campaña (ver [Catálogo y fotografías](#catálogo-y-fotografías)).
-3. **Textos legales**: completar los datos marcados en rojo (titular, NIF, domicilio, email) y revisión por un profesional (`src/content/pages/Legal.tsx`).
-4. **Email de atención al cliente** y **URLs de redes sociales** (`shared/config.ts`).
-5. **Stripe**: claves y webhook (ver [Pagos](#pagos-stripe)).
-6. **Emails transaccionales** (confirmación de pedido, aviso de mensajes de contacto, doble opt-in de newsletter): conectar un proveedor (Resend, Postmark…). Hoy los mensajes y suscripciones se guardan en la base de datos pero no se envía ningún email.
-7. **Inventario**: el stock vive en el catálogo; con ventas reales debe pasar a la base de datos y descontarse en el webhook de pago.
-8. **Envíos**: confirmar tarifas, plazos y países con el operador logístico (`shared/config.ts`).
-9. **Analítica**: si se añade, incorporar antes un panel de consentimiento de cookies.
-10. **Textos de marca** (manifiesto, «Quiénes somos», colecciones): son borradores a validar.
+1. **Catálogo real:** productos, precios, textos, composiciones, tallas y stock. Después, `demoCatalog: false`.
+2. **Fotografías** de producto y de campaña. Sustituyen automáticamente a los mockups y al cartel del hero.
+3. **Envíos:** tarifas, plazos y países confirmados con el operador logístico (`shippingMethods`).
+4. **Stripe:** claves y webhook. Probar en modo test antes de activar el modo real.
+5. **Email** (`RESEND_API_KEY`, `MAIL_FROM`, `CONTACT_INBOX`): confirmaciones de pedido, recuperación de contraseña, avisos de stock y copia de los mensajes de contacto.
+6. **Textos legales:** datos del titular (razón social, NIF, domicilio) y revisión profesional (`src/content/pages/Legal.tsx`).
+7. **Atención al cliente:** email, plazo de respuesta y redes sociales (`shared/config.ts`).
+8. **Rendimiento en redes lentas:** prerenderizar el HTML de las rutas principales (o SSR) y cargar GSAP bajo demanda para bajar el LCP de 2,5 s en 4G lenta.
+9. **Textos de marca** (manifiesto, «Quiénes somos», colecciones): son borradores a validar.

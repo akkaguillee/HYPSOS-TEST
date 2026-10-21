@@ -28,7 +28,8 @@ function getObserver(): IntersectionObserver | null {
 
 interface RevealProps {
   as?: ElementType;
-  variant?: 'fade' | 'mask';
+  /** `rise`: solo desplazamiento, sin ocultar (contenido sobre el pliegue, candidato a LCP). */
+  variant?: 'fade' | 'mask' | 'rise';
   /** Posición en una secuencia escalonada. */
   index?: number;
   className?: string;
@@ -60,7 +61,7 @@ export function Reveal({ as: Tag = 'div', variant = 'fade', index = 0, className
     <Tag
       ref={ref}
       id={id}
-      className={cn(variant === 'mask' ? 'reveal--mask' : 'reveal', visible && 'is-visible', className)}
+      className={cn(variant === 'mask' ? 'reveal--mask' : variant === 'rise' ? 'reveal--rise' : 'reveal', visible && 'is-visible', className)}
       style={{ ...style, '--reveal-index': Math.min(index, 8) } as CSSProperties}
     >
       {children}

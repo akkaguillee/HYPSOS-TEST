@@ -20,9 +20,11 @@ export const hero = {
   lead: 'Siluetas amplias, tejidos con peso y gráficos con intención. Streetwear para entrenar, moverse y destacar.',
   primaryCta: { label: 'Descubrir la colección', to: paths.collection('drop-01-ascenso') },
   secondaryCta: { label: 'Toda la tienda', to: paths.collection('all') },
+  /** Rótulos del cartel animado (esquinas). */
+  poster: { topLeft: 'Drop 01', topRight: 'Ascenso', bottomLeft: 'HYPSOS', bottomRight: 'Streetwear' },
   /**
-   * Medio de campaña opcional. Mientras no exista fotografía o vídeo oficial se usa el
-   * monograma cromado. Ejemplos:
+   * Medio de campaña opcional. Mientras no exista fotografía o vídeo oficial, el cartel se
+   * compone con las marcas planas (monograma H y estrella). Ejemplos:
    *   { type: 'image', src: '/assets/campaign/hero.avif', alt: '…', width: 2400, height: 1600 }
    *   { type: 'video', src: '/assets/campaign/hero.mp4', poster: '/assets/campaign/hero.jpg' }
    */

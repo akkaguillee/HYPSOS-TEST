@@ -23,7 +23,7 @@ describe('filtros del catálogo', () => {
   it('combina precio, color y disponibilidad', () => {
     const result = applyFilters(products, { ...emptyFilters, prices: ['mas-90'], colors: ['negro'], inStock: true }, seedStock);
     expect(result.every((p) => p.price >= 9000)).toBe(true);
-    expect(result.map((p) => p.id)).toContain('p-hoodie-cromo');
+    expect(result.map((p) => p.id)).toContain('p-hoodie-monogram');
     expect(applyFilters(products, { ...emptyFilters, inStock: true }, seedStock).map((p) => p.id)).not.toContain('p-sticker-star');
   });
 

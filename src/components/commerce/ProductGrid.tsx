@@ -1,4 +1,5 @@
 import { Reveal } from '@/components/motion/Reveal';
+import { GRID_SIZES } from '@shared/catalog/listing';
 import type { Product } from '@shared/types';
 import { ProductCard } from './ProductCard';
 import styles from './ProductGrid.module.css';
@@ -12,11 +13,11 @@ interface ProductGridProps {
 }
 
 export function ProductGrid({ products, columns = 4, priorityCount = 4, headingLevel }: ProductGridProps) {
-  const sizes = columns === 4 ? '(min-width: 1280px) 22vw, (min-width: 768px) 30vw, 48vw' : '(min-width: 768px) 26vw, 48vw';
+  const sizes = GRID_SIZES[columns];
   return (
     <ul role="list" className={styles.grid} data-columns={columns}>
       {products.map((product, index) => (
-        <Reveal as="li" key={product.id} index={index % columns}>
+        <Reveal as="li" key={product.id} index={index % columns} variant={index < priorityCount ? 'rise' : 'fade'}>
           <ProductCard product={product} priority={index < priorityCount} sizes={sizes} headingLevel={headingLevel} />
         </Reveal>
       ))}

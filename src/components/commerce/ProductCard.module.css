@@ -9,7 +9,7 @@
   position: relative;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: #141414;
+  background: var(--c-studio);
 }
 
 .mediaLayer {
@@ -59,6 +59,11 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   border-radius: var(--radius-1);
+  background: var(--c-black);
+  color: var(--c-white);
+}
+
+.badges[data-surface='page'] .badge[data-tone='light'] {
   background: var(--c-white);
   color: var(--c-black);
 }
@@ -83,7 +88,8 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  color: var(--c-white);
+  /* Sobre el fondo claro de estudio de la imagen. */
+  color: var(--c-black);
   transition:
     background-color var(--dur-hover) var(--ease-out),
     transform var(--dur-micro) var(--ease-out);
@@ -96,7 +102,10 @@
   stroke-width: 1.6;
 }
 
-.wishlist[aria-pressed='true'],
+.wishlist[aria-pressed='true'] {
+  color: var(--c-red);
+}
+
 .wishlistWide[aria-pressed='true'] {
   color: var(--c-red-bright);
 }
@@ -107,7 +116,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .wishlist:hover {
-    background: rgb(255 255 255 / 0.1);
+    background: rgb(0 0 0 / 0.07);
   }
 }
 

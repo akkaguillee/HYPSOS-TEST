@@ -22,7 +22,6 @@ export const EASE = {
   out: 'expo.out',
   outSoft: 'power3.out',
   inOut: 'power3.inOut',
-  in: 'power2.in',
 } as const;
 
 export function prefersReducedMotion(): boolean {

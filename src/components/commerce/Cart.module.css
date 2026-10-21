@@ -60,7 +60,7 @@
   display: block;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: #141414;
+  background: var(--c-studio);
 }
 
 .thumb > * {

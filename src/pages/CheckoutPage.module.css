@@ -189,7 +189,7 @@
 .summaryThumb {
   position: relative;
   aspect-ratio: 4 / 5;
-  background: #141414;
+  background: var(--c-studio);
 }
 
 .summaryThumb > svg,

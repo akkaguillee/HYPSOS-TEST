@@ -6,7 +6,6 @@ import { SizeGuideTable } from '@/components/commerce/SizeGuide';
 import { StockAlertForm } from '@/components/commerce/StockAlertForm';
 import { ColorPicker, SizePicker } from '@/components/commerce/VariantPicker';
 import { WishlistButton } from '@/components/commerce/WishlistButton';
-import { ThreeStage } from '@/components/three/ThreeStage';
 import { Accordion } from '@/components/ui/Accordion';
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs';
 import { Button } from '@/components/ui/Button';
@@ -168,16 +167,6 @@ function ProductView({ product }: { product: Product }) {
                   </span>
                 </button>
               ))}
-              {product.model && (
-                <div className={`${styles.slide} ${styles.slide3d}`}>
-                  <ThreeStage
-                    source={{ kind: 'model', src: product.model.src }}
-                    label={product.model.alt}
-                    className={styles.stage3d}
-                    poster={product.model.poster ? <img src={product.model.poster} alt="" /> : <ProductMedia product={product} media={media[0]} colorId={colorId} decorative />}
-                  />
-                </div>
-              )}
             </div>
             {media.length > 1 && (
               <div className={styles.dots} aria-hidden="true">
@@ -190,7 +179,7 @@ function ProductView({ product }: { product: Product }) {
 
           <div className={styles.info}>
             <div className={styles.head}>
-              <ProductBadges product={product} className={styles.badges} />
+              <ProductBadges product={product} className={styles.badges} surface="page" />
               <h1 className={styles.title}>{product.name}</h1>
               <div className={styles.priceRow}>
                 <Price amount={product.price} compareAt={product.compareAtPrice} className={styles.price} />

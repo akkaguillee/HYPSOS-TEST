@@ -147,8 +147,11 @@ textarea.control {
   height: 6px;
   border-left: 2px solid var(--bg);
   border-bottom: 2px solid var(--bg);
-  transform: rotate(-45deg) translate(1px, -1px) scale(0);
-  transition: transform var(--dur-micro) var(--ease-out);
+  opacity: 0;
+  transform: rotate(-45deg) translate(1px, -1px) scale(0.6);
+  transition:
+    opacity var(--dur-micro) var(--ease-out),
+    transform var(--dur-micro) var(--ease-out);
 }
 
 .checkbox input:checked {
@@ -157,6 +160,7 @@ textarea.control {
 }
 
 .checkbox input:checked::after {
+  opacity: 1;
   transform: rotate(-45deg) translate(1px, -1px) scale(1);
 }
 
@@ -179,6 +183,29 @@ textarea.control {
   background: rgb(200 16 46 / 0.08);
   font-size: var(--fs-sm);
   line-height: 1.55;
+  /* Entrada breve para que el mensaje no aparezca de golpe (sin JS). */
+  transition:
+    opacity var(--dur-ui) var(--ease-out),
+    transform var(--dur-ui) var(--ease-out);
+}
+
+@starting-style {
+  .alert {
+    opacity: 0;
+    transform: translate3d(0, 4px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alert {
+    transition: opacity var(--dur-ui) var(--ease-out);
+  }
+
+  @starting-style {
+    .alert {
+      transform: none;
+    }
+  }
 }
 
 .alert svg {

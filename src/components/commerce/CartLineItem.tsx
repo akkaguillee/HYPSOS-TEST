@@ -18,7 +18,7 @@ export function CartLineItem({ line, onNavigate }: { line: ResolvedCartLine; onN
   return (
     <li className={styles.line}>
       <Link to={href} className={styles.thumb} onClick={onNavigate} tabIndex={-1} aria-hidden="true" viewTransition>
-        <ProductMedia product={line.product} media={mediaForColor(line.product, line.colorId)[0]} colorId={line.colorId} compact decorative sizes="88px" />
+        <ProductMedia product={line.product} media={mediaForColor(line.product, line.colorId)[0]} colorId={line.colorId} decorative sizes="88px" />
       </Link>
       <div className={styles.lineBody}>
         <div className={styles.lineHead}>

@@ -199,13 +199,6 @@ writeFileSync(join(OUT_IMAGES, 'hypsos-wordmark-white.svg'), standaloneSvg(wordm
 writeFileSync(join(OUT_IMAGES, 'hypsos-monogram.svg'), standaloneSvg(monogram, '#080808'));
 writeFileSync(join(OUT_IMAGES, 'hypsos-star.svg'), standaloneSvg(star, '#F5F5F5'));
 
-console.log('Generando imágenes responsive…');
-const chrome = join(ORIGINALS, 'hypsos-monogram-chrome-on-black.png');
-for (const width of [640, 1080, 1480]) {
-  await sharp(chrome).resize({ width, withoutEnlargement: true }).avif({ quality: 58, effort: 6 }).toFile(join(OUT_IMAGES, `monogram-chrome-${width}.avif`));
-  await sharp(chrome).resize({ width, withoutEnlargement: true }).webp({ quality: 80, effort: 6 }).toFile(join(OUT_IMAGES, `monogram-chrome-${width}.webp`));
-}
-
 console.log('Generando favicon, iconos y Open Graph…');
 // Favicon: monograma oficial, negro en pestañas claras y blanco en pestañas oscuras.
 writeFileSync(
@@ -227,18 +220,26 @@ for (const [file, size] of [
     .png()
     .toFile(join(OUT_PUBLIC, file));
 }
-// Open Graph 1200×630: monograma cromado + logotipo sobre negro.
-const ogChrome = await sharp(chrome).resize({ height: 400 }).toBuffer();
-const ogWordmark = await sharp(Buffer.from(standaloneSvg(wordmark, '#ffffff')), { density: 300 })
-  .resize({ width: 460 })
+// Open Graph 1200×630: monograma H blanco sobre plano rojo de marca + logotipo, sobre negro.
+const ogMonogram = await sharp(Buffer.from(standaloneSvg(monogram, '#ffffff')), { density: 300 })
+  .resize({ width: 300 })
   .png()
   .toBuffer();
-await sharp({ create: { width: 1200, height: 630, channels: 3, background: '#000000' } })
+const ogWordmark = await sharp(Buffer.from(standaloneSvg(wordmark, '#ffffff')), { density: 300 })
+  .resize({ width: 520 })
+  .png()
+  .toBuffer();
+const ogPanel = await sharp({ create: { width: 420, height: 470, channels: 3, background: '#c8102e' } })
+  .composite([{ input: ogMonogram, gravity: 'center' }])
+  .png()
+  .toBuffer();
+const wordmarkHeight = Math.round((520 * wordmark.height) / wordmark.width);
+await sharp({ create: { width: 1200, height: 630, channels: 3, background: '#080808' } })
   .composite([
-    { input: ogChrome, top: 50, left: Math.round((1200 - 556) / 2) },
-    { input: ogWordmark, top: 492, left: 370 },
+    { input: ogPanel, top: 80, left: 700 },
+    { input: ogWordmark, top: Math.round(315 - wordmarkHeight / 2), left: 100 },
   ])
-  .jpeg({ quality: 86, mozjpeg: true })
+  .jpeg({ quality: 88, mozjpeg: true })
   .toFile(join(OUT_PUBLIC, 'og-image.jpg'));
 
 rmSync(work, { recursive: true, force: true });

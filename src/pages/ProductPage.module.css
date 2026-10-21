@@ -59,7 +59,7 @@
   scroll-snap-align: center;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: #141414;
+  background: var(--c-studio);
 }
 
 .slide > * {
@@ -331,15 +331,6 @@
   .slide:focus-visible .zoomHint {
     opacity: 1;
   }
-}
-
-.slide3d {
-  cursor: default;
-}
-
-.stage3d {
-  width: 100%;
-  height: 100%;
 }
 
 .priceRow {

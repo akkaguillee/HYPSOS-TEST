@@ -4,7 +4,7 @@
   z-index: var(--z-drawer);
   visibility: hidden;
   pointer-events: none;
-  transition: visibility 0s linear var(--dur-enter);
+  transition: visibility 0s linear var(--dur-panel);
 }
 
 .root[data-open='true'] {
@@ -18,7 +18,7 @@
   inset: 0;
   background: rgb(0 0 0 / 0.62);
   opacity: 0;
-  transition: opacity var(--dur-enter) var(--ease-out);
+  transition: opacity var(--dur-panel) var(--ease-out);
 }
 
 .root[data-open='true'] .overlay {
@@ -35,7 +35,7 @@
   background: var(--bg-raised);
   color: var(--fg);
   box-shadow: 0 0 80px rgb(0 0 0 / 0.5);
-  transition: transform var(--dur-enter) var(--ease-out);
+  transition: transform var(--dur-panel) var(--ease-drawer);
   outline: none;
 }
 

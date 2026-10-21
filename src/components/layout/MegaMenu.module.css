@@ -8,8 +8,8 @@
   clip-path: inset(0 0 100% 0);
   visibility: hidden;
   transition:
-    clip-path var(--dur-enter) var(--ease-out),
-    visibility 0s linear var(--dur-enter);
+    clip-path var(--dur-ui) var(--ease-out),
+    visibility 0s linear var(--dur-ui);
 }
 
 /* El megamenú solo existe en escritorio; en móvil la navegación vive en el menú a pantalla completa. */
@@ -45,8 +45,8 @@
   opacity: 0;
   transform: translate3d(0, 10px, 0);
   transition:
-    opacity var(--dur-enter) var(--ease-out),
-    transform var(--dur-enter) var(--ease-out);
+    opacity var(--dur-ui) var(--ease-out),
+    transform var(--dur-ui) var(--ease-out);
   transition-delay: calc(var(--i) * 35ms + 80ms);
 }
 
@@ -102,33 +102,22 @@
   min-height: 260px;
   padding: var(--space-5);
   overflow: hidden;
-  background: #000;
-  border: 1px solid var(--line);
+  background: var(--c-red);
 }
 
 .featureImage {
   position: absolute;
-  inset: 0 0 18% 18%;
-  width: 82%;
-  height: 82%;
-  object-fit: contain;
-  object-position: right top;
-  transform: scale(1.02);
-  transition: transform 1.2s var(--ease-out);
+  inset: 0;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .feature:hover .featureImage {
-    transform: scale(1.08);
+  .feature [data-brand-mark] {
+    transition: transform var(--dur-editorial) var(--ease-out);
   }
-}
 
-.feature::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgb(0 0 0 / 0.92) 0%, rgb(0 0 0 / 0.6) 38%, transparent 70%);
-  pointer-events: none;
+  .feature:hover [data-brand-mark] {
+    transform: scale(1.05) translate3d(-2%, 2%, 0);
+  }
 }
 
 .featureText {

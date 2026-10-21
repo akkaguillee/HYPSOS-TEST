@@ -1,4 +1,4 @@
-import { ProductArt } from '@/components/commerce/ProductArt';
+import { ProductMedia } from '@/components/commerce/ProductMedia';
 import { SplitHeadline } from '@/components/motion/SplitHeadline';
 import { Reveal } from '@/components/motion/Reveal';
 import { useMediaQuery, useReducedMotion } from '@/hooks/useMediaQuery';
@@ -108,7 +108,7 @@ export function CategoryIndex() {
             ({ category, cover }) =>
               cover && (
                 <div key={category.handle} className={styles.previewItem} data-active={active === category.handle}>
-                  <ProductArt product={cover} compact decorative />
+                  <ProductMedia product={cover} media={cover.media[0]} decorative sizes="280px" />
                 </div>
               ),
           )}

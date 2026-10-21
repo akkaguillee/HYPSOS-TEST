@@ -15,6 +15,7 @@
   --c-red: #c8102e;
   --c-red-dark: #8f1027;
   --c-red-bright: #f21d3b; /* solo efectos muy puntuales */
+  --c-studio: #e4e4e2; /* fondo de estudio de las imágenes de producto */
 
   /* Derivados funcionales */
   --c-grey-700: #6b6b6b; /* texto secundario sobre fondos claros (AA) */
@@ -94,13 +95,15 @@
   /* ─── Movimiento ──────────────────────────────────────────────────── */
   --dur-micro: 160ms;
   --dur-hover: 240ms;
-  --dur-enter: 560ms;
+  --dur-ui: 200ms; /* desplegables y popovers */
+  --dur-panel: 380ms; /* cajones, modales y paneles a pantalla completa */
+  --dur-enter: 560ms; /* revelados editoriales al hacer scroll */
   --dur-editorial: 900ms;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1); /* desaceleración natural */
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
-  --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1); /* cajones (curva tipo iOS) */
 
   /* ─── Forma ───────────────────────────────────────────────────────── */
   --radius-0: 0;

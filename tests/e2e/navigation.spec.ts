@@ -33,12 +33,27 @@ test('menú móvil: abre, atrapa el foco y se cierra con Escape', async ({ page,
 test('el buscador encuentra productos', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: 'Buscar' }).first().click();
-  await page.getByRole('searchbox', { name: 'Buscar productos' }).fill('cromo');
-  await expect(page.getByText(/\d+ resultados?/)).toBeVisible();
+  await page.getByRole('combobox', { name: 'Buscar productos' }).fill('capucha');
+  await expect(page.getByText(/^\d+ resultados?$/)).toBeVisible();
   await page.keyboard.press('Enter');
-  await expect(page).toHaveURL(/\/search\?q=cromo/);
-  await expect(page.getByRole('heading', { level: 1, name: '“cromo”' })).toBeVisible();
-  await expect(page.locator('#main').getByRole('link', { name: 'Sudadera Capucha Cromo' })).toBeVisible();
+  await expect(page).toHaveURL(/\/search\?q=capucha/);
+  await expect(page.getByRole('heading', { level: 1, name: '“capucha”' })).toBeVisible();
+  await expect(page.locator('#main').getByRole('link', { name: 'Sudadera Capucha Monogram' })).toBeVisible();
+});
+
+test('buscador: navegación con flechas e Intro abre la ficha', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Buscar' }).first().click();
+  const input = page.getByRole('combobox', { name: 'Buscar productos' });
+  await input.fill('mascot');
+  const options = page.getByRole('option');
+  await expect(options.first()).toBeVisible();
+  await page.keyboard.press('ArrowDown');
+  await expect(options.first()).toHaveAttribute('aria-selected', 'true');
+  const activeId = await input.getAttribute('aria-activedescendant');
+  expect(activeId).toBeTruthy();
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/\/products\//);
 });
 
 test('todas las rutas del brief responden', async ({ page }) => {
@@ -64,6 +79,8 @@ test('todas las rutas del brief responden', async ({ page }) => {
     '/pages/aviso-legal',
     '/cart',
     '/favoritos',
+    '/cuenta',
+    '/cuenta/recuperar',
   ];
   for (const route of routes) {
     const response = await page.goto(route);
@@ -85,6 +102,8 @@ test('el HTML inicial incluye metadatos SEO del producto', async ({ request }) =
   expect(html).toContain('<title>Sudadera Capucha Ascenso | HYPSOS</title>');
   expect(html).toContain('"@type":"Product"');
   expect(html).toContain('og:image');
+  // Catálogo de demostración: las fichas no se indexan.
+  expect(html).toContain('noindex');
   const headers = (await request.get('/')).headers();
   expect(headers['content-security-policy']).toContain("script-src 'self'");
   expect(headers['x-content-type-options']).toBe('nosniff');

@@ -1,0 +1,94 @@
+.panel {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  --panel-mark: var(--c-white);
+  --panel-accent: var(--c-black);
+}
+
+.panel[data-tone='red'] {
+  background: var(--c-red);
+}
+
+.panel[data-tone='black'] {
+  background: var(--c-black);
+  --panel-mark: var(--c-red);
+  --panel-accent: var(--c-red);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.panel[data-tone='graphite'] {
+  background: var(--c-graphite);
+  --panel-accent: var(--c-red);
+}
+
+.panel[data-tone='light'] {
+  background: var(--c-white-soft);
+  --panel-mark: var(--c-black);
+  --panel-accent: var(--c-red);
+}
+
+.mark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--panel-mark);
+}
+
+.glyph {
+  height: auto;
+  /* En planos apaisados la marca se limita por la altura. */
+  max-height: 82%;
+}
+
+/* Monograma: sangra por la esquina superior derecha y deja libre la inferior izquierda. */
+.panel[data-mark='monogram'] .mark {
+  place-items: start end;
+}
+
+.panel[data-mark='monogram'] .glyph {
+  max-height: none;
+  width: 118%;
+  max-width: none;
+  margin: -6% -26% 0 0;
+}
+
+.panel[data-mark='star'] .glyph {
+  width: 92%;
+  transform: rotate(-10deg);
+}
+
+.panel[data-mark='mascot'] .glyph {
+  width: 66%;
+}
+
+.panel[data-mark='wordmark'] .glyph {
+  width: 78%;
+}
+
+.accent {
+  position: absolute;
+  top: 7%;
+  left: 7%;
+  width: 22%;
+  color: var(--panel-accent);
+  animation: accent-drift 40s linear infinite;
+}
+
+.accentGlyph {
+  width: 100%;
+  height: auto;
+}
+
+@keyframes accent-drift {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accent {
+    animation: none;
+  }
+}

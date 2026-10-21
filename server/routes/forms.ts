@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { getProductById, isVariantValid, variantId } from '../../shared/catalog';
 import { contactSchema, emailField, fieldErrors, newsletterSchema } from '../../shared/schemas';
 import { z } from 'zod';
-import { readJson, type AppDeps, type AppEnv } from '../context';
+import { readJson, scaledLimit, type AppDeps, type AppEnv } from '../context';
 import { rateLimit } from '../rate-limit';
 
 const stockAlertSchema = z.object({
@@ -16,7 +16,7 @@ const stockAlertSchema = z.object({
 export function formRoutes(deps: AppDeps) {
   const { env, repos, mailer, logger } = deps;
   const app = new Hono<AppEnv>();
-  const limit = rateLimit({ windowMs: 10 * 60 * 1000, max: 8, keyFor: deps.clientIp });
+  const limit = rateLimit({ windowMs: 10 * 60 * 1000, max: scaledLimit(deps, 8), keyFor: deps.clientIp });
 
   app.post('/newsletter', limit, async (c) => {
     const parsed = newsletterSchema.safeParse(await readJson(c));

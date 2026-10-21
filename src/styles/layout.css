@@ -18,6 +18,11 @@
   color: var(--fg);
 }
 
+/* Dos secciones seguidas sobre el mismo fondo no duplican el espacio entre ellas. */
+.section:not([data-theme]) + .section:not([data-theme]) {
+  padding-top: 0;
+}
+
 .section--tight {
   padding-block: var(--section-y-tight);
 }
@@ -30,6 +35,15 @@
   justify-content: space-between;
   gap: var(--space-4) var(--space-6);
   margin-bottom: clamp(var(--space-6), 3vw, var(--space-7));
+}
+
+/* Los botones fantasma alinean su texto (no su relleno) con el borde del contenedor. */
+.section-head [data-variant='ghost'] {
+  margin-left: calc(var(--space-3) * -1);
+}
+
+.section-head > [data-variant='ghost']:last-child {
+  margin-right: calc(var(--space-3) * -1);
 }
 
 .section-head__titles {
@@ -132,6 +146,16 @@
   transform: none;
 }
 
+.reveal--rise {
+  transform: translate3d(0, 16px, 0);
+  transition: transform var(--dur-editorial) var(--ease-out);
+  transition-delay: calc(var(--reveal-index, 0) * 70ms);
+}
+
+.reveal--rise.is-visible {
+  transform: none;
+}
+
 /* La máscara se aplica a los hijos: un elemento recortado por completo no lo detecta IntersectionObserver. */
 .reveal--mask > * {
   clip-path: inset(100% 0 0 0);
@@ -151,5 +175,9 @@
 
   .reveal--mask > * {
     clip-path: none;
+  }
+
+  .reveal--rise {
+    transform: none;
   }
 }

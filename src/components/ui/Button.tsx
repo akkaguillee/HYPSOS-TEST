@@ -36,6 +36,7 @@ export function Button({ variant, size, block, sheen, loading, className, childr
     <button
       type={type}
       className={buttonClass({ variant, size, block, sheen }, className, loading)}
+      data-variant={variant ?? 'primary'}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       {...rest}
@@ -52,7 +53,7 @@ interface ButtonLinkProps extends StyleProps, LinkProps {
 
 export function ButtonLink({ variant, size, block, sheen, className, children, ...rest }: ButtonLinkProps) {
   return (
-    <Link className={buttonClass({ variant, size, block, sheen }, className)} viewTransition {...rest}>
+    <Link className={buttonClass({ variant, size, block, sheen }, className)} data-variant={variant ?? 'primary'} viewTransition {...rest}>
       <span className={styles.label}>{children}</span>
     </Link>
   );

@@ -38,7 +38,7 @@ export default function SearchPage() {
             type="search"
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
-            placeholder="Sudadera, camiseta, cromo…"
+            placeholder="Sudadera, camiseta, mascot…"
             className={styles.input}
           />
           <Button type="submit" aria-label="Buscar">

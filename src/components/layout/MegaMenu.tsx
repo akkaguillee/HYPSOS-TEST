@@ -1,4 +1,4 @@
-import { ChromeMonogram } from '@/components/brand/ChromeMonogram';
+import { BrandPanel } from '@/components/brand/BrandPanel';
 import { shopNav } from '@/content/navigation';
 import { productsByCategory, productsByCollection, products } from '@shared/catalog';
 import { paths } from '@shared/routes';
@@ -66,7 +66,7 @@ export function MegaMenu({ id, open, onNavigate, onMouseEnter }: MegaMenuProps) 
           </ul>
         </div>
         <Link to={paths.collection('drop-01-ascenso')} className={styles.feature} onClick={onNavigate} viewTransition>
-          <ChromeMonogram className={styles.featureImage} sizes="420px" alt="" />
+          <BrandPanel tone="red" mark="monogram" className={styles.featureImage} />
           <span className={styles.featureText}>
             <span className="eyebrow">Drop 01</span>
             <span className={styles.featureTitle}>Ascenso</span>

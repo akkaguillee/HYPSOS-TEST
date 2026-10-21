@@ -22,7 +22,7 @@ import {
   startSession,
   verifyPassword,
 } from '../auth';
-import { readJson, requireUser, type AppDeps, type AppEnv } from '../context';
+import { readJson, requireUser, scaledLimit, type AppDeps, type AppEnv } from '../context';
 import { rateLimit } from '../rate-limit';
 
 const invalid = (error: import('zod').ZodError) => ({
@@ -37,8 +37,8 @@ export function authRoutes(deps: AppDeps) {
   const { env, repos, mailer, logger } = deps;
   const secure = env.NODE_ENV === 'production';
   const app = new Hono<AppEnv>();
-  const authLimit = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, keyFor: deps.clientIp });
-  const accountLimit = rateLimit({ windowMs: 60 * 1000, max: 60, keyFor: deps.clientIp });
+  const authLimit = rateLimit({ windowMs: 15 * 60 * 1000, max: scaledLimit(deps, 10), keyFor: deps.clientIp });
+  const accountLimit = rateLimit({ windowMs: 60 * 1000, max: scaledLimit(deps, 60), keyFor: deps.clientIp });
 
   app.get('/auth/me', (c) => {
     const user = c.get('user');

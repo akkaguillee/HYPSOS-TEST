@@ -5,8 +5,8 @@ import type { ColorOption, Product, ProductMedia } from '../types';
  *  CATÁLOGO DE EJEMPLO
  *  Nombres, precios, descripciones y stock son PROVISIONALES para construir y
  *  probar la tienda. No representan prendas reales de HYPSOS hasta que el
- *  propietario los sustituya. Las imágenes son marcadores de posición
- *  (`type: 'placeholder'`): ver «Catálogo y fotografías» en README.md.
+ *  propietario los sustituya. Las imágenes son mockups digitales 2D
+ *  (`type: 'mockup'`, generados con `pnpm mockups`): ver «Catálogo e imágenes» en README.md.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
@@ -16,16 +16,15 @@ export const colors = {
   grafito: { id: 'grafito', name: 'Grafito', hex: '#3a3a3a' },
   gris: { id: 'gris', name: 'Gris jaspeado', hex: '#8c8c8c' },
   rojo: { id: 'rojo', name: 'Rojo', hex: '#c8102e' },
-  cromo: { id: 'cromo', name: 'Cromo', hex: '#c9c9c9' },
 } satisfies Record<string, ColorOption>;
 
 const APPAREL_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 const ONE_SIZE = ['Única'];
 
-const placeholderViews: ProductMedia[] = [
-  { type: 'placeholder', view: 'front' },
-  { type: 'placeholder', view: 'back' },
-  { type: 'placeholder', view: 'detail' },
+const mockupViews: ProductMedia[] = [
+  { type: 'mockup', view: 'front' },
+  { type: 'mockup', view: 'back' },
+  { type: 'mockup', view: 'detail' },
 ];
 
 /**
@@ -75,7 +74,7 @@ export const products: Product[] = [
     featuredRank: 1,
     silhouette: 'tee',
     sizeGuide: 'tops',
-    media: placeholderViews,
+    media: mockupViews,
   },
   {
     id: 'p-tee-signal',
@@ -102,7 +101,7 @@ export const products: Product[] = [
     featuredRank: 2,
     silhouette: 'tee',
     sizeGuide: 'tops',
-    media: placeholderViews,
+    media: mockupViews,
     editionSize: 150,
   },
   {
@@ -129,7 +128,7 @@ export const products: Product[] = [
     featuredRank: 5,
     silhouette: 'tee',
     sizeGuide: 'tops',
-    media: placeholderViews,
+    media: mockupViews,
   },
   {
     id: 'p-ls-base',
@@ -155,7 +154,7 @@ export const products: Product[] = [
     featuredRank: 9,
     silhouette: 'longsleeve',
     sizeGuide: 'tops',
-    media: placeholderViews,
+    media: mockupViews,
   },
 
   // ─── Sudaderas ───────────────────────────────────────────────────────────
@@ -184,24 +183,24 @@ export const products: Product[] = [
     featuredRank: 3,
     silhouette: 'hoodie',
     sizeGuide: 'tops',
-    media: placeholderViews,
+    media: mockupViews,
   },
   {
-    id: 'p-hoodie-cromo',
-    handle: 'sudadera-capucha-cromo',
+    id: 'p-hoodie-monogram',
+    handle: 'sudadera-capucha-monogram',
     code: 'HYP-HD-002',
-    name: 'Sudadera Capucha Cromo',
+    name: 'Sudadera Capucha Monogram',
     status: 'published',
     category: 'sudaderas',
     collections: ['drop-01-ascenso', 'signal'],
-    tags: ['oversize', 'capucha', 'metalizado', 'numerada'],
+    tags: ['oversize', 'capucha', 'serigrafía', 'numerada'],
     price: 9500,
-    shortDescription: 'Monograma H cromado en la espalda. 200 unidades.',
+    shortDescription: 'Monograma H a toda la espalda. 200 unidades.',
     description:
-      'El monograma H en acabado metalizado ocupa toda la espalda. Una edición de 200 unidades que no se repondrá.',
-    details: ['Impresión metalizada en espalda', 'Capucha de doble capa', 'Numerada'],
+      'El monograma H en serigrafía blanca de alta densidad ocupa toda la espalda. Una edición de 200 unidades que no se repondrá.',
+    details: ['Serigrafía de alta densidad en espalda', 'Capucha de doble capa', 'Numerada'],
     composition: '80 % algodón, 20 % poliéster reciclado. 450 g/m².',
-    care: ['Lavar del revés a 30 °C', 'No planchar sobre la impresión'],
+    care: ['Lavar del revés a 30 °C', 'No planchar sobre la serigrafía'],
     fit: 'Oversize con hombro caído.',
     colors: [colors.negro],
     sizes: APPAREL_SIZES,
@@ -211,7 +210,7 @@ export const products: Product[] = [
     featuredRank: 4,
     silhouette: 'hoodie',
     sizeGuide: 'tops',
-    media: placeholderViews,
+    media: mockupViews,
     editionSize: 200,
   },
   {
@@ -238,7 +237,7 @@ export const products: Product[] = [
     featuredRank: 7,
     silhouette: 'hoodie',
     sizeGuide: 'tops',
-    media: placeholderViews,
+    media: mockupViews,
   },
 
   // ─── Pantalones ──────────────────────────────────────────────────────────
@@ -267,7 +266,7 @@ export const products: Product[] = [
     featuredRank: 6,
     silhouette: 'pants',
     sizeGuide: 'bottoms',
-    media: placeholderViews,
+    media: mockupViews,
   },
   {
     id: 'p-cargo-altura',
@@ -293,7 +292,7 @@ export const products: Product[] = [
     featuredRank: 10,
     silhouette: 'pants',
     sizeGuide: 'bottoms',
-    media: placeholderViews,
+    media: mockupViews,
   },
   {
     id: 'p-short-training',
@@ -319,7 +318,7 @@ export const products: Product[] = [
     featuredRank: 12,
     silhouette: 'shorts',
     sizeGuide: 'bottoms',
-    media: placeholderViews,
+    media: mockupViews,
   },
 
   // ─── Gorras ──────────────────────────────────────────────────────────────
@@ -345,7 +344,7 @@ export const products: Product[] = [
     releasedAt: '2026-06-01',
     featuredRank: 8,
     silhouette: 'cap',
-    media: placeholderViews,
+    media: mockupViews,
   },
   {
     id: 'p-beanie-signal',
@@ -369,7 +368,7 @@ export const products: Product[] = [
     releasedAt: '2026-09-12',
     featuredRank: 11,
     silhouette: 'beanie',
-    media: placeholderViews,
+    media: mockupViews,
   },
 
   // ─── Accesorios ──────────────────────────────────────────────────────────
@@ -395,7 +394,7 @@ export const products: Product[] = [
     releasedAt: '2026-06-01',
     featuredRank: 14,
     silhouette: 'tote',
-    media: placeholderViews,
+    media: mockupViews,
   },
   {
     id: 'p-socks',
@@ -419,31 +418,31 @@ export const products: Product[] = [
     releasedAt: '2026-06-01',
     featuredRank: 15,
     silhouette: 'socks',
-    media: placeholderViews,
+    media: mockupViews,
   },
   {
     id: 'p-keychain',
-    handle: 'llavero-cromo',
+    handle: 'llavero-monogram',
     code: 'HYP-AC-003',
-    name: 'Llavero Cromo',
+    name: 'Llavero Monogram',
     status: 'published',
     category: 'accesorios',
     collections: ['drop-01-ascenso'],
-    tags: ['metal', 'monograma'],
+    tags: ['esmalte', 'monograma'],
     price: 1500,
-    shortDescription: 'Monograma H en metal con acabado espejo.',
-    description: 'El monograma H en zamak con acabado cromado espejo y anilla de acero.',
-    details: ['Acabado espejo', 'Anilla de acero', '5 cm de ancho'],
-    composition: 'Zamak con baño cromado.',
+    shortDescription: 'Monograma H esmaltado con anilla de acero.',
+    description: 'El monograma H recortado en zamak, esmaltado en color sólido y con anilla de acero.',
+    details: ['Esmalte de color sólido', 'Anilla de acero', '5 cm de ancho'],
+    composition: 'Zamak esmaltado y anilla de acero.',
     care: ['Limpiar con un paño seco'],
-    colors: [colors.cromo],
+    colors: [colors.negro, colors.rojo],
     sizes: ONE_SIZE,
-    initialStock: stock([colors.cromo], ONE_SIZE, 40),
+    initialStock: stock([colors.negro, colors.rojo], ONE_SIZE, 20),
     badges: ['nuevo'],
     releasedAt: '2026-10-01',
     featuredRank: 13,
     silhouette: 'keychain',
-    media: placeholderViews,
+    media: mockupViews,
   },
 
   // ─── 3D ──────────────────────────────────────────────────────────────────
@@ -470,7 +469,7 @@ export const products: Product[] = [
     releasedAt: '2026-09-12',
     featuredRank: 16,
     silhouette: 'figure',
-    media: placeholderViews,
+    media: mockupViews,
     editionSize: 50,
   },
   {
@@ -488,14 +487,14 @@ export const products: Product[] = [
     details: ['15 cm de ancho', 'Lacado a mano', 'Base antideslizante'],
     composition: 'PLA de origen vegetal lacado.',
     care: ['Limpiar con un paño seco'],
-    colors: [colors.negro, colors.cromo],
+    colors: [colors.negro, colors.blanco],
     sizes: ONE_SIZE,
-    initialStock: stock([colors.negro, colors.cromo], ONE_SIZE, 8),
+    initialStock: stock([colors.negro, colors.blanco], ONE_SIZE, 8),
     badges: ['nuevo'],
     releasedAt: '2026-10-01',
     featuredRank: 17,
     silhouette: 'object',
-    media: placeholderViews,
+    media: mockupViews,
   },
 
   // ─── Stickers ────────────────────────────────────────────────────────────
@@ -521,7 +520,7 @@ export const products: Product[] = [
     releasedAt: '2026-10-01',
     featuredRank: 18,
     silhouette: 'sticker',
-    media: placeholderViews,
+    media: mockupViews,
     artwork: 'wordmark',
   },
   {
@@ -546,7 +545,7 @@ export const products: Product[] = [
     releasedAt: '2026-06-01',
     featuredRank: 19,
     silhouette: 'sticker',
-    media: placeholderViews,
+    media: mockupViews,
     artwork: 'mascot',
   },
   {
@@ -571,7 +570,7 @@ export const products: Product[] = [
     releasedAt: '2026-09-12',
     featuredRank: 20,
     silhouette: 'sticker',
-    media: placeholderViews,
+    media: mockupViews,
     artwork: 'star',
   },
 ];

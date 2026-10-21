@@ -1,7 +1,8 @@
-import { getCategory, getCollection, getProductByHandle, variantSku } from './catalog';
+import { getCategory, getCollection, getProductByHandle, isColorAvailable, mockupSrc, variantSku } from './catalog';
+import { GRID_SIZES, gridColumns, listingProducts, sortFeatured } from './catalog/listing';
 import { store } from './config';
 import { contentPages, isContentPage, paths, specialCollections } from './routes';
-import type { StockLookup } from './types';
+import type { Product, StockLookup } from './types';
 
 export interface PageMeta {
   title: string;
@@ -11,7 +12,29 @@ export interface PageMeta {
   type: 'website' | 'product';
   noindex?: boolean;
   jsonLd?: Record<string, unknown>[];
+  /** Imagen principal de la vista (candidata a LCP): se precarga desde el HTML inicial. */
+  preloadImage?: { href: string; srcset?: string; sizes: string };
 }
+
+/** Precarga de la primera imagen visible de un producto, con el mismo srcset que usa la interfaz. */
+function productImagePreload(product: Product, colorId: string, sizes: string): PageMeta['preloadImage'] {
+  const photo = product.media.find((media) => media.type === 'image' && (!media.colorId || media.colorId === colorId));
+  if (photo?.type === 'image') return { href: photo.src, sizes };
+  return {
+    href: mockupSrc(product, colorId, 'front', 960),
+    srcset: `${mockupSrc(product, colorId, 'front', 480)} 480w, ${mockupSrc(product, colorId, 'front', 960)} 960w`,
+    sizes,
+  };
+}
+
+/** Color que muestra primero la interfaz: el de `?color=` si está disponible, si no el primero disponible. */
+function initialColor(product: Product, stock: StockLookup | undefined, requested: string | null): string {
+  const available = (id: string) => !stock || isColorAvailable(product, id, stock);
+  if (requested && product.colors.some((color) => color.id === requested) && available(requested)) return requested;
+  return (product.colors.find((color) => available(color.id)) ?? product.colors[0]).id;
+}
+
+const GALLERY_SIZES = '(min-width: 1024px) 58vw, 100vw';
 
 const breadcrumbs = (publicUrl: string, items: { name: string; path?: string }[]) => ({
   '@context': 'https://schema.org',
@@ -34,7 +57,8 @@ const withBrand = (title: string) => `${title} | ${store.name}`;
  * Metadatos de cada ruta: los usa el servidor (HTML inicial) y el cliente (navegación).
  * `stock` (solo en el servidor) permite publicar la disponibilidad real en los datos estructurados.
  */
-export function metaForPath(pathname: string, publicUrl = '', stock?: StockLookup): PageMeta {
+export function metaForPath(pathname: string, publicUrl = '', stock?: StockLookup, search = ''): PageMeta {
+  const query = new URLSearchParams(search);
   const base: PageMeta = {
     title: `${store.name} — Streetwear por encima del ruido`,
     description: SITE_DESCRIPTION,
@@ -49,14 +73,20 @@ export function metaForPath(pathname: string, publicUrl = '', stock?: StockLooku
     const category = getCategory(handle);
     const collection = getCollection(handle);
     const crumbs = (name: string) => [breadcrumbs(publicUrl, [{ name: 'Inicio', path: '/' }, { name }])];
-    if (special) return { ...base, title: withBrand(special.name), description: special.description, jsonLd: crumbs(special.name) };
-    if (category) return { ...base, title: withBrand(category.name), description: category.description, jsonLd: crumbs(category.name) };
+    // Solo con la vista por defecto: con filtros u otro orden la primera tarjeta es otra.
+    const listed = search ? undefined : listingProducts(handle);
+    // Sin datos de stock se asume todo disponible (mismo orden que ve la tienda antes de cargarlos).
+    const first = listed ? sortFeatured(listed, stock ?? (() => 1))[0] : undefined;
+    const preloadImage = first ? productImagePreload(first, initialColor(first, stock, null), GRID_SIZES[gridColumns(handle)]) : undefined;
+    if (special) return { ...base, title: withBrand(special.name), description: special.description, jsonLd: crumbs(special.name), preloadImage };
+    if (category) return { ...base, title: withBrand(category.name), description: category.description, jsonLd: crumbs(category.name), preloadImage };
     if (collection)
       return {
         ...base,
         title: withBrand(`${collection.kicker} — ${collection.name}`),
         description: collection.description,
         jsonLd: crumbs(collection.name),
+        preloadImage,
       };
   }
 
@@ -64,7 +94,8 @@ export function metaForPath(pathname: string, publicUrl = '', stock?: StockLooku
     const product = getProductByHandle(handle);
     if (product) {
       const category = getCategory(product.category)!;
-      const images = product.media.filter((media) => media.type === 'image').map((media) => `${publicUrl}${media.src}`);
+      const photos = product.media.filter((media) => media.type === 'image').map((media) => `${publicUrl}${media.src}`);
+      const images = photos.length > 0 ? photos : product.colors.map((color) => `${publicUrl}${mockupSrc(product, color.id, 'front', 960)}`);
       const productLd: Record<string, unknown> = {
         '@context': 'https://schema.org',
         '@type': 'Product',
@@ -96,6 +127,7 @@ export function metaForPath(pathname: string, publicUrl = '', stock?: StockLooku
         title: withBrand(product.name),
         description: product.shortDescription,
         type: 'product',
+        preloadImage: productImagePreload(product, initialColor(product, stock, query.get('color')), GALLERY_SIZES),
         jsonLd: [
           productLd,
           breadcrumbs(publicUrl, [

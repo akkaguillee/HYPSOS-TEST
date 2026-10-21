@@ -6,8 +6,7 @@ import { Reveal } from '@/components/motion/Reveal';
 import { Button } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Drawer';
 import { Alert } from '@/components/ui/Field';
-import { ChromeMonogram } from '@/components/brand/ChromeMonogram';
-import { ThreeStage } from '@/components/three/ThreeStage';
+import { BrandPanel } from '@/components/brand/BrandPanel';
 import { track } from '@/lib/analytics';
 import {
   activeFilterCount,
@@ -24,6 +23,7 @@ import {
 import { cn } from '@/lib/cn';
 import { useStock } from '@/store/inventory';
 import { collections, getCategory, getCollection, newArrivals, products, productsByCategory, productsByCollection } from '@shared/catalog';
+import { gridColumns } from '@shared/catalog/listing';
 import { paths, specialCollections } from '@shared/routes';
 import type { Product } from '@shared/types';
 import { ArrowRight, SlidersHorizontal } from 'lucide-react';
@@ -111,14 +111,9 @@ function CatalogView({ handle, collection }: { handle: string; collection: Resol
       >
         {collection.layout === 'lab' && (
           <div className={styles.lab}>
-            <ThreeStage
-              source={{ kind: 'monogram' }}
-              label="Monograma H de HYPSOS en 3D"
-              className={styles.labStage}
-              poster={<ChromeMonogram sizes="(min-width: 1024px) 50vw, 100vw" alt="" />}
-            />
+            <BrandPanel tone="graphite" mark="mascot" accent className={styles.labStage} />
             <p className={styles.labNote}>
-              Las piezas con modelo 3D real se podrán girar desde su ficha. Mientras tanto, las imágenes de esta sección son provisionales.
+              Piezas impresas en 3D y acabadas a mano. Las imágenes de esta sección son mockups provisionales hasta la sesión de fotos.
             </p>
           </div>
         )}
@@ -162,7 +157,7 @@ function CatalogView({ handle, collection }: { handle: string; collection: Resol
           {visible.length > 0 ? (
             <>
               <div className={cn(collection.layout === 'stickers' && styles.stickerGrid)}>
-                <ProductGrid products={shown} columns={collection.layout === 'stickers' ? 4 : 3} priorityCount={3} headingLevel="h2" />
+                <ProductGrid products={shown} columns={gridColumns(handle)} priorityCount={3} headingLevel="h2" />
               </div>
               <div className={styles.pagination}>
                 <p className="t-small t-muted" aria-live="polite">
@@ -239,7 +234,7 @@ function CollectionsIndex() {
                   <div className={styles.collectionThumbs} aria-hidden="true">
                     {items.slice(0, 4).map((product) => (
                       <span key={product.id} className={styles.collectionThumb}>
-                        <ProductMedia product={product} media={product.media[0]} compact decorative sizes="64px" />
+                        <ProductMedia product={product} media={product.media[0]} decorative sizes="64px" />
                       </span>
                     ))}
                   </div>
