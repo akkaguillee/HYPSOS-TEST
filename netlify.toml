@@ -2,7 +2,7 @@
 # server/, así que aquí no hay stock en vivo, pedidos, cuentas ni formularios; la web lo indica.
 # Para la tienda completa, despliega `pnpm start` en un host Node (ver README → Despliegue) y,
 # si quieres mantener Netlify delante, cambia la primera regla por un proxy a esa API:
-#   from = "/api/*"  to = "https://TU-API.example.com/api/:splat"  status = 200  force = true
+#   /api/*  https://TU-API.example.com/api/:splat  200!   (en scripts/build-static.ts → _redirects)
 
 [build]
   command = "pnpm build:static"
@@ -11,24 +11,5 @@
 [build.environment]
   NODE_VERSION = "22"
 
-# Sin API en este alojamiento: JSON explícito en lugar de la página HTML.
-[[redirects]]
-  from = "/api/*"
-  to = "/api-unavailable.json"
-  status = 404
-  force = true
-
-# Las rutas conocidas están prerenderizadas; el resto es un 404 real.
-[[redirects]]
-  from = "/*"
-  to = "/404.html"
-  status = 404
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Content-Type-Options = "nosniff"
-    X-Frame-Options = "DENY"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+# Las reglas de /api/*, 404 y cabeceras de seguridad las genera scripts/build-static.ts en
+# dist-static/_redirects y dist-static/_headers, para que valgan también en subidas manuales.

@@ -4,7 +4,8 @@ import { Alert, Checkbox, SelectField, TextField } from '@/components/ui/Field';
 import { Price } from '@/components/ui/Price';
 import { ApiError, apiRequest } from '@/lib/api';
 import { useAuth } from '@/store/auth';
-import { useStoreStatus } from '@/store/storeStatus';
+import { OfflineNotice } from '@/components/ui/OfflineNotice';
+import { useServerOffline, useStoreStatus } from '@/store/storeStatus';
 import { useWishlist } from '@/store/wishlist';
 import { store } from '@shared/config';
 import { paths } from '@shared/routes';
@@ -497,6 +498,7 @@ function RecoverPage() {
   const [error, setError] = useState<string | undefined>();
   const [result, setResult] = useState<{ tone: 'success' | 'info' | 'error'; text: string } | null>(null);
   const [sending, setSending] = useState(false);
+  const offline = useServerOffline();
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -528,16 +530,19 @@ function RecoverPage() {
         {result?.tone === 'success' ? (
           <Alert tone="success">{result.text}</Alert>
         ) : (
-          <form className={styles.form} onSubmit={submit} noValidate>
-            <TextField label="Email de tu cuenta" type="email" autoComplete="email" inputMode="email" value={email} onChange={(event) => setEmail(event.target.value)} error={error} />
-            {result && <Alert tone={result.tone === 'info' ? 'info' : 'error'}>{result.text}</Alert>}
-            <Button type="submit" size="lg" block loading={sending}>
-              Enviar enlace
-            </Button>
-            <Link to={paths.account} className="link t-small" style={{ justifySelf: 'start' }}>
-              Volver a iniciar sesión
-            </Link>
-          </form>
+          <>
+            <OfflineNotice>Restablecer la contraseña necesita el servidor de la tienda, que no está activo en esta versión de la web.</OfflineNotice>
+            <form className={styles.form} onSubmit={submit} noValidate>
+              <TextField label="Email de tu cuenta" type="email" autoComplete="email" inputMode="email" value={email} onChange={(event) => setEmail(event.target.value)} error={error} />
+              {result && <Alert tone={result.tone === 'info' ? 'info' : 'error'}>{result.text}</Alert>}
+              <Button type="submit" size="lg" block loading={sending} disabled={offline}>
+                Enviar enlace
+              </Button>
+              <Link to={paths.account} className="link t-small" style={{ justifySelf: 'start' }}>
+                Volver a iniciar sesión
+              </Link>
+            </form>
+          </>
         )}
       </div>
     </>
@@ -551,6 +556,7 @@ function ResetPage() {
   const [error, setError] = useState<string | undefined>();
   const [failure, setFailure] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
+  const offline = useServerOffline();
   const signedIn = useAuth((state) => state.signedIn);
   const navigate = useNavigate();
 
@@ -583,7 +589,8 @@ function ResetPage() {
         breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Mi cuenta', to: paths.account }, { label: 'Nueva contraseña' }]}
       />
       <div className="container" style={{ maxWidth: 'calc(520px + var(--gutter) * 2)', paddingBlock: 'var(--space-7) var(--section-y)' }}>
-        <form className={styles.form} onSubmit={submit} noValidate>
+        <OfflineNotice>Restablecer la contraseña necesita el servidor de la tienda, que no está activo en esta versión de la web.</OfflineNotice>
+          <form className={styles.form} onSubmit={submit} noValidate>
           <TextField
             label="Nueva contraseña"
             type="password"
@@ -598,7 +605,7 @@ function ResetPage() {
               {failure} <Link to={paths.accountRecover}>Solicitar otro enlace</Link>
             </Alert>
           )}
-          <Button type="submit" size="lg" block loading={sending}>
+          <Button type="submit" size="lg" block loading={sending} disabled={offline}>
             Guardar contraseña
           </Button>
         </form>

@@ -1,5 +1,7 @@
 import { Reveal } from '@/components/motion/Reveal';
 import { SplitHeadline } from '@/components/motion/SplitHeadline';
+import { OfflineNotice } from '@/components/ui/OfflineNotice';
+import { useServerOffline } from '@/store/storeStatus';
 import { Button } from '@/components/ui/Button';
 import { Alert, Checkbox, TextField } from '@/components/ui/Field';
 import { ApiError, apiRequest } from '@/lib/api';
@@ -15,6 +17,7 @@ export function Newsletter({ source = 'home' }: { source?: string }) {
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Status>({ state: 'idle' });
+  const offline = useServerOffline();
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -56,29 +59,32 @@ export function Newsletter({ source = 'home' }: { source?: string }) {
                 <p>{status.already ? 'Este email ya estaba suscrito. Te avisaremos del próximo drop.' : 'Te avisaremos antes del próximo drop.'}</p>
               </Alert>
             ) : (
-              <form className={styles.form} onSubmit={submit} noValidate>
-                <div className={styles.row}>
-                  <TextField
-                    label="Email"
-                    type="email"
-                    name="email"
-                    autoComplete="email"
-                    inputMode="email"
-                    placeholder="tu@email.com"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    error={errors.email}
-                  />
-                  <Button type="submit" size="lg" loading={status.state === 'loading'}>
-                    Suscribirme
-                  </Button>
-                </div>
-                <Checkbox checked={consent} onChange={(event) => setConsent(event.target.checked)} error={errors.consent}>
-                  Acepto recibir comunicaciones de HYPSOS y he leído la{' '}
-                  <Link to={paths.page('privacidad')}>política de privacidad</Link>. Puedes darte de baja cuando quieras.
-                </Checkbox>
-                {status.state === 'error' && <Alert>{status.message}</Alert>}
-              </form>
+              <>
+                <OfflineNotice>La suscripción necesita el servidor de la tienda, que no está activo en esta versión de la web.</OfflineNotice>
+                <form className={styles.form} onSubmit={submit} noValidate>
+                  <div className={styles.row}>
+                    <TextField
+                      label="Email"
+                      type="email"
+                      name="email"
+                      autoComplete="email"
+                      inputMode="email"
+                      placeholder="tu@email.com"
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
+                      error={errors.email}
+                    />
+                    <Button type="submit" size="lg" loading={status.state === 'loading'} disabled={offline}>
+                      Suscribirme
+                    </Button>
+                  </div>
+                  <Checkbox checked={consent} onChange={(event) => setConsent(event.target.checked)} error={errors.consent}>
+                    Acepto recibir comunicaciones de HYPSOS y he leído la{' '}
+                    <Link to={paths.page('privacidad')}>política de privacidad</Link>. Puedes darte de baja cuando quieras.
+                  </Checkbox>
+                  {status.state === 'error' && <Alert>{status.message}</Alert>}
+                </form>
+              </>
             )}
           </Reveal>
         </div>

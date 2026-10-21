@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { parseAvailability } from '@/store/inventory';
-import { ApiError, apiRequest } from './api';
+import { ApiError, apiRequest, resetBackendDetection } from './api';
 
 function mockFetch(body: string, init: { status?: number; type?: string }) {
   vi.stubGlobal(
@@ -9,7 +9,10 @@ function mockFetch(body: string, init: { status?: number; type?: string }) {
   );
 }
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  vi.unstubAllGlobals();
+  resetBackendDetection();
+});
 
 describe('apiRequest en un alojamiento sin API', () => {
   it('una página HTML con 200 (fallback SPA) no es un éxito', async () => {
@@ -32,6 +35,13 @@ describe('apiRequest en un alojamiento sin API', () => {
   it('un 502 sin JSON de un proxy es un error de servidor, no "sin API"', async () => {
     mockFetch('Bad gateway', { status: 502, type: 'text/plain' });
     await expect(apiRequest('/inventory')).rejects.toMatchObject({ code: 'server_error', status: 502 });
+  });
+
+  it('tras detectar que no hay API no repite peticiones que fallarán', async () => {
+    mockFetch('<!doctype html>', { type: 'text/html' });
+    await expect(apiRequest('/inventory')).rejects.toMatchObject({ code: 'backend_unavailable' });
+    await expect(apiRequest('/auth/me')).rejects.toMatchObject({ code: 'backend_unavailable' });
+    expect(fetch).toHaveBeenCalledTimes(1);
   });
 
   it('devuelve el JSON de una respuesta correcta', async () => {

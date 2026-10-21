@@ -1,4 +1,6 @@
 import { PageHeader } from '@/components/layout/PageHeader';
+import { OfflineNotice } from '@/components/ui/OfflineNotice';
+import { useServerOffline } from '@/store/storeStatus';
 import { Button } from '@/components/ui/Button';
 import { Alert, Checkbox, SelectField, TextArea, TextField } from '@/components/ui/Field';
 import { ApiError, apiRequest } from '@/lib/api';
@@ -26,6 +28,7 @@ export function ContactPage() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
   const [failure, setFailure] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const offline = useServerOffline();
 
   const bind = (name: keyof typeof initial) => ({
     name,
@@ -95,38 +98,41 @@ export function ContactPage() {
             </p>
           </Alert>
         ) : (
-          <form ref={formRef} className={styles.form} onSubmit={submit} noValidate>
-            <TextField label="Nombre" autoComplete="name" {...bind('name')} />
-            <TextField label="Email" type="email" autoComplete="email" inputMode="email" {...bind('email')} />
-            <SelectField label="Motivo" options={subjects} placeholder="Selecciona un motivo" {...bind('subject')} />
-            <TextField label="Número de pedido" optional {...bind('orderNumber')} />
-            <TextArea className={styles.full} label="Mensaje" rows={6} {...bind('message')} />
-            <div className={styles.honeypot} aria-hidden="true">
-              <label>
-                No rellenes este campo
-                <input
-                  tabIndex={-1}
-                  autoComplete="off"
-                  name="website"
-                  value={values.website}
-                  onChange={(event) => setValues((current) => ({ ...current, website: event.target.value }))}
-                />
-              </label>
-            </div>
-            <Checkbox className={styles.full} checked={consent} onChange={(event) => setConsent(event.target.checked)} error={errors.consent}>
-              He leído la <Link to={paths.page('privacidad')}>política de privacidad</Link> y acepto que se usen mis datos para responder a mi consulta.
-            </Checkbox>
-            {failure && (
-              <div className={styles.full}>
-                <Alert>{failure}</Alert>
+          <>
+            <OfflineNotice>El formulario de contacto necesita el servidor de la tienda, que no está activo en esta versión de la web.</OfflineNotice>
+            <form ref={formRef} className={styles.form} onSubmit={submit} noValidate>
+              <TextField label="Nombre" autoComplete="name" {...bind('name')} />
+              <TextField label="Email" type="email" autoComplete="email" inputMode="email" {...bind('email')} />
+              <SelectField label="Motivo" options={subjects} placeholder="Selecciona un motivo" {...bind('subject')} />
+              <TextField label="Número de pedido" optional {...bind('orderNumber')} />
+              <TextArea className={styles.full} label="Mensaje" rows={6} {...bind('message')} />
+              <div className={styles.honeypot} aria-hidden="true">
+                <label>
+                  No rellenes este campo
+                  <input
+                    tabIndex={-1}
+                    autoComplete="off"
+                    name="website"
+                    value={values.website}
+                    onChange={(event) => setValues((current) => ({ ...current, website: event.target.value }))}
+                  />
+                </label>
               </div>
-            )}
-            <div className={styles.full}>
-              <Button type="submit" size="lg" loading={status === 'sending'}>
-                Enviar mensaje
-              </Button>
-            </div>
-          </form>
+              <Checkbox className={styles.full} checked={consent} onChange={(event) => setConsent(event.target.checked)} error={errors.consent}>
+                He leído la <Link to={paths.page('privacidad')}>política de privacidad</Link> y acepto que se usen mis datos para responder a mi consulta.
+              </Checkbox>
+              {failure && (
+                <div className={styles.full}>
+                  <Alert>{failure}</Alert>
+                </div>
+              )}
+              <div className={styles.full}>
+                <Button type="submit" size="lg" loading={status === 'sending'} disabled={offline}>
+                  Enviar mensaje
+                </Button>
+              </div>
+            </form>
+          </>
         )}
       </div>
     </>

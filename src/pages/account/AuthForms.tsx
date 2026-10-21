@@ -1,3 +1,4 @@
+import { useServerOffline } from '@/store/storeStatus';
 import { Button } from '@/components/ui/Button';
 import { Alert, Checkbox, TextField } from '@/components/ui/Field';
 import { track } from '@/lib/analytics';
@@ -73,6 +74,7 @@ function LoginForm() {
   const [failure, setFailure] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const form = useRef<HTMLFormElement>(null);
+  const offline = useServerOffline();
   const after = useAfterSignIn();
 
   const submit = async (event: FormEvent) => {
@@ -115,7 +117,7 @@ function LoginForm() {
         error={errors.password}
       />
       {failure && <Alert>{failure}</Alert>}
-      <Button type="submit" size="lg" block loading={sending}>
+      <Button type="submit" size="lg" block loading={sending} disabled={offline}>
         Entrar
       </Button>
       <Link to={paths.accountRecover} className="link t-small" style={{ justifySelf: 'start' }}>
@@ -133,6 +135,7 @@ function RegisterForm() {
   const [failure, setFailure] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const form = useRef<HTMLFormElement>(null);
+  const offline = useServerOffline();
   const after = useAfterSignIn();
 
   const submit = async (event: FormEvent) => {
@@ -185,7 +188,7 @@ function RegisterForm() {
         Quiero recibir novedades de HYPSOS por email.
       </Checkbox>
       {failure && <Alert>{failure}</Alert>}
-      <Button type="submit" size="lg" block loading={sending}>
+      <Button type="submit" size="lg" block loading={sending} disabled={offline}>
         Crear cuenta
       </Button>
     </form>

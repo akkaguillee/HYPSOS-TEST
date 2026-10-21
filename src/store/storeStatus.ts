@@ -1,4 +1,4 @@
-import { apiRequest } from '@/lib/api';
+import { ApiError, apiRequest } from '@/lib/api';
 import { create } from 'zustand';
 
 interface StoreStatus {
@@ -23,8 +23,13 @@ export const useStoreStatus = create<StoreStatus>()((set, get) => ({
     try {
       const status = await apiRequest<Record<string, unknown>>('/store-status');
       set({ online: true, payments: status.payments === true, shipping: status.shipping === true, email: status.email === true, loaded: true });
-    } catch {
-      set({ online: false, loaded: true });
+    } catch (error) {
+      // Solo un alojamiento sin API se marca como tal; un fallo puntual permite reintentar.
+      if (error instanceof ApiError && error.code === 'backend_unavailable') set({ online: false, loaded: true });
+      else set({ loaded: false });
     }
   },
 }));
+
+/** true solo cuando se sabe con certeza que esta versión de la web no tiene servidor. */
+export const useServerOffline = () => useStoreStatus((state) => state.loaded && !state.online);

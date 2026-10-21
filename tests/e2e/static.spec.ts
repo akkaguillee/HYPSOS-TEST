@@ -38,6 +38,18 @@ test('se navega, se añade al carrito y el checkout explica que no hay compra on
   await expect(page.getByText(/La compra online necesita el servidor de la tienda/)).toBeVisible();
 });
 
+test('una ruta con barra final se normaliza y conserva la query (enlace de restablecer contraseña)', async ({ page }) => {
+  await page.goto('/cuenta/restablecer/?token=abc');
+  await expect(page).toHaveURL(/\/cuenta\/restablecer\?token=abc$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Nueva contraseña' })).toBeVisible();
+});
+
+test('los formularios avisan antes de rellenarlos y no se pueden enviar sin servidor', async ({ page }) => {
+  await page.goto('/pages/contacto');
+  await expect(page.getByText('El formulario de contacto necesita el servidor de la tienda')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Enviar mensaje' })).toBeDisabled();
+});
+
 test('la página no encontrada se muestra en rutas desconocidas', async ({ page }) => {
   const response = await page.goto('/no-existe');
   expect(response?.status()).toBe(404);

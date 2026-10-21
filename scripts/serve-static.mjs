@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * Sirve dist-static/ con las mismas reglas que netlify.toml (para probar el despliegue estático):
- * archivos y páginas prerenderizadas → 200; /api/* → api-unavailable.json con 404; resto → 404.html.
+ * archivos y páginas prerenderizadas (/ruta → ruta.html) → 200; /api/* → api-unavailable.json con 404;
+ * resto → 404.html con 404.
  *
  *   node scripts/serve-static.mjs [puerto=4174]
  */
@@ -31,7 +32,7 @@ const types = {
 async function file(path) {
   try {
     const info = await stat(path);
-    if (info.isDirectory()) return file(join(path, 'index.html'));
+    if (info.isDirectory()) return null;
     return { body: await readFile(path), type: types[extname(path)] ?? 'application/octet-stream' };
   } catch {
     return null;
@@ -45,7 +46,7 @@ createServer(async (req, res) => {
     res.writeHead(400).end();
     return;
   }
-  const found = pathname.startsWith('/api/') ? null : await file(target);
+  const found = pathname.startsWith('/api/') ? null : pathname === '/' ? await file(join(root, 'index.html')) : ((await file(target)) ?? (await file(`${target}.html`)));
   const fallback = pathname.startsWith('/api/') ? join(root, 'api-unavailable.json') : join(root, '404.html');
   const result = found ?? (await file(fallback));
   res.writeHead(found ? 200 : 404, { 'content-type': result?.type ?? 'text/plain' });

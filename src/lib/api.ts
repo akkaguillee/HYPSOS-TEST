@@ -13,13 +13,22 @@ export class ApiError extends Error {
 }
 
 const NETWORK_MESSAGE = 'No hemos podido conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo.';
+/** Solo para pruebas: restablece la detección de alojamiento sin API. */
+export function resetBackendDetection() {
+  backendMissing = false;
+}
+
 export const BACKEND_UNAVAILABLE_MESSAGE =
   'Esta función necesita el servidor de la tienda, que no está activo en esta versión de la web. Puedes seguir navegando por el catálogo.';
+
+/** Se activa al detectar un alojamiento sin API: las siguientes peticiones fallan sin red. */
+let backendMissing = false;
 
 export async function apiRequest<T>(
   path: string,
   init: { method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'; body?: unknown; signal?: AbortSignal } = {},
 ): Promise<T> {
+  if (backendMissing) throw new ApiError(503, 'backend_unavailable', BACKEND_UNAVAILABLE_MESSAGE);
   let response: Response;
   try {
     response = await fetch(`/api${path}`, {
@@ -55,8 +64,10 @@ export async function apiRequest<T>(
     // Sin cuerpo JSON no ha respondido la API: un 2xx/4xx viene del alojamiento estático (la API no
     // existe ahí); un 5xx, de un proxy con la API caída o reiniciándose.
     if (response.status >= 500) throw new ApiError(response.status, 'server_error', NETWORK_MESSAGE);
+    backendMissing = true;
     throw new ApiError(503, 'backend_unavailable', BACKEND_UNAVAILABLE_MESSAGE);
   }
+  if (!response.ok && data.error === 'backend_unavailable') backendMissing = true;
 
   if (!response.ok) {
     throw new ApiError(

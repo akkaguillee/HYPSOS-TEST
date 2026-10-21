@@ -3,7 +3,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { ButtonLink } from '@/components/ui/Button';
 import { Alert } from '@/components/ui/Field';
 import { trackPurchaseOnce } from '@/lib/analytics';
-import { apiRequest } from '@/lib/api';
+import { ApiError, apiRequest } from '@/lib/api';
 import { useCart } from '@/store/cart';
 import { formatPrice } from '@shared/pricing';
 import { paths } from '@shared/routes';
@@ -18,7 +18,7 @@ interface OrderStatus {
   itemCount: number;
 }
 
-type State = { kind: 'loading' } | { kind: 'missing' } | { kind: 'error' } | { kind: 'order'; order: OrderStatus };
+type State = { kind: 'loading' } | { kind: 'missing' } | { kind: 'error' } | { kind: 'offline' } | { kind: 'order'; order: OrderStatus };
 
 export default function CheckoutSuccessPage() {
   const [params] = useSearchParams();
@@ -44,7 +44,7 @@ export default function CheckoutSuccessPage() {
         else if (order.status === 'pending_payment' && attempts++ < 6) timer = window.setTimeout(poll, 2500);
       } catch (error) {
         if (error instanceof DOMException && error.name === 'AbortError') return;
-        setState({ kind: 'error' });
+        setState({ kind: error instanceof ApiError && error.code === 'backend_unavailable' ? 'offline' : 'error' });
       }
     };
     poll();
@@ -63,6 +63,11 @@ export default function CheckoutSuccessPage() {
         {state.kind === 'missing' && (
           <Alert tone="info" title="No encontramos la referencia del pago">
             <p>Si has completado un pago, recibirás la confirmación por email. Si tienes dudas, escríbenos.</p>
+          </Alert>
+        )}
+        {state.kind === 'offline' && (
+          <Alert tone="info" title="Esta versión de la web no procesa pedidos">
+            <p>Los pedidos necesitan el servidor de la tienda, que no está activo aquí. No se ha realizado ningún cargo.</p>
           </Alert>
         )}
         {state.kind === 'error' && (
