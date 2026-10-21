@@ -17,6 +17,36 @@ html {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Táctil: sin espera de doble toque en los controles. */
+a,
+button,
+label,
+summary,
+select,
+[role='button'],
+[role='tab'],
+[role='option'] {
+  touch-action: manipulation;
+}
+
+/* Una pulsación larga no debe seleccionar la etiqueta de un control (el contenido sí sigue siendo seleccionable). */
+button,
+summary,
+[role='button'],
+[role='tab'] {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* iOS amplía la página al enfocar campos con texto menor de 16 px. */
+@media (pointer: coarse) {
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1em);
+  }
+}
+
 body {
   min-height: 100svh;
   background: var(--bg);

@@ -55,15 +55,27 @@ export interface ProductPlaceholder {
 
 export type ProductMedia = ProductImage | ProductPlaceholder;
 
+export type PublicationStatus = 'published' | 'draft';
+
+/** Modelo 3D real del producto (GLB/GLTF) para el visor interactivo. */
+export interface ProductModel {
+  src: string;
+  /** Imagen de respaldo si el dispositivo no puede renderizar WebGL. */
+  poster?: string;
+  alt: string;
+}
+
 export interface Product {
   id: string;
   handle: string;
-  /** Referencia interna (base del SKU). */
+  /** Referencia comercial (base del SKU de cada variante). */
   code: string;
   name: string;
+  status: PublicationStatus;
   category: CategoryHandle;
   collections: string[];
-  /** Precio en céntimos, IVA incluido. */
+  tags: string[];
+  /** Precio en céntimos, IVA incluido, en la moneda de la tienda. */
   price: number;
   compareAtPrice?: number;
   shortDescription: string;
@@ -74,8 +86,11 @@ export interface Product {
   fit?: string;
   colors: ColorOption[];
   sizes: string[];
-  /** Stock por variante: clave `${colorId}:${size}`. */
-  inventory: Record<string, number>;
+  /**
+   * Stock inicial por variante (clave `${colorId}:${size}`). Solo siembra la base de
+   * datos la primera vez que aparece una variante: después, el stock real vive en la BD.
+   */
+  initialStock: Record<string, number>;
   badges: ProductBadge[];
   /** Fecha de lanzamiento ISO (ordenación por novedades). */
   releasedAt: string;
@@ -84,9 +99,15 @@ export interface Product {
   silhouette: Silhouette;
   sizeGuide?: SizeGuideType;
   media: ProductMedia[];
+  model?: ProductModel;
   /** Tirada total si es edición limitada. */
   editionSize?: number;
+  /** Vista previa digital para stickers y gráficos (recurso oficial de marca). */
+  artwork?: 'mascot' | 'star' | 'wordmark' | 'monogram';
 }
+
+/** Consulta de stock disponible por SKU de variante (`productId:colorId:size`). */
+export type StockLookup = (sku: string) => number | undefined;
 
 export interface Category {
   handle: CategoryHandle;
@@ -113,13 +134,14 @@ export interface CartLineInput {
   quantity: number;
 }
 
-export type ShippingMethodId = 'standard' | 'express';
-
 export interface ShippingMethod {
-  id: ShippingMethodId;
+  id: string;
   name: string;
+  /** Plazo de entrega tal y como lo confirma el operador logístico. */
   description: string;
   price: number;
+  /** Si se indica, el método es gratuito a partir de este subtotal (céntimos). */
+  freeFrom?: number;
 }
 
 export interface OrderTotals {

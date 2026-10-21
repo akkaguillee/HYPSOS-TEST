@@ -50,8 +50,10 @@ legend.groupTitle + * {
     border-color var(--dur-micro) var(--ease-out);
 }
 
-.chip:hover {
-  border-color: var(--fg);
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover {
+    border-color: var(--fg);
+  }
 }
 
 .chip[aria-pressed='true'] {
@@ -75,8 +77,10 @@ legend.groupTitle + * {
   color: var(--fg-soft);
 }
 
-.option:hover {
-  color: var(--fg);
+@media (hover: hover) and (pointer: fine) {
+  .option:hover {
+    color: var(--fg);
+  }
 }
 
 .box {
@@ -202,6 +206,8 @@ legend.groupTitle + * {
   color: var(--fg-muted);
 }
 
-.clear:hover {
-  color: var(--fg);
+@media (hover: hover) and (pointer: fine) {
+  .clear:hover {
+    color: var(--fg);
+  }
 }

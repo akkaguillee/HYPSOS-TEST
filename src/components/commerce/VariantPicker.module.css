@@ -102,8 +102,10 @@
     border-color var(--dur-micro) var(--ease-out);
 }
 
-.option:hover input:not(:disabled) + .size {
-  border-color: var(--fg);
+@media (hover: hover) and (pointer: fine) {
+  .option:hover input:not(:disabled) + .size {
+    border-color: var(--fg);
+  }
 }
 
 .option input:checked + .size {
@@ -132,4 +134,18 @@
 
 .invalid .sizes .size {
   border-color: var(--error);
+}
+
+/* Color agotado: visible pero no seleccionable, tachado en diagonal. */
+.unavailable .swatch {
+  position: relative;
+}
+
+.unavailable .swatch::after {
+  content: '';
+  position: absolute;
+  inset: 50% 6px auto;
+  height: 1.5px;
+  background: var(--fg);
+  transform: rotate(-45deg);
 }

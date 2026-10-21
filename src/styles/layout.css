@@ -4,7 +4,8 @@
   width: 100%;
   max-width: calc(var(--container) + var(--gutter) * 2);
   margin-inline: auto;
-  padding-inline: var(--gutter);
+  /* En horizontal, el contenido se aparta de la muesca y de las esquinas redondeadas. */
+  padding-inline: max(var(--gutter), env(safe-area-inset-left, 0px)) max(var(--gutter), env(safe-area-inset-right, 0px));
 }
 
 .container--text {
@@ -98,7 +99,7 @@
     opacity var(--dur-hover) var(--ease-out);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .link:hover::after {
     transform-origin: left;
     transform: scaleX(1);
@@ -110,8 +111,10 @@
   transition: color var(--dur-hover) var(--ease-out);
 }
 
-.breadcrumb-link:hover {
-  color: var(--fg);
+@media (hover: hover) and (pointer: fine) {
+  .breadcrumb-link:hover {
+    color: var(--fg);
+  }
 }
 
 /* Revelado al entrar en pantalla (controlado por <Reveal>). */

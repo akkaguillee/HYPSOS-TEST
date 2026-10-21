@@ -65,10 +65,12 @@ export function ContactPage() {
       />
       <div className={`container ${styles.layout}`}>
         <div className={styles.info}>
-          <div className={styles.infoBlock}>
-            <p className="t-label">Tiempo de respuesta</p>
-            <p>Respondemos en {store.contact.responseTime}.</p>
-          </div>
+          {store.policies.responseTime && (
+            <div className={styles.infoBlock}>
+              <p className="t-label">Tiempo de respuesta</p>
+              <p>Respondemos en {store.policies.responseTime}.</p>
+            </div>
+          )}
           {store.contact.email && (
             <div className={styles.infoBlock}>
               <p className="t-label">Email</p>
@@ -88,7 +90,9 @@ export function ContactPage() {
 
         {status === 'sent' ? (
           <Alert tone="success" title="Mensaje recibido">
-            <p>Gracias, {values.name.split(' ')[0]}. Te responderemos en {store.contact.responseTime}.</p>
+            <p>
+              Gracias, {values.name.split(' ')[0]}. Te responderemos {store.policies.responseTime ? `en ${store.policies.responseTime}` : 'lo antes posible'}.
+            </p>
           </Alert>
         ) : (
           <form ref={formRef} className={styles.form} onSubmit={submit} noValidate>

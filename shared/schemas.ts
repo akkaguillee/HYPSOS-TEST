@@ -48,10 +48,12 @@ export const shippingAddressSchema = z.object({
 });
 
 export const checkoutRequestSchema = z.object({
+  /** Identificador del intento de pago generado en el navegador: evita pedidos duplicados. */
+  checkoutId: z.uuid('Identificador de checkout no válido'),
   email: emailField,
   marketingOptIn: z.boolean().optional().default(false),
   shippingAddress: shippingAddressSchema,
-  shippingMethod: z.enum(['standard', 'express'], 'Selecciona un método de envío'),
+  shippingMethod: z.string('Selecciona un método de envío').min(1, 'Selecciona un método de envío').max(32),
   acceptTerms: z.literal(true, 'Debes aceptar las condiciones de compra'),
   lines: z.array(cartLineSchema).min(1, 'El carrito está vacío').max(50),
 });
@@ -77,7 +79,56 @@ export const contactSchema = z.object({
   website: z.string().max(0).optional(),
 });
 
+// ─── Cuentas ───────────────────────────────────────────────────────────────
+
+export const passwordField = z
+  .string('Introduce una contraseña')
+  .min(10, 'La contraseña debe tener al menos 10 caracteres')
+  .max(128, 'La contraseña es demasiado larga')
+  .refine((value) => /[A-Za-zÀ-ÿ]/.test(value) && /\d/.test(value), 'Combina letras y números');
+
+export const registerSchema = z.object({
+  name: requiredText('El nombre', 80),
+  email: emailField,
+  password: passwordField,
+  acceptTerms: z.literal(true, 'Debes aceptar la política de privacidad'),
+  marketingOptIn: z.boolean().optional().default(false),
+});
+
+export const loginSchema = z.object({
+  email: emailField,
+  password: z.string('Introduce tu contraseña').min(1, 'Introduce tu contraseña').max(128),
+});
+
+export const forgotPasswordSchema = z.object({ email: emailField });
+
+export const resetPasswordSchema = z.object({
+  token: z.string().min(20).max(200),
+  password: passwordField,
+});
+
+export const changePasswordSchema = z.object({
+  currentPassword: z.string('Introduce tu contraseña actual').min(1, 'Introduce tu contraseña actual').max(128),
+  newPassword: passwordField,
+});
+
+export const profileSchema = z.object({
+  name: requiredText('El nombre', 80),
+  marketingOptIn: z.boolean(),
+});
+
+export const addressSchema = shippingAddressSchema.extend({
+  label: z.string().trim().max(40, 'Nombre demasiado largo').optional().default(''),
+  isDefault: z.boolean().optional().default(false),
+});
+
+export const wishlistSchema = z.object({
+  productIds: z.array(z.string().min(1).max(64)).max(200),
+});
+
 export type CheckoutRequest = z.infer<typeof checkoutRequestSchema>;
+export type AddressInput = z.input<typeof addressSchema>;
+export type Address = z.infer<typeof addressSchema>;
 export type CheckoutFormInput = z.input<typeof checkoutRequestSchema>;
 export type NewsletterRequest = z.infer<typeof newsletterSchema>;
 export type ContactRequest = z.infer<typeof contactSchema>;

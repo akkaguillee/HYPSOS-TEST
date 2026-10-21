@@ -14,7 +14,10 @@ export class ApiError extends Error {
 
 const NETWORK_MESSAGE = 'No hemos podido conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo.';
 
-export async function apiRequest<T>(path: string, init: { method?: 'GET' | 'POST'; body?: unknown; signal?: AbortSignal } = {}): Promise<T> {
+export async function apiRequest<T>(
+  path: string,
+  init: { method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'; body?: unknown; signal?: AbortSignal } = {},
+): Promise<T> {
   let response: Response;
   try {
     response = await fetch(`/api${path}`, {
@@ -22,6 +25,7 @@ export async function apiRequest<T>(path: string, init: { method?: 'GET' | 'POST
       headers: init.body === undefined ? undefined : { 'Content-Type': 'application/json' },
       body: init.body === undefined ? undefined : JSON.stringify(init.body),
       signal: init.signal,
+      credentials: 'same-origin',
     });
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') throw error;

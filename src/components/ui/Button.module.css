@@ -80,7 +80,7 @@
   padding-inline: var(--space-3);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .primary:hover {
     --btn-bg: var(--fg-soft);
   }
@@ -170,7 +170,7 @@
   stroke-width: 1.6;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .iconButton:hover {
     background: rgb(127 127 127 / 0.14);
   }

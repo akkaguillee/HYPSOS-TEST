@@ -3,13 +3,10 @@ import { Reveal } from '@/components/motion/Reveal';
 import { useReducedMotion } from '@/hooks/useMediaQuery';
 import { gsap, SplitText, useGSAP } from '@/lib/motion';
 import { useRef } from 'react';
+import { manifesto } from '@/content/campaign';
 import styles from './Manifesto.module.css';
 
-const pillars = [
-  { title: 'Identidad', text: 'Cada pieza lleva una idea detrás. Nada de logos por rellenar.' },
-  { title: 'Movimiento', text: 'Patrones pensados para entrenar, caminar la ciudad y no parar.' },
-  { title: 'Comunidad', text: 'HYPSOS es de quien lo lleva. Los drops se construyen con vosotros.' },
-];
+const { pillars } = manifesto;
 
 /** Pausa editorial en claro: el manifiesto se ilumina palabra a palabra con el scroll. */
 export function Manifesto() {
@@ -41,7 +38,7 @@ export function Manifesto() {
         <div className={styles.grid}>
           <Reveal className={styles.aside}>
             <h2 id="manifesto-title" className="eyebrow">
-              Manifiesto
+              {manifesto.title}
             </h2>
             <Monogram className={styles.monogram} />
             <p className={styles.greek}>
@@ -51,8 +48,7 @@ export function Manifesto() {
           </Reveal>
           <div>
             <p ref={statement} className={styles.statement}>
-              Hecho para quien sube un escalón cada día. Ropa para entrenar, para la calle y para todo lo que pasa entre medias.{' '}
-              <span className={styles.accent}>Sin permiso. Sin ruido.</span>
+              {manifesto.statement} <span className={styles.accent}>{manifesto.accent}</span>
             </p>
             <div className={styles.foot}>
               {pillars.map((pillar, index) => (

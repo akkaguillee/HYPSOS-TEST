@@ -94,7 +94,7 @@ export function CategoryIndex() {
                 <span className={styles.name}>{category.name}</span>
                 <span className={styles.description}>{category.description}</span>
                 <span className={styles.count}>
-                  {count} {count === 1 ? 'pieza' : 'piezas'}
+                  {count} <span className={styles.countWord}>{count === 1 ? 'pieza' : 'piezas'}</span>
                   <ArrowRight aria-hidden="true" />
                 </span>
               </Link>

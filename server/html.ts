@@ -1,4 +1,5 @@
 import { metaForPath } from '../shared/seo';
+import type { StockLookup } from '../shared/types';
 
 const META_BLOCK = /<!--meta:start-->[\s\S]*?<!--meta:end-->/;
 
@@ -21,8 +22,8 @@ function escapeJsonForScript(value: unknown): string {
  * para que buscadores y redes sociales vean título, descripción e imagen correctos
  * sin necesidad de ejecutar JavaScript.
  */
-export function renderHtml(template: string, pathname: string, publicUrl: string): string {
-  const meta = metaForPath(pathname, publicUrl);
+export function renderHtml(template: string, pathname: string, publicUrl: string, stock?: StockLookup): string {
+  const meta = metaForPath(pathname, publicUrl, stock);
   const url = `${publicUrl}${pathname === '/' ? '' : pathname}`;
   const image = `${publicUrl}${meta.image}`;
   const tags = [
@@ -37,7 +38,7 @@ export function renderHtml(template: string, pathname: string, publicUrl: string
     `<meta property="og:image" content="${escapeHtml(image)}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     meta.noindex ? `<meta name="robots" content="noindex" />` : '',
-    meta.jsonLd ? `<script type="application/ld+json">${escapeJsonForScript(meta.jsonLd)}</script>` : '',
+    ...(meta.jsonLd ?? []).map((data) => `<script type="application/ld+json">${escapeJsonForScript(data)}</script>`),
   ].filter(Boolean);
   return template.replace(META_BLOCK, `<!--meta:start-->\n    ${tags.join('\n    ')}\n    <!--meta:end-->`);
 }

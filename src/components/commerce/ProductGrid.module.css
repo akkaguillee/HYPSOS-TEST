@@ -94,9 +94,11 @@
   height: 18px;
 }
 
-.arrow:hover:not(:disabled) {
-  background: var(--fg);
-  color: var(--bg);
+@media (hover: hover) and (pointer: fine) {
+  .arrow:hover:not(:disabled) {
+    background: var(--fg);
+    color: var(--bg);
+  }
 }
 
 .arrow:disabled {

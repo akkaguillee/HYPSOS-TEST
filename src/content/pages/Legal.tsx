@@ -1,6 +1,6 @@
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Alert } from '@/components/ui/Field';
-import { store } from '@shared/config';
+import { returnWindowDays, store } from '@shared/config';
 import { contentPages, paths } from '@shared/routes';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
@@ -97,8 +97,8 @@ const documents: Record<'privacidad' | 'terminos' | 'cookies' | 'aviso-legal', R
       </p>
       <h2>Precios e impuestos</h2>
       <p>
-        Los precios se muestran en euros e incluyen el IVA aplicable. Los gastos de envío se indican antes de finalizar la compra. Envío estándar gratuito
-        desde el importe indicado en la página de <Link to={paths.page('envios')}>envíos</Link>.
+        Los precios se muestran en euros e incluyen el IVA aplicable. Los gastos de envío se indican antes de finalizar la compra (ver{' '}
+        <Link to={paths.page('envios')}>envíos</Link>).
       </p>
       <h2>Proceso de compra</h2>
       <p>
@@ -107,8 +107,8 @@ const documents: Record<'privacidad' | 'terminos' | 'cookies' | 'aviso-legal', R
       </p>
       <h2>Derecho de desistimiento</h2>
       <p>
-        Dispones de {store.returnWindowDays} días naturales desde la entrega para desistir de la compra sin necesidad de justificación (el mínimo legal son
-        14 días). Consulta el procedimiento en <Link to={paths.page('envios')}>envíos y devoluciones</Link>.
+        Dispones de {returnWindowDays()} días naturales desde la entrega para desistir de la compra sin necesidad de justificación (el mínimo legal en
+        la Unión Europea son {store.legalWithdrawalDays} días). Consulta el procedimiento en <Link to={paths.page('envios')}>envíos y devoluciones</Link>.
       </p>
       <h2>Garantía</h2>
       <p>Los productos cuentan con la garantía legal de conformidad de tres años prevista en la normativa de consumo.</p>

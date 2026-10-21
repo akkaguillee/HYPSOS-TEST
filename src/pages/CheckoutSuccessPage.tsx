@@ -2,6 +2,7 @@ import { Mascot } from '@/components/brand/BrandVector';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { ButtonLink } from '@/components/ui/Button';
 import { Alert } from '@/components/ui/Field';
+import { trackPurchaseOnce } from '@/lib/analytics';
 import { apiRequest } from '@/lib/api';
 import { useCart } from '@/store/cart';
 import { formatPrice } from '@shared/pricing';
@@ -35,7 +36,11 @@ export default function CheckoutSuccessPage() {
       try {
         const order = await apiRequest<OrderStatus>(`/checkout/session/${encodeURIComponent(sessionId)}`, { signal: controller.signal });
         setState({ kind: 'order', order });
-        if (order.status === 'paid') clearCart();
+        if (order.status === 'paid') {
+          clearCart();
+          // Solo se registra la compra cuando el servidor la ha confirmado por webhook.
+          trackPurchaseOnce(order.orderNumber, order.total, order.itemCount);
+        }
         else if (order.status === 'pending_payment' && attempts++ < 6) timer = window.setTimeout(poll, 2500);
       } catch (error) {
         if (error instanceof DOMException && error.name === 'AbortError') return;

@@ -1,10 +1,16 @@
+import { loadSeedInventory } from '@/test/stock';
+import { seedStock } from '@shared/catalog';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { cartCount, cartSubtotal, lineId, resolveCartLines, useCart } from './cart';
+import { useInventory } from './inventory';
 
 const tee = { productId: 'p-tee-ascenso', colorId: 'negro', size: 'L' };
 
 describe('carrito', () => {
-  beforeEach(() => useCart.setState({ lines: [], isOpen: false }));
+  beforeEach(() => {
+    useCart.setState({ lines: [], isOpen: false });
+    loadSeedInventory();
+  });
 
   it('añade productos y agrupa la misma variante', () => {
     useCart.getState().add({ ...tee, quantity: 1 });
@@ -38,13 +44,23 @@ describe('carrito', () => {
   it('calcula subtotal y unidades con precios del catálogo', () => {
     useCart.getState().add({ ...tee, quantity: 2 });
     useCart.getState().add({ productId: 'p-hoodie-ascenso', colorId: 'negro', size: 'M', quantity: 1 });
-    const resolved = resolveCartLines(useCart.getState().lines);
+    const resolved = resolveCartLines(useCart.getState().lines, seedStock);
     expect(cartCount(resolved)).toBe(3);
     expect(cartSubtotal(resolved)).toBe(2 * 3900 + 8900);
   });
 
   it('descarta líneas de productos que ya no existen', () => {
     useCart.setState({ lines: [{ id: 'x', productId: 'borrado', colorId: 'negro', size: 'M', quantity: 1 }] });
-    expect(resolveCartLines(useCart.getState().lines)).toEqual([]);
+    expect(resolveCartLines(useCart.getState().lines, seedStock)).toEqual([]);
+  });
+
+  it('usa el stock en vivo: si cambia, cambia el máximo pedible', () => {
+    loadSeedInventory({ 'p-tee-ascenso:negro:L': 1 });
+    expect(useCart.getState().add({ ...tee, quantity: 3 })).toBe(1);
+  });
+
+  it('mientras el stock no ha cargado no bloquea (el servidor valida al pagar)', () => {
+    useInventory.setState({ status: 'loading', available: {} });
+    expect(useCart.getState().add({ ...tee, quantity: 2 })).toBe(2);
   });
 });

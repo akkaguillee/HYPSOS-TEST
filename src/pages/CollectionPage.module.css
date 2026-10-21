@@ -49,6 +49,20 @@
   font-size: 11px;
 }
 
+.sort {
+  min-width: 0;
+}
+
+@media (max-width: 479px) {
+  .sort label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+}
+
 .resultCount {
   font-size: var(--fs-xs);
   color: var(--fg-muted);
@@ -68,6 +82,9 @@
 
 .sort select {
   appearance: none;
+  min-width: 0;
+  max-width: 44vw;
+  text-overflow: ellipsis;
   min-height: 44px;
   padding: 0 var(--space-5) 0 var(--space-2);
   border: 0;
@@ -79,6 +96,12 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   cursor: pointer;
+}
+
+@media (pointer: coarse) {
+  .sort select {
+    font-size: 16px;
+  }
 }
 
 .sort select option {
@@ -164,8 +187,10 @@
   }
 }
 
-.collectionCard:hover {
-  border-color: var(--line-strong);
+@media (hover: hover) and (pointer: fine) {
+  .collectionCard:hover {
+    border-color: var(--line-strong);
+  }
 }
 
 .collectionCard::before {
@@ -181,8 +206,10 @@
   transition: transform var(--dur-enter) var(--ease-out);
 }
 
-.collectionCard:hover::before {
-  transform: scaleY(1);
+@media (hover: hover) and (pointer: fine) {
+  .collectionCard:hover::before {
+    transform: scaleY(1);
+  }
 }
 
 .collectionName {
@@ -211,8 +238,10 @@
   transition: transform var(--dur-hover) var(--ease-out);
 }
 
-.collectionCard:hover .collectionMeta svg {
-  transform: translateX(6px);
+@media (hover: hover) and (pointer: fine) {
+  .collectionCard:hover .collectionMeta svg {
+    transform: translateX(6px);
+  }
 }
 
 .collectionThumbs {
@@ -231,4 +260,67 @@
 .collectionThumb > * {
   width: 100%;
   height: 100%;
+}
+
+.pagination {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+
+.paginationTrack {
+  width: min(240px, 60%);
+  height: 2px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.paginationTrack span {
+  display: block;
+  height: 100%;
+  background: var(--c-red);
+  transform-origin: left;
+  transition: transform var(--dur-editorial) var(--ease-out);
+}
+
+/* Laboratorio 3D: monograma interactivo en la cabecera de la categoría. */
+.lab {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.labStage {
+  height: clamp(280px, 42vw, 560px);
+  background: radial-gradient(60% 60% at 50% 55%, rgb(200 16 46 / 0.12), transparent 70%), #000;
+  border: 1px solid var(--line);
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .labStage {
+    height: 70svh;
+  }
+}
+
+.labNote {
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+}
+
+/* Stickers: tarjetas más compactas, como un pliego de pegatinas. */
+.stickerGrid ul {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+  .stickerGrid ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .stickerGrid ul {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }

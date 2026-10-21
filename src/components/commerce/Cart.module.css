@@ -105,8 +105,10 @@
   transition: color var(--dur-hover) var(--ease-out);
 }
 
-.remove:hover {
-  color: var(--fg);
+@media (hover: hover) and (pointer: fine) {
+  .remove:hover {
+    color: var(--fg);
+  }
 }
 
 .stockNote {

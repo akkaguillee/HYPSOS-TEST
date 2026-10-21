@@ -4,15 +4,21 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { Price } from '@/components/ui/Price';
 import { cartCount, cartSubtotal, resolveCartLines, useCart } from '@/store/cart';
+import { useInventory, useStock } from '@/store/inventory';
 import { paths } from '@shared/routes';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import cartStyles from '@/components/commerce/Cart.module.css';
 import styles from './CartPage.module.css';
 
 export default function CartPage() {
   const rawLines = useCart((state) => state.lines);
-  const lines = useMemo(() => resolveCartLines(rawLines), [rawLines]);
+  const { lookup } = useStock();
+  const loadInventory = useInventory((state) => state.load);
+  const lines = useMemo(() => resolveCartLines(rawLines, lookup), [rawLines, lookup]);
+  useEffect(() => {
+    void loadInventory(true);
+  }, [loadInventory]);
   const subtotal = cartSubtotal(lines);
   const count = cartCount(lines);
   const navigate = useNavigate();

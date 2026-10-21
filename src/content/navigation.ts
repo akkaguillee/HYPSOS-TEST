@@ -29,9 +29,3 @@ export const legalNav = [
   { label: 'Cookies', to: paths.page('cookies') },
   { label: 'Aviso legal', to: paths.page('aviso-legal') },
 ];
-
-export const announcements = [
-  'Envío estándar gratis desde 80 €',
-  'Drop 01 — Ascenso ya disponible',
-  'Devoluciones gratuitas durante 30 días',
-];

@@ -1,10 +1,12 @@
 import { PageHeader } from '@/components/layout/PageHeader';
-import { shippingMethods, store } from '@shared/config';
+import { returnWindowDays, shippingMethods, store } from '@shared/config';
 import { formatPrice } from '@shared/pricing';
 import { paths } from '@shared/routes';
 import { Link } from 'react-router';
 
+/** Todo lo que se afirma aquí sale de shared/config.ts: si una política no está confirmada, se indica como pendiente. */
 export function ShippingPage() {
+  const ownReturnPolicy = store.policies.returnWindowDays !== null;
   return (
     <>
       <PageHeader
@@ -14,56 +16,60 @@ export function ShippingPage() {
       />
       <div className="container" style={{ paddingBlock: 'var(--space-7) var(--section-y)' }}>
         <div className="prose">
-          <p>
-            <strong>Condiciones provisionales:</strong> plazos y costes definidos en la configuración de la tienda, pendientes de confirmar con el operador
-            logístico.
-          </p>
-          <h2>Métodos de envío</h2>
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Método</th>
-                <th scope="col">Plazo</th>
-                <th scope="col">Coste</th>
-              </tr>
-            </thead>
-            <tbody>
-              {shippingMethods.map((method) => (
-                <tr key={method.id}>
-                  <th scope="row">{method.name}</th>
-                  <td>{method.description}</td>
-                  <td className="t-num">
-                    {formatPrice(method.price)}
-                    {method.id === 'standard' && ` · gratis desde ${formatPrice(store.freeShippingThreshold)}`}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <p>Enviamos a: {store.shippingCountries.map((country) => country.name).join(', ')}. Los plazos empiezan a contar desde la confirmación del pago.</p>
+          <h2>Envíos</h2>
+          {shippingMethods.length > 0 ? (
+            <>
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Método</th>
+                    <th scope="col">Plazo</th>
+                    <th scope="col">Coste</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {shippingMethods.map((method) => (
+                    <tr key={method.id}>
+                      <th scope="row">{method.name}</th>
+                      <td>{method.description}</td>
+                      <td className="t-num">
+                        {formatPrice(method.price)}
+                        {method.freeFrom !== undefined && ` · gratis desde ${formatPrice(method.freeFrom)}`}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p>Enviamos a: {store.shippingCountries.map((country) => country.name).join(', ')}. Los plazos empiezan a contar desde la confirmación del pago.</p>
+            </>
+          ) : (
+            <p>
+              <span className="pending">Pendiente</span> Las tarifas, los plazos de entrega y los países de envío se publicarán aquí cuando el operador
+              logístico esté confirmado. Hasta entonces la tienda no acepta pedidos.
+            </p>
+          )}
 
-          <h2>Devoluciones</h2>
+          <h2>Devoluciones y desistimiento</h2>
           <p>
-            Tienes <strong>{store.returnWindowDays} días naturales</strong> desde la entrega para devolver cualquier producto sin usar, sin lavar y con sus
-            etiquetas originales.
+            Tienes <strong>{returnWindowDays()} días naturales</strong> desde la entrega para desistir de tu compra sin necesidad de justificarlo
+            {ownReturnPolicy ? '.' : ', que es el plazo mínimo que establece la ley para las compras a distancia en la Unión Europea.'}
           </p>
           <ol>
             <li>
               Escríbenos desde <Link to={paths.page('contacto')}>contacto</Link> indicando tu número de pedido y los productos que quieres devolver.
             </li>
-            <li>Te enviaremos las instrucciones y la etiqueta de devolución.</li>
-            <li>Cuando recibamos y revisemos el paquete, reembolsaremos el importe en el mismo método de pago en un máximo de 14 días.</li>
+            <li>Te indicaremos cómo enviar el paquete.</li>
+            <li>Reembolsaremos el importe en el mismo método de pago en un máximo de 14 días desde que comuniques el desistimiento (plazo legal).</li>
           </ol>
-          <h3>Excepciones</h3>
           <p>
-            Por higiene, los calcetines solo se aceptan con el embalaje sin abrir. Las piezas 3D numeradas y los stickers pueden devolverse si no se han
-            usado ni aplicado.
+            <span className="pending">Pendiente</span> Quién asume el coste del envío de devolución, excepciones por higiene (p. ej. calcetines) y
+            condiciones de los productos personalizados o numerados.
           </p>
 
           <h2>Cambios de talla</h2>
           <p>
-            La forma más rápida es devolver la prenda y hacer un nuevo pedido con la talla correcta, sobre todo en ediciones limitadas con stock reducido.
-            Consulta la <Link to={paths.page('guia-de-tallas')}>guía de tallas</Link> antes de comprar.
+            Consulta la <Link to={paths.page('guia-de-tallas')}>guía de tallas</Link> antes de comprar. Para cambiar de talla, devuelve el producto y haz un
+            nuevo pedido.
           </p>
         </div>
       </div>

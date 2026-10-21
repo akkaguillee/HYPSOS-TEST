@@ -41,7 +41,7 @@ export function createStripeProvider(secretKey: string, webhookSecret: string): 
               product_data: {
                 name: item.name,
                 description: `${item.colorName} · Talla ${item.size}`,
-                metadata: { sku: item.code, productId: item.productId },
+                metadata: { sku: item.sku, variantId: item.variantId },
               },
             },
           })),
@@ -71,6 +71,8 @@ export function createStripeProvider(secretKey: string, webhookSecret: string): 
           },
           success_url: urls.success,
           cancel_url: urls.cancel,
+          // La sesión caduca antes que la reserva de stock (ver RESERVATION_MINUTES).
+          expires_at: Math.floor(Date.now() / 1000) + 31 * 60,
         },
         { idempotencyKey: `checkout-${order.id}` },
       );

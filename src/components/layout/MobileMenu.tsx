@@ -72,6 +72,11 @@ export function MobileMenu() {
               </NavLink>
             </li>
             <li>
+              <NavLink to={paths.account} onClick={close} viewTransition>
+                Mi cuenta
+              </NavLink>
+            </li>
+            <li>
               <NavLink to={paths.wishlist} onClick={close} viewTransition>
                 Favoritos
               </NavLink>
@@ -86,15 +91,17 @@ export function MobileMenu() {
           </ul>
         </div>
 
-        <ul role="list" className={styles.social} aria-label="Redes sociales">
-          {store.social.map((network) => (
-            <li key={network.id}>
-              <a href={network.href} target="_blank" rel="noopener noreferrer">
-                {network.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+        {store.social.length > 0 && (
+          <ul role="list" className={styles.social} aria-label="Redes sociales">
+            {store.social.map((network) => (
+              <li key={network.id}>
+                <a href={network.href} target="_blank" rel="noopener noreferrer">
+                  {network.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </Drawer>
   );

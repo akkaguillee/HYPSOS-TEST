@@ -41,8 +41,10 @@
   opacity: 0.8;
 }
 
-.control:hover {
-  border-color: var(--fg-muted);
+@media (hover: hover) and (pointer: fine) {
+  .control:hover {
+    border-color: var(--fg-muted);
+  }
 }
 
 .control:focus-visible {

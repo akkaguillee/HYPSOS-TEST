@@ -1,12 +1,10 @@
-import { shippingMethods, store } from './config';
-import type { OrderTotals, ShippingMethodId } from './types';
+import { store } from './config';
+import type { OrderTotals, ShippingMethod } from './types';
 
-/** Coste de envío para un subtotal y un método. El estándar es gratuito desde el umbral. */
-export function shippingCost(subtotal: number, methodId: ShippingMethodId): number {
-  const method = shippingMethods.find((candidate) => candidate.id === methodId);
-  if (!method) throw new Error(`Método de envío desconocido: ${methodId}`);
+/** Coste de envío de un método para un subtotal (gratuito desde `freeFrom` si existe). */
+export function shippingCost(subtotal: number, method: ShippingMethod): number {
   if (subtotal <= 0) return 0;
-  if (methodId === 'standard' && subtotal >= store.freeShippingThreshold) return 0;
+  if (method.freeFrom !== undefined && subtotal >= method.freeFrom) return 0;
   return method.price;
 }
 
@@ -15,22 +13,22 @@ export function includedTax(amount: number, rate: number = store.vatRate): numbe
   return Math.round(amount - amount / (1 + rate));
 }
 
-export function calculateTotals(lines: { unitPrice: number; quantity: number }[], methodId: ShippingMethodId): OrderTotals {
+export function calculateTotals(lines: { unitPrice: number; quantity: number }[], method: ShippingMethod | null): OrderTotals {
   const subtotal = lines.reduce((total, line) => total + line.unitPrice * line.quantity, 0);
-  const shipping = shippingCost(subtotal, methodId);
+  const shipping = method ? shippingCost(subtotal, method) : 0;
   const total = subtotal + shipping;
   return {
     subtotal,
     shipping,
     total,
     taxIncluded: includedTax(total),
-    freeShippingApplied: methodId === 'standard' && subtotal >= store.freeShippingThreshold,
+    freeShippingApplied: Boolean(method && method.price > 0 && shipping === 0 && subtotal > 0),
   };
 }
 
-/** Lo que falta para el envío gratuito (0 si ya se alcanza). */
-export function remainingForFreeShipping(subtotal: number): number {
-  return Math.max(0, store.freeShippingThreshold - subtotal);
+/** Lo que falta para un umbral de envío gratuito (0 si ya se alcanza). */
+export function remainingForFreeShipping(subtotal: number, threshold: number): number {
+  return Math.max(0, threshold - subtotal);
 }
 
 export function formatPrice(cents: number, locale: string = store.locale, currency: string = store.currency): string {

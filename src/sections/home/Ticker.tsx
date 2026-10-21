@@ -1,8 +1,7 @@
 import { Star } from '@/components/brand/BrandVector';
 import { Marquee } from '@/components/motion/Marquee';
+import { ticker as messages } from '@/content/campaign';
 import styles from './Ticker.module.css';
-
-const messages = ['Drop 01 — Ascenso', 'Ediciones limitadas', 'Envío gratis desde 80 €', 'Hecho para moverse', 'Devoluciones 30 días'];
 
 export function Ticker() {
   return (

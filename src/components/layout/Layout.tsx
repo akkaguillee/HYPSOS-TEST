@@ -1,11 +1,16 @@
 import { CartDrawer } from '@/components/commerce/CartDrawer';
 import { IntroLoader } from '@/components/motion/IntroLoader';
 import { useDocumentMeta } from '@/hooks/useDocumentMeta';
+import { track } from '@/lib/analytics';
 import { ScrollTrigger } from '@/lib/motion';
+import { useAuth } from '@/store/auth';
 import { useCart } from '@/store/cart';
+import { useInventory } from '@/store/inventory';
+import { useStoreStatus } from '@/store/storeStatus';
 import { useUi } from '@/store/ui';
 import { useEffect, useRef } from 'react';
 import { Outlet, ScrollRestoration, useLocation, useNavigation } from 'react-router';
+import { CookieConsent } from './CookieConsent';
 import { Footer } from './Footer';
 import { Header } from './Header';
 import styles from './Layout.module.css';
@@ -23,6 +28,17 @@ export function Layout() {
   const isHome = location.pathname === '/';
 
   useDocumentMeta(location.pathname);
+
+  // Datos vivos de la tienda: stock, integraciones activas y sesión del cliente.
+  useEffect(() => {
+    void useInventory.getState().load();
+    void useStoreStatus.getState().load();
+    void useAuth.getState().refresh();
+  }, []);
+
+  useEffect(() => {
+    track('page_view', { path: location.pathname });
+  }, [location.pathname]);
 
   // Al cambiar de página: cerrar paneles, mover el foco al contenido y recalcular animaciones de scroll.
   useEffect(() => {
@@ -52,6 +68,7 @@ export function Layout() {
       <MobileMenu />
       <SearchPanel />
       <CartDrawer />
+      <CookieConsent />
       <div className="visually-hidden" role="status" aria-live="polite" aria-atomic="true">
         {announcement}
       </div>

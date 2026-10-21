@@ -1,0 +1,134 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: rgb(8 8 8 / 0.97);
+  color: var(--c-white);
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity var(--dur-enter) var(--ease-out),
+    visibility 0s linear var(--dur-enter);
+}
+
+.root[data-open='true'] {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: max(var(--space-2), env(safe-area-inset-top)) max(var(--gutter), env(safe-area-inset-right)) var(--space-2)
+    max(var(--gutter), env(safe-area-inset-left));
+  border-bottom: 1px solid var(--line);
+}
+
+.counter {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--c-grey);
+  font-variant-numeric: tabular-nums;
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.viewport {
+  position: relative;
+  overflow: hidden;
+  touch-action: none;
+  cursor: zoom-in;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.viewport[data-zoomed='true'] {
+  cursor: grab;
+}
+
+.viewport[data-dragging='true'] {
+  cursor: grabbing;
+}
+
+.image {
+  position: absolute;
+  inset: var(--space-4);
+  display: grid;
+  place-items: center;
+  transform-origin: center;
+  will-change: transform;
+  transition: transform 320ms var(--ease-out);
+}
+
+.viewport[data-dragging='true'] .image {
+  transition: none;
+}
+
+.image > * {
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: 4 / 5;
+}
+
+.nav {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 1;
+}
+
+.prev {
+  left: max(var(--space-3), env(safe-area-inset-left));
+}
+
+.next {
+  right: max(var(--space-3), env(safe-area-inset-right));
+}
+
+.thumbs {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--gutter) max(var(--space-3), env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+}
+
+.thumb {
+  width: 48px;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid transparent;
+  opacity: 0.55;
+  transition:
+    opacity var(--dur-hover) var(--ease-out),
+    border-color var(--dur-hover) var(--ease-out);
+}
+
+.thumb[aria-current='true'] {
+  opacity: 1;
+  border-color: var(--c-white);
+}
+
+.thumb > * {
+  width: 100%;
+  height: 100%;
+}
+
+/* Horizontal con poca altura: sin miniaturas para dar todo el alto a la imagen. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .thumbs {
+    display: none;
+  }
+}

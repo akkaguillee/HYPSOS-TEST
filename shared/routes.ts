@@ -11,12 +11,18 @@ export const paths = {
   checkoutSuccess: '/checkout/success',
   search: '/search',
   wishlist: '/favoritos',
+  account: '/cuenta',
+  accountOrders: '/cuenta/pedidos',
+  accountAddresses: '/cuenta/direcciones',
+  accountProfile: '/cuenta/perfil',
+  accountRecover: '/cuenta/recuperar',
+  accountReset: '/cuenta/restablecer',
 } as const;
 
 /** Colecciones especiales que no son categorías ni colecciones editoriales. */
 export const specialCollections = {
   all: { handle: 'all', name: 'Toda la tienda', description: 'Todo el catálogo HYPSOS en un solo lugar.' },
-  novedades: { handle: 'novedades', name: 'Novedades', description: 'Lo último en llegar. Los drops se agotan rápido.' },
+  novedades: { handle: 'novedades', name: 'Novedades', description: 'Lo último en llegar a HYPSOS.' },
   colecciones: { handle: 'colecciones', name: 'Colecciones', description: 'Cada colección es un capítulo de HYPSOS.' },
 } as const;
 
@@ -49,6 +55,12 @@ const staticRoutes = new Set<string>([
   paths.checkoutSuccess,
   paths.search,
   paths.wishlist,
+  paths.account,
+  paths.accountOrders,
+  paths.accountAddresses,
+  paths.accountProfile,
+  paths.accountRecover,
+  paths.accountReset,
 ]);
 
 /** Indica si una ruta existe (el servidor la usa para responder 404 reales). */

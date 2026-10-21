@@ -61,15 +61,19 @@
   gap: var(--space-2);
 }
 
-.links a {
+.links a,
+.linkButton {
   font-size: var(--fs-sm);
   color: var(--c-white-soft);
   opacity: 0.8;
   transition: opacity var(--dur-hover) var(--ease-out);
 }
 
-.links a:hover {
-  opacity: 1;
+@media (hover: hover) and (pointer: fine) {
+  .links a:hover,
+  .linkButton:hover {
+    opacity: 1;
+  }
 }
 
 .social {
@@ -94,9 +98,11 @@
     color var(--dur-hover) var(--ease-out);
 }
 
-.social a:hover {
-  background: var(--c-white);
-  color: var(--c-black);
+@media (hover: hover) and (pointer: fine) {
+  .social a:hover {
+    background: var(--c-white);
+    color: var(--c-black);
+  }
 }
 
 .wordmark {
@@ -125,4 +131,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3) var(--space-5);
+}
+
+.linkButton {
+  padding: 0;
+  text-align: left;
 }

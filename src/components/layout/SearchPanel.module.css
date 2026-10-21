@@ -109,9 +109,11 @@
     color var(--dur-hover) var(--ease-out);
 }
 
-.chip:hover {
-  background: var(--c-white);
-  color: var(--c-black);
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover {
+    background: var(--c-white);
+    color: var(--c-black);
+  }
 }
 
 .results {
@@ -135,7 +137,16 @@
 .result {
   display: grid;
   gap: var(--space-2);
+  padding: var(--space-2);
+  margin: calc(var(--space-2) * -1);
+  border: 1px solid transparent;
   font-size: var(--fs-xs);
+  cursor: pointer;
+}
+
+.result[data-active='true'] {
+  border-color: var(--line-strong);
+  background: rgb(245 245 245 / 0.03);
 }
 
 .resultMedia {
@@ -150,7 +161,7 @@
   transition: transform 900ms var(--ease-out);
 }
 
-.result:hover .resultMedia > * {
+.result[data-active='true'] .resultMedia > * {
   transform: scale(1.04);
 }
 

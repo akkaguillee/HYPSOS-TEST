@@ -11,7 +11,7 @@ interface ChromeMonogramProps {
 
 const widths = [640, 1080, 1480];
 const srcSet = (format: 'avif' | 'webp') =>
-  widths.map((width) => `/media/brand/monogram-chrome-${width}.${format} ${Math.min(width, 1479)}w`).join(', ');
+  widths.map((width) => `/assets/brand/monogram-chrome-${width}.${format} ${Math.min(width, 1479)}w`).join(', ');
 
 /** Monograma H cromado oficial (render sobre negro). */
 export function ChromeMonogram({
@@ -28,7 +28,7 @@ export function ChromeMonogram({
       <img
         ref={ref}
         className={className}
-        src="/media/brand/monogram-chrome-1080.webp"
+        src="/assets/brand/monogram-chrome-1080.webp"
         width={1479}
         height={1064}
         alt={alt}

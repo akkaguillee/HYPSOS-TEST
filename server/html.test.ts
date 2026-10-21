@@ -12,6 +12,20 @@ describe('renderHtml', () => {
     expect(html).toContain('<link rel="canonical" href="https://hypsos.com/products/sudadera-capucha-ascenso" />');
     expect(html).toContain('"@type":"Product"');
     expect(html).toContain('"price":"89.00"');
+    expect(html).toContain('"@type":"BreadcrumbList"');
+    // Catálogo de demostración: no se indexa como producto real.
+    expect(html).toContain('noindex');
+  });
+
+  it('publica la disponibilidad real si recibe el stock', () => {
+    const html = renderHtml(template, '/products/sudadera-capucha-ascenso', 'https://hypsos.com', () => 0);
+    expect(html).toContain('https://schema.org/OutOfStock');
+  });
+
+  it('la portada describe la organización y el buscador', () => {
+    const html = renderHtml(template, '/', 'https://hypsos.com');
+    expect(html).toContain('"@type":"Organization"');
+    expect(html).toContain('"@type":"SearchAction"');
     expect(html).not.toContain('noindex');
   });
 
@@ -33,6 +47,8 @@ describe('isKnownRoute', () => {
     ['/pages/envios', true],
     ['/pages/guia-de-tallas', true],
     ['/cart/', true],
+    ['/cuenta', true],
+    ['/cuenta/pedidos', true],
     ['/collections/inventada', false],
     ['/products/inventado', false],
     ['/pages/x', false],

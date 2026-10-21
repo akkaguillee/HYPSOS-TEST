@@ -1,6 +1,7 @@
 import type { MediaView, Product } from '@shared/types';
 import { useId } from 'react';
 import { silhouettes } from './silhouettes';
+import { StickerArt } from './StickerArt';
 
 interface ProductArtProps {
   product: Product;
@@ -28,7 +29,13 @@ function isLight(hex: string): boolean {
  * color seleccionado. Se identifica claramente como "imagen pendiente" y se
  * sustituye automáticamente cuando el producto tiene fotografías (`type: 'image'`).
  */
-export function ProductArt({ product, colorId, view = 'front', className, compact = false, decorative = false }: ProductArtProps) {
+export function ProductArt(props: ProductArtProps) {
+  // Los stickers se previsualizan con el gráfico oficial de marca que reproducen.
+  if (props.product.artwork) return <StickerArt {...props} />;
+  return <GarmentSketch {...props} />;
+}
+
+function GarmentSketch({ product, colorId, view = 'front', className, compact = false, decorative = false }: ProductArtProps) {
   const patternId = useId();
   const color = product.colors.find((candidate) => candidate.id === colorId) ?? product.colors[0];
   const shape = silhouettes[product.silhouette];

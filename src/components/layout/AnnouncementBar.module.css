@@ -15,6 +15,9 @@
 
 .message {
   grid-area: 1 / 1;
+  min-width: 0;
+  max-width: 100%;
+  white-space: nowrap;
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -32,7 +35,28 @@
   transform: none;
 }
 
+.long,
+.short {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.short {
+  display: none;
+}
+
+@media (max-width: 559px) {
+  .long {
+    display: none;
+  }
+
+  .short {
+    display: inline;
+  }
+}
+
 .dot {
+  flex: none;
   width: 5px;
   height: 5px;
   border-radius: 50%;

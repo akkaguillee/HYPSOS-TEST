@@ -18,23 +18,39 @@ test('filtros sincronizados con la URL y estado vacío', async ({ page, isMobile
   await expect(page).toHaveURL(/\/collections\/all$/);
 });
 
-test('compra: talla obligatoria, carrito, checkout validado y pagos no configurados', async ({ page, consoleErrors }) => {
+test('paginación: «Cargar más» amplía la lista y queda en la URL', async ({ page }) => {
+  await page.goto('/collections/all');
+  const products = page.locator('#main article');
+  await expect(page.getByText(/^Mostrando 12 de \d+$/)).toBeVisible();
+  await expect(products).toHaveCount(12);
+  await page.getByRole('button', { name: /^Cargar \d+ más$/ }).click();
+  await expect(page).toHaveURL(/pagina=2/);
+  await expect(products).not.toHaveCount(12);
+  await page.reload();
+  await expect(products).not.toHaveCount(12);
+});
+
+test('compra: talla obligatoria, carrito y checkout honesto sin envíos ni pagos configurados', async ({ page, consoleErrors }) => {
   await page.goto('/products/sudadera-capucha-ascenso');
+  await expect(page.getByText('Producto de demostración')).toBeVisible();
   await page.getByRole('button', { name: 'Añadir al carrito' }).click();
   await expect(page.getByRole('alert').filter({ hasText: 'Selecciona una talla' })).toBeVisible();
 
-  await page.locator('label').filter({ has: page.getByRole('radio', { name: 'Talla M' }) }).click();
-  await expect(page.getByRole('radio', { name: 'Talla M' })).toBeChecked();
+  await page.locator('label').filter({ has: page.getByRole('radio', { name: /^Talla M/ }) }).click();
+  await expect(page.getByRole('radio', { name: /^Talla M/ })).toBeChecked();
   await page.getByRole('button', { name: 'Añadir al carrito' }).click();
   const drawer = page.getByRole('dialog', { name: /Carrito/ });
   await expect(drawer).toBeVisible();
   await expect(drawer.getByText('Negro · Talla M')).toBeVisible();
-  await expect(drawer.getByText('Tienes envío estándar gratuito.')).toBeVisible();
+  // Sin política de envíos configurada no se promete envío gratuito.
+  await expect(drawer.getByText(/envío.*gratu/i)).toHaveCount(0);
 
   await drawer.getByRole('button', { name: /Añadir una unidad/ }).click();
   await expect(drawer.getByRole('group', { name: /Cantidad/ })).toContainText('2');
   await drawer.getByRole('button', { name: 'Finalizar compra' }).click();
   await expect(page).toHaveURL(/\/checkout$/);
+  await expect(page.getByText('La tienda todavía no acepta pedidos')).toBeVisible();
+  await expect(page.getByText('Envíos pendientes de configurar')).toBeVisible();
 
   await page.getByRole('button', { name: /^Pagar/ }).click();
   await expect(page.getByText('Introduce tu email')).toBeVisible();
@@ -48,16 +64,39 @@ test('compra: talla obligatoria, carrito, checkout validado y pagos no configura
   await page.getByLabel('Ciudad').fill('Madrid');
   await page.getByLabel('Provincia').fill('Madrid');
   await page.getByLabel('Teléfono').fill('+34 600 000 000');
-  await page.getByRole('radio', { name: /Envío exprés/ }).check();
-  await expect(page.getByRole('button', { name: /^Pagar/ })).toContainText('187,95');
   await page.getByRole('checkbox', { name: /condiciones de compra/ }).check();
   await page.getByRole('button', { name: /^Pagar/ }).click();
 
-  await expect(page.getByText('Pagos online aún no disponibles')).toBeVisible();
+  await expect(page.getByText('Envíos aún no configurados')).toBeVisible();
+  await expect(page.getByText(/No se ha creado ningún pedido ni se ha realizado ningún cargo/)).toBeVisible();
   // El carrito se conserva.
   await page.goto('/cart');
   await expect(page.locator('#main').getByRole('link', { name: 'Sudadera Capucha Ascenso' })).toBeVisible();
   expect(consoleErrors).toEqual([]);
+});
+
+test('variantes agotadas: color sin stock no seleccionable y aviso de reposición', async ({ page }) => {
+  await page.goto('/products/figura-mascot-3d');
+  await expect(page.getByRole('radio', { name: 'Blanco, agotado' })).toBeDisabled();
+
+  await page.goto('/products/camiseta-ascenso-heavyweight?color=blanco');
+  await expect(page.getByRole('radio', { name: 'Talla XS, agotada' })).toBeDisabled();
+  await page.getByRole('button', { name: /Avísame cuando vuelva/ }).click();
+  const form = page.getByRole('form', { name: 'Avísame cuando vuelva' });
+  await form.getByLabel('Email').fill(`aviso-${Date.now()}@example.com`);
+  await form.getByRole('button', { name: 'Avísame' }).click();
+  await expect(page.getByText('Te avisaremos')).toBeVisible();
+});
+
+test('galería: zoom a pantalla completa con teclado', async ({ page }) => {
+  await page.goto('/products/sudadera-capucha-ascenso');
+  await page.getByRole('button', { name: /^Ampliar imagen 1 de/ }).click();
+  const lightbox = page.getByRole('dialog', { name: /Galería ampliada/ });
+  await expect(lightbox).toBeVisible();
+  await lightbox.getByRole('button', { name: 'Ampliar' }).click();
+  await expect(lightbox.getByRole('button', { name: 'Reducir' })).toBeEnabled();
+  await page.keyboard.press('Escape');
+  await expect(lightbox).toBeHidden();
 });
 
 test('barra de compra fija en móvil al pasar el botón principal', async ({ page, isMobile }) => {

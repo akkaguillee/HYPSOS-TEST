@@ -1,8 +1,9 @@
 import { getProductById, getStock } from '@shared/catalog';
 import { store } from '@shared/config';
-import type { Product } from '@shared/types';
+import type { Product, StockLookup } from '@shared/types';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import { optimisticStock, useInventory } from './inventory';
 
 export interface CartLine {
   /** `${productId}:${colorId}:${size}` */
@@ -37,10 +38,11 @@ interface CartState {
 
 export const lineId = (productId: string, colorId: string, size: string) => `${productId}:${colorId}:${size}`;
 
+/** Máximo pedible de una variante según el stock en vivo (el servidor lo vuelve a comprobar al pagar). */
 function maxFor(productId: string, colorId: string, size: string): number {
   const product = getProductById(productId);
   if (!product) return 0;
-  return Math.min(getStock(product, colorId, size), store.maxQuantityPerLine);
+  return Math.min(getStock(product, colorId, size, optimisticStock(useInventory.getState())), store.maxQuantityPerLine);
 }
 
 export const useCart = create<CartState>()(
@@ -87,13 +89,13 @@ export const useCart = create<CartState>()(
   ),
 );
 
-/** Enriquece las líneas con datos actuales del catálogo y descarta las que ya no existen. */
-export function resolveCartLines(lines: CartLine[]): ResolvedCartLine[] {
+/** Enriquece las líneas con datos actuales del catálogo y del stock, y descarta las que ya no existen. */
+export function resolveCartLines(lines: CartLine[], stock: StockLookup): ResolvedCartLine[] {
   return lines.flatMap((line) => {
     const product = getProductById(line.productId);
     const color = product?.colors.find((candidate) => candidate.id === line.colorId);
     if (!product || !color || !product.sizes.includes(line.size)) return [];
-    const maxQuantity = Math.min(getStock(product, line.colorId, line.size), store.maxQuantityPerLine);
+    const maxQuantity = Math.min(getStock(product, line.colorId, line.size, stock), store.maxQuantityPerLine);
     return [
       {
         ...line,

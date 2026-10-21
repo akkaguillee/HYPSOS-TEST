@@ -8,7 +8,7 @@
 
 .link {
   display: grid;
-  grid-template-columns: 2.5rem 1fr auto;
+  grid-template-columns: 2rem minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-3);
   padding-block: clamp(14px, 1.6vw, 22px);
@@ -17,7 +17,7 @@
 
 @media (min-width: 768px) {
   .link {
-    grid-template-columns: 4rem 1fr auto auto;
+    grid-template-columns: 4rem minmax(0, 1fr) auto auto;
     gap: var(--space-5);
   }
 }
@@ -31,7 +31,7 @@
 
 .name {
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 4.4vw + 0.4rem, 5rem);
+  font-size: clamp(1.5rem, 4.4vw + 0.4rem, 5rem);
   font-weight: 800;
   font-stretch: var(--stretch-display);
   line-height: 0.95;
@@ -65,13 +65,25 @@
   white-space: nowrap;
 }
 
+/* En móvil estrecho basta con el número; la palabra sigue disponible para lectores de pantalla. */
+@media (max-width: 479px) {
+  .countWord {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
 .count svg {
   width: 20px;
   height: 20px;
   transition: transform var(--dur-hover) var(--ease-out);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   /* Al recorrer la lista, las filas no activas se atenúan. */
   .list:hover .link {
     color: rgb(255 255 255 / 0.35);
@@ -85,7 +97,19 @@
     transform: translate3d(12px, 0, 0);
   }
 
-  .link:hover .count svg {
+  .link:hover /* En móvil estrecho basta con el número; la palabra sigue disponible para lectores de pantalla. */
+@media (max-width: 479px) {
+  .countWord {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+.count svg {
     transform: translate3d(4px, 0, 0) rotate(-45deg);
     color: var(--c-red-bright);
   }

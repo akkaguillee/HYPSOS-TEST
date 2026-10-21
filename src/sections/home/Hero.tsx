@@ -1,15 +1,12 @@
 import { ChromeMonogram } from '@/components/brand/ChromeMonogram';
 import { ButtonLink } from '@/components/ui/Button';
+import { hero } from '@/content/campaign';
 import { useReducedMotion } from '@/hooks/useMediaQuery';
 import { EASE, gsap, hasFinePointer, SplitText, useGSAP } from '@/lib/motion';
 import { useIntro } from '@/store/intro';
-import { productsByCollection } from '@shared/catalog';
-import { paths } from '@shared/routes';
 import { ArrowDown } from 'lucide-react';
 import { useRef } from 'react';
 import styles from './Hero.module.css';
-
-const DROP = 'drop-01-ascenso';
 
 export function Hero() {
   const root = useRef<HTMLElement>(null);
@@ -17,7 +14,7 @@ export function Hero() {
   const reduced = useReducedMotion();
   // Mientras la intro tapa la página, el hero espera en su estado inicial.
   const ready = useIntro((state) => state.phase !== 'intro');
-  const pieces = productsByCollection(DROP).length;
+  const media = hero.media;
 
   useGSAP(
     (_context, contextSafe) => {
@@ -92,34 +89,48 @@ export function Hero() {
     <section ref={root} className={styles.hero} aria-labelledby="hero-title">
       <div className={styles.media}>
         <div className={styles.glow} aria-hidden="true" />
-        <div className={styles.chromeWrap}>
-          <ChromeMonogram ref={chromeRef} className={styles.chrome} priority sizes="(min-width: 1024px) 70vw, 118vw" />
-          <div className={styles.sweep} aria-hidden="true" />
-        </div>
+        {media ? (
+          <div className={`${styles.chromeWrap} ${styles.campaignMedia}`}>
+            {media.type === 'video' ? (
+              reduced ? (
+                <img src={media.poster} alt="" className={styles.campaignAsset} fetchPriority="high" />
+              ) : (
+                <video className={styles.campaignAsset} src={media.src} poster={media.poster} autoPlay muted loop playsInline preload="metadata" aria-hidden="true" />
+              )
+            ) : (
+              <img src={media.src} alt={media.alt} width={media.width} height={media.height} className={styles.campaignAsset} fetchPriority="high" />
+            )}
+          </div>
+        ) : (
+          <div className={styles.chromeWrap}>
+            <ChromeMonogram ref={chromeRef} className={styles.chrome} priority sizes="(min-width: 1024px) 70vw, 118vw" />
+            <div className={styles.sweep} aria-hidden="true" />
+          </div>
+        )}
       </div>
       <div className={styles.shade} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
 
       <div className={`container ${styles.content}`}>
         <p className={`eyebrow ${styles.eyebrow}`} data-hero-reveal>
-          Drop 01 — Ascenso · Disponible ahora
+          {hero.eyebrow}
         </p>
         <h1 id="hero-title" className={`t-campaign ${styles.headline}`}>
-          Por encima del ruido
+          {hero.title}
         </h1>
         <p className={styles.lead} data-hero-reveal>
-          Algodón pesado, cortes amplios y gráficos en tiradas cortas. La primera entrega de HYPSOS ya está aquí.
+          {hero.lead}
         </p>
         <div className={styles.ctas} data-hero-reveal>
-          <ButtonLink to={paths.collection(DROP)} size="lg" sheen>
-            Comprar el drop
+          <ButtonLink to={hero.primaryCta.to} size="lg" sheen>
+            {hero.primaryCta.label}
           </ButtonLink>
-          <ButtonLink to={paths.collection('all')} size="lg" variant="outline">
-            Toda la tienda
+          <ButtonLink to={hero.secondaryCta.to} size="lg" variant="outline">
+            {hero.secondaryCta.label}
           </ButtonLink>
         </div>
         <div className={styles.meta} data-hero-reveal>
-          <span>01 / {pieces} piezas</span>
+          <span>HYPSOS</span>
           <span className={styles.metaLine} aria-hidden="true" />
           <span className={styles.scrollHint}>
             Desliza

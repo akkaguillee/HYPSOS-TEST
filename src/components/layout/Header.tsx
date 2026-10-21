@@ -7,7 +7,8 @@ import { cartCount, useCart } from '@/store/cart';
 import { useUi } from '@/store/ui';
 import { useWishlist } from '@/store/wishlist';
 import { paths } from '@shared/routes';
-import { ChevronDown, Heart, Menu, Search, ShoppingBag } from 'lucide-react';
+import { useAuth } from '@/store/auth';
+import { ChevronDown, Heart, Menu, Search, ShoppingBag, User } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 import { AnnouncementBar } from './AnnouncementBar';
@@ -23,6 +24,7 @@ export function Header() {
   const openCart = useCart((state) => state.open);
   const cartOpen = useCart((state) => state.isOpen);
   const wishlistCount = useWishlist((state) => state.productIds.length);
+  const accountName = useAuth((state) => state.user?.name);
   const [megaOpen, setMegaOpen] = useState(false);
   const megaId = useId();
   const megaTrigger = useRef<HTMLButtonElement>(null);
@@ -126,6 +128,10 @@ export function Header() {
             <IconButton label="Buscar" className={styles.desktopOnly} onClick={() => openPanel('search')} aria-haspopup="dialog">
               <Search aria-hidden="true" />
             </IconButton>
+            <IconLink to={paths.account} label={accountName ? `Mi cuenta (${accountName})` : 'Mi cuenta'} className={styles.accountLink}>
+              <User aria-hidden="true" />
+              {accountName && <span className={styles.accountDot} aria-hidden="true" />}
+            </IconLink>
             <IconLink
               to={paths.wishlist}
               className={styles.desktopOnly}

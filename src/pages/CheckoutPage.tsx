@@ -1,18 +1,21 @@
 import { ProductMedia } from '@/components/commerce/ProductMedia';
-import { mediaForColor } from '@/lib/product-media';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { Alert, Checkbox, SelectField, TextField } from '@/components/ui/Field';
 import { Price } from '@/components/ui/Price';
+import { track } from '@/lib/analytics';
 import { ApiError, apiRequest } from '@/lib/api';
+import { mediaForColor } from '@/lib/product-media';
+import { useAuth } from '@/store/auth';
 import { cartSubtotal, resolveCartLines, useCart } from '@/store/cart';
+import { useInventory, useStock } from '@/store/inventory';
+import { useStoreStatus } from '@/store/storeStatus';
 import { shippingMethods, store } from '@shared/config';
 import { calculateTotals, formatPrice } from '@shared/pricing';
 import { paths } from '@shared/routes';
-import { checkoutRequestSchema, fieldErrors } from '@shared/schemas';
-import type { ShippingMethodId } from '@shared/types';
+import { checkoutRequestSchema, fieldErrors, type Address } from '@shared/schemas';
 import { Lock } from 'lucide-react';
-import { useMemo, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import styles from './CheckoutPage.module.css';
 
@@ -30,14 +33,31 @@ const emptyAddress = {
 
 type Feedback = { tone: 'error' | 'info'; title: string; message: string } | null;
 
+/** Identificador del intento de pago: el mismo para el mismo carrito, nuevo si el carrito cambia. */
+function useCheckoutId(signature: string) {
+  const [state, setState] = useState(() => ({ signature, id: crypto.randomUUID() }));
+  let current = state;
+  if (state.signature !== signature) {
+    current = { signature, id: crypto.randomUUID() };
+    setState(current);
+  }
+  return { id: current.id, renew: () => setState({ signature, id: crypto.randomUUID() }) };
+}
+
 export default function CheckoutPage() {
   const rawLines = useCart((state) => state.lines);
-  const lines = useMemo(() => resolveCartLines(rawLines), [rawLines]);
+  const { lookup } = useStock();
+  const loadInventory = useInventory((state) => state.load);
+  const lines = useMemo(() => resolveCartLines(rawLines, lookup), [rawLines, lookup]);
+  const status = useStoreStatus();
+  const user = useAuth((state) => state.user);
   const [params] = useSearchParams();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(user?.email ?? '');
   const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [address, setAddress] = useState(emptyAddress);
-  const [shippingMethod, setShippingMethod] = useState<ShippingMethodId>('standard');
+  const [shippingMethod, setShippingMethod] = useState<string>(shippingMethods[0]?.id ?? '');
+  const signature = rawLines.map((line) => `${line.id}x${line.quantity}`).join('|');
+  const checkout = useCheckoutId(signature);
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -47,7 +67,48 @@ export default function CheckoutPage() {
   const formRef = useRef<HTMLFormElement>(null);
 
   const subtotal = cartSubtotal(lines);
-  const totals = calculateTotals(lines, shippingMethod);
+  const method = shippingMethods.find((candidate) => candidate.id === shippingMethod) ?? null;
+  const totals = calculateTotals(lines, method);
+  const notReady = status.loaded && (!status.payments || !status.shipping);
+
+  useEffect(() => {
+    void loadInventory(true);
+    void status.load();
+    if (rawLines.length) track('begin_checkout', { value: subtotal / 100, items: rawLines.length });
+    // Solo al entrar en el checkout.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Con sesión iniciada se rellenan email y la dirección predeterminada.
+  const [prefilledFor, setPrefilledFor] = useState<number | null>(null);
+  if (user && prefilledFor !== user.id) {
+    setPrefilledFor(user.id);
+    if (!email) setEmail(user.email);
+  }
+  useEffect(() => {
+    if (!user) return;
+    apiRequest<{ addresses: (Address & { id: number })[] }>('/account/addresses')
+      .then(({ addresses }) => {
+        const preferred = addresses.find((item) => item.isDefault) ?? addresses[0];
+        if (!preferred) return;
+        setAddress((current) =>
+          current.address1
+            ? current
+            : {
+                firstName: preferred.firstName,
+                lastName: preferred.lastName,
+                address1: preferred.address1,
+                address2: preferred.address2 ?? '',
+                postalCode: preferred.postalCode,
+                city: preferred.city,
+                province: preferred.province,
+                country: preferred.country,
+                phone: preferred.phone,
+              },
+        );
+      })
+      .catch(() => undefined);
+  }, [user]);
 
   const field = (name: keyof typeof emptyAddress) => ({
     name,
@@ -63,6 +124,7 @@ export default function CheckoutPage() {
     event.preventDefault();
     setFeedback(null);
     const payload = {
+      checkoutId: checkout.id,
       email,
       marketingOptIn,
       shippingAddress: address,
@@ -72,8 +134,22 @@ export default function CheckoutPage() {
     };
     const parsed = checkoutRequestSchema.safeParse(payload);
     if (!parsed.success) {
-      setErrors(fieldErrors(parsed.error));
-      focusFirstError();
+      const found = fieldErrors(parsed.error);
+      // Sin tarifas publicadas no hay método que elegir: no es un error del cliente.
+      if (shippingMethods.length === 0) delete found.shippingMethod;
+      if (Object.keys(found).length > 0) {
+        setErrors(found);
+        focusFirstError();
+        return;
+      }
+    }
+    if (shippingMethods.length === 0 || !parsed.success) {
+      setErrors({});
+      setFeedback({
+        tone: 'info',
+        title: 'Envíos aún no configurados',
+        message: 'Las tarifas de envío están pendientes de publicar. No se ha creado ningún pedido ni se ha realizado ningún cargo. Tu carrito se conserva.',
+      });
       return;
     }
     setErrors({});
@@ -88,14 +164,16 @@ export default function CheckoutPage() {
         setFeedback({ tone: 'error', title: 'Error inesperado', message: 'Inténtalo de nuevo en unos segundos.' });
         return;
       }
-      if (error.code === 'payments_not_configured') {
+      if (error.code === 'payments_not_configured' || error.code === 'shipping_not_configured') {
         setFeedback({
           tone: 'info',
-          title: 'Pagos online aún no disponibles',
-          message: 'La pasarela de pago de la tienda todavía no está activada, así que no se ha creado ningún pedido ni se ha realizado ningún cargo. Tu carrito se conserva.',
+          title: error.code === 'payments_not_configured' ? 'Pagos online aún no disponibles' : 'Envíos aún no configurados',
+          message: `${error.message} No se ha creado ningún pedido ni se ha realizado ningún cargo. Tu carrito se conserva.`,
         });
         return;
       }
+      if (error.code === 'checkout_id_used') checkout.renew();
+      if (['out_of_stock', 'quantity_exceeded', 'invalid_variant'].includes(error.code)) void loadInventory(true);
       if (Object.keys(error.fields).length > 0) {
         setErrors(error.fields);
         focusFirstError();
@@ -121,7 +199,22 @@ export default function CheckoutPage() {
       <PageHeader
         title="Finalizar compra"
         breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Carrito', to: paths.cart }, { label: 'Checkout' }]}
-      />
+      >
+        {notReady && (
+          <Alert tone="info" title="La tienda todavía no acepta pedidos">
+            <p>
+              {!status.payments && 'La pasarela de pago aún no está activada. '}
+              {!status.shipping && 'Las tarifas de envío están pendientes de configurar. '}
+              Puedes revisar tu pedido, pero no se realizará ningún cargo.
+            </p>
+          </Alert>
+        )}
+        {!user && (
+          <p className="t-small t-muted">
+            ¿Tienes cuenta? <Link to={`${paths.account}?next=${encodeURIComponent(paths.checkout)}`} className="link">Inicia sesión</Link> para usar tus direcciones guardadas.
+          </p>
+        )}
+      </PageHeader>
       <div className={`container ${styles.layout}`}>
         <form ref={formRef} className={styles.form} onSubmit={submit} noValidate aria-describedby="checkout-feedback">
           <fieldset className={styles.step}>
@@ -173,27 +266,33 @@ export default function CheckoutPage() {
             <legend className={styles.stepTitle}>
               <span className={styles.stepNumber}>3</span> Método de envío
             </legend>
-            <div className={styles.methods}>
-              {shippingMethods.map((method) => {
-                const cost = calculateTotals(lines, method.id).shipping;
-                return (
-                  <label key={method.id} className={styles.method}>
-                    <input
-                      type="radio"
-                      name="shippingMethod"
-                      value={method.id}
-                      checked={shippingMethod === method.id}
-                      onChange={() => setShippingMethod(method.id)}
-                    />
-                    <span className={styles.methodName}>
-                      {method.name}
-                      <span>{method.description}</span>
-                    </span>
-                    <strong className="t-num">{cost === 0 ? 'Gratis' : formatPrice(cost)}</strong>
-                  </label>
-                );
-              })}
-            </div>
+            {shippingMethods.length === 0 ? (
+              <Alert tone="info" title="Envíos pendientes de configurar">
+                <p>Las tarifas y los plazos de envío se publicarán cuando la tienda abra los pedidos.</p>
+              </Alert>
+            ) : (
+              <div className={styles.methods}>
+                {shippingMethods.map((option) => {
+                  const cost = calculateTotals(lines, option).shipping;
+                  return (
+                    <label key={option.id} className={styles.method}>
+                      <input
+                        type="radio"
+                        name="shippingMethod"
+                        value={option.id}
+                        checked={shippingMethod === option.id}
+                        onChange={() => setShippingMethod(option.id)}
+                      />
+                      <span className={styles.methodName}>
+                        {option.name}
+                        <span>{option.description}</span>
+                      </span>
+                      <strong className="t-num">{cost === 0 ? 'Gratis' : formatPrice(cost)}</strong>
+                    </label>
+                  );
+                })}
+              </div>
+            )}
           </fieldset>
 
           <fieldset className={styles.step}>
@@ -202,10 +301,10 @@ export default function CheckoutPage() {
             </legend>
             <div className={styles.payment}>
               <p className={styles.paymentHead}>
-                <Lock aria-hidden="true" /> Pago seguro con Stripe
+                <Lock aria-hidden="true" /> Pago con Stripe Checkout
               </p>
               <p>
-                Al continuar irás a la página de pago cifrada de nuestra pasarela. Los datos de tu tarjeta nunca pasan por nuestros servidores.
+                Al continuar irás a la página de pago de Stripe. Los datos de tu tarjeta se introducen allí y nunca pasan por nuestros servidores.
               </p>
             </div>
             <div className={styles.submit}>
@@ -257,7 +356,7 @@ export default function CheckoutPage() {
           </div>
           <div className={styles.row}>
             <span>Envío</span>
-            <span className="t-num">{totals.shipping === 0 ? 'Gratis' : formatPrice(totals.shipping)}</span>
+            <span className="t-num">{!method ? 'Pendiente' : totals.shipping === 0 ? 'Gratis' : formatPrice(totals.shipping)}</span>
           </div>
           <div className={`${styles.row} ${styles.total}`}>
             <span>Total</span>

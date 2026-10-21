@@ -1,6 +1,7 @@
 import { Wordmark } from '@/components/brand/BrandVector';
 import { Reveal } from '@/components/motion/Reveal';
 import { helpNav, legalNav, shopNav } from '@/content/navigation';
+import { useConsent } from '@/store/consent';
 import { useReducedMotion } from '@/hooks/useMediaQuery';
 import { gsap, useGSAP } from '@/lib/motion';
 import { store } from '@shared/config';
@@ -12,6 +13,7 @@ import styles from './Footer.module.css';
 export function Footer() {
   const root = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
+  const openCookies = useConsent((state) => state.openPanel);
 
   useGSAP(
     () => {
@@ -43,16 +45,18 @@ export function Footer() {
         <div className={styles.top}>
           <Reveal className={styles.intro}>
             <p className={`t-h2 ${styles.statement}`}>Por encima del ruido.</p>
-            <p className="t-small t-muted">Streetwear, entrenamiento y cultura urbana. Ediciones cortas, hechas para durar.</p>
-            <ul role="list" className={styles.social} aria-label="Redes sociales">
-              {store.social.map((network) => (
-                <li key={network.id}>
-                  <a href={network.href} target="_blank" rel="noopener noreferrer">
-                    {network.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <p className="t-small t-muted">Streetwear, entrenamiento y cultura urbana.</p>
+            {store.social.length > 0 && (
+              <ul role="list" className={styles.social} aria-label="Redes sociales">
+                {store.social.map((network) => (
+                  <li key={network.id}>
+                    <a href={network.href} target="_blank" rel="noopener noreferrer">
+                      {network.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </Reveal>
 
           <nav className={styles.columns} aria-label="Pie de página">
@@ -99,6 +103,11 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link to={paths.account} viewTransition>
+                    Mi cuenta
+                  </Link>
+                </li>
+                <li>
                   <Link to={paths.wishlist} viewTransition>
                     Favoritos
                   </Link>
@@ -115,6 +124,11 @@ export function Footer() {
                     </Link>
                   </li>
                 ))}
+                <li>
+                  <button type="button" className={styles.linkButton} onClick={openCookies}>
+                    Preferencias de cookies
+                  </button>
+                </li>
               </ul>
             </div>
           </nav>
@@ -130,7 +144,6 @@ export function Footer() {
           </p>
           <div className={styles.bottomMeta}>
             <span>España · EUR €</span>
-            <span>Pago seguro cifrado</span>
           </div>
         </div>
       </div>

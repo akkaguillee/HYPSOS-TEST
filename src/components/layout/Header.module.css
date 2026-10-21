@@ -125,9 +125,14 @@
   transition: color var(--dur-hover) var(--ease-out);
 }
 
-.navLink:hover,
 .navLink[aria-expanded='true'] {
   color: var(--c-white);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .navLink:hover {
+    color: var(--c-white);
+  }
 }
 
 /* Indicador rojo de sección activa. */
@@ -162,4 +167,34 @@
 
 .navLink[aria-expanded='true'] .chevron {
   transform: rotate(180deg);
+}
+
+.accountLink {
+  position: relative;
+}
+
+.accountDot {
+  position: absolute;
+  right: 9px;
+  bottom: 9px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c-red);
+  box-shadow: 0 0 0 2px var(--c-black);
+}
+
+/* En móviles estrechos la cuenta vive en el menú y el logotipo se reduce para no saturar la cabecera. */
+@media (max-width: 359px) {
+  .actions .accountLink {
+    display: none;
+  }
+
+  .logo {
+    padding-inline: var(--space-2);
+  }
+
+  .logo svg {
+    width: 92px;
+  }
 }

@@ -1,4 +1,5 @@
 import { useCart } from '@/store/cart';
+import { loadSeedInventory } from '@/test/stock';
 import { useWishlist } from '@/store/wishlist';
 import { getProductByHandle } from '@shared/catalog';
 import { render, screen } from '@testing-library/react';
@@ -17,7 +18,8 @@ const renderCard = (handle: string) =>
 describe('ProductCard', () => {
   beforeEach(() => {
     useCart.setState({ lines: [], isOpen: false });
-    useWishlist.setState({ productIds: [] });
+    useWishlist.setState({ productIds: [], synced: false });
+    loadSeedInventory();
   });
 
   it('muestra nombre, precio, etiquetas y enlace a la ficha', () => {

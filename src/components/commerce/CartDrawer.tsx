@@ -3,8 +3,9 @@ import { Button, ButtonLink } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Drawer';
 import { Price } from '@/components/ui/Price';
 import { cartCount, cartSubtotal, resolveCartLines, useCart } from '@/store/cart';
+import { useInventory, useStock } from '@/store/inventory';
 import { paths } from '@shared/routes';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import styles from './Cart.module.css';
 import { CartLineItem } from './CartLineItem';
@@ -14,7 +15,13 @@ export function CartDrawer() {
   const isOpen = useCart((state) => state.isOpen);
   const close = useCart((state) => state.close);
   const rawLines = useCart((state) => state.lines);
-  const lines = useMemo(() => resolveCartLines(rawLines), [rawLines]);
+  const { lookup } = useStock();
+  const loadInventory = useInventory((state) => state.load);
+  const lines = useMemo(() => resolveCartLines(rawLines, lookup), [rawLines, lookup]);
+  // Al abrir el carrito se refresca el stock para detectar variantes agotadas.
+  useEffect(() => {
+    if (isOpen) void loadInventory();
+  }, [isOpen, loadInventory]);
   const subtotal = cartSubtotal(lines);
   const count = cartCount(lines);
   const navigate = useNavigate();
@@ -32,7 +39,7 @@ export function CartDrawer() {
               <span>Subtotal</span>
               <Price amount={subtotal} />
             </div>
-            <p className={styles.summaryNote}>IVA incluido. Gastos de envío calculados en el checkout.</p>
+            <p className={styles.summaryNote}>IVA incluido. Los gastos de envío se calculan en el checkout.</p>
             <div className={styles.actions}>
               <Button
                 size="lg"

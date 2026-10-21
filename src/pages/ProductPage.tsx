@@ -1,24 +1,30 @@
+import { MediaLightbox } from '@/components/commerce/MediaLightbox';
 import { ProductBadges } from '@/components/commerce/ProductBadges';
 import { ProductMedia } from '@/components/commerce/ProductMedia';
-import { mediaForColor } from '@/lib/product-media';
 import { ProductRail } from '@/components/commerce/ProductRail';
 import { SizeGuideTable } from '@/components/commerce/SizeGuide';
+import { StockAlertForm } from '@/components/commerce/StockAlertForm';
 import { ColorPicker, SizePicker } from '@/components/commerce/VariantPicker';
 import { WishlistButton } from '@/components/commerce/WishlistButton';
+import { ThreeStage } from '@/components/three/ThreeStage';
 import { Accordion } from '@/components/ui/Accordion';
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs';
 import { Button } from '@/components/ui/Button';
 import { Alert } from '@/components/ui/Field';
 import { Modal } from '@/components/ui/Modal';
 import { Price } from '@/components/ui/Price';
+import { track } from '@/lib/analytics';
+import { mediaForColor } from '@/lib/product-media';
 import { useCart } from '@/store/cart';
+import { useInventory, useStock } from '@/store/inventory';
+import { useStoreStatus } from '@/store/storeStatus';
 import { useUi } from '@/store/ui';
-import { getCategory, getProductByHandle, getStock, isColorAvailable, isProductAvailable, relatedProducts } from '@shared/catalog';
-import { store } from '@shared/config';
+import { getCategory, getProductByHandle, getStock, isColorAvailable, isProductAvailable, relatedProducts, variantSku } from '@shared/catalog';
+import { returnWindowDays, shippingMethods, store } from '@shared/config';
 import { formatPrice } from '@shared/pricing';
 import { paths } from '@shared/routes';
 import type { Product } from '@shared/types';
-import { RotateCcw, ShieldCheck, Truck } from 'lucide-react';
+import { Check, Expand, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
 import NotFoundPage from './NotFoundPage';
@@ -33,18 +39,28 @@ export default function ProductPage() {
 
 function ProductView({ product }: { product: Product }) {
   const [params, setParams] = useSearchParams();
-  const requestedColor = params.get('color');
-  const defaultColor =
-    product.colors.find((color) => color.id === requestedColor) ??
-    product.colors.find((color) => isColorAvailable(product, color.id)) ??
-    product.colors[0];
-  const colorId = defaultColor.id;
+  const { known, lookup, status: stockStatus } = useStock();
+  const loadInventory = useInventory((state) => state.load);
+  const paymentsReady = useStoreStatus((state) => state.payments);
+
+  // Color: el pedido en la URL si existe y está disponible; si no, el primero con stock.
+  const requested = product.colors.find((color) => color.id === params.get('color'));
+  const firstAvailable = product.colors.find((color) => isColorAvailable(product, color.id, lookup)) ?? product.colors[0];
+  const color = requested && (!known || isColorAvailable(product, requested.id, lookup)) ? requested : firstAvailable;
+  const colorId = color.id;
+
   const singleSize = product.sizes.length === 1 ? product.sizes[0] : null;
-  const [size, setSize] = useState<string | null>(singleSize);
+  const [chosenSize, setChosenSize] = useState<string | null>(singleSize);
+  const sizeAvailable = (size: string) => !known || getStock(product, colorId, size, lookup) > 0;
+  const size = chosenSize && sizeAvailable(chosenSize) ? chosenSize : singleSize && sizeAvailable(singleSize) ? singleSize : null;
+
   const [error, setError] = useState<string | null>(null);
+  const [added, setAdded] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
+  const [lightbox, setLightbox] = useState<number | null>(null);
   const [slide, setSlide] = useState(0);
   const [stickyVisible, setStickyVisible] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
   const add = useCart((state) => state.add);
   const openCart = useCart((state) => state.open);
   const inCart = useCart((state) => state.lines.find((line) => line.id === `${product.id}:${colorId}:${size}`)?.quantity ?? 0);
@@ -55,19 +71,30 @@ function ProductView({ product }: { product: Product }) {
   const errorId = useId();
 
   const category = getCategory(product.category)!;
-  const color = product.colors.find((option) => option.id === colorId)!;
   const media = mediaForColor(product, colorId);
-  const available = isProductAvailable(product);
-  const colorAvailable = isColorAvailable(product, colorId);
-  const stock = size ? getStock(product, colorId, size) : null;
-  const remaining = stock === null ? null : Math.min(stock, store.maxQuantityPerLine) - inCart;
+  const available = !known || isProductAvailable(product, lookup);
+  const colorAvailable = !known || isColorAvailable(product, colorId, lookup);
+  const stock = size && known ? getStock(product, colorId, size, lookup) : null;
+  const soldOutSizes = known ? product.sizes.filter((value) => getStock(product, colorId, value, lookup) <= 0) : [];
+
+  // Stock siempre fresco al abrir una ficha y registro de la visita (si hay consentimiento).
+  useEffect(() => {
+    void loadInventory(true);
+    track('view_item', { item_id: product.id, item_name: product.name, price: product.price / 100, item_category: product.category });
+  }, [product, loadInventory]);
 
   const selectColor = (id: string) => {
     setParams(id === product.colors[0].id ? {} : { color: id }, { replace: true, preventScrollReset: true });
-    // Si la talla elegida no existe en el nuevo color, se deselecciona.
-    if (size && getStock(product, id, size) <= 0) setSize(singleSize && getStock(product, id, singleSize) > 0 ? singleSize : null);
     setSlide(0);
+    setError(null);
     slides.current?.scrollTo({ left: 0 });
+    track('select_variant', { item_id: product.id, variant: id });
+  };
+
+  const selectSize = (value: string) => {
+    setChosenSize(value);
+    setError(null);
+    track('select_variant', { item_id: product.id, variant: variantSku(product, colorId, value) });
   };
 
   const addToCart = () => {
@@ -78,30 +105,29 @@ function ProductView({ product }: { product: Product }) {
       sizeGroup.current?.scrollIntoView({ block: 'center', behavior: reduced ? 'auto' : 'smooth' });
       return;
     }
-    const added = add({ productId: product.id, colorId, size, quantity: 1 });
-    if (added === 0) {
+    const quantityAdded = add({ productId: product.id, colorId, size, quantity: 1 });
+    if (quantityAdded === 0) {
       setError('Ya tienes en el carrito todas las unidades disponibles de esta talla.');
       return;
     }
     setError(null);
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 2200);
+    track('add_to_cart', { item_id: product.id, variant: variantSku(product, colorId, size), price: product.price / 100, quantity: 1 });
     announce(`${product.name}, ${color.name}, talla ${size}, añadido al carrito`);
     openCart();
   };
 
-  // Barra fija de compra en móvil: aparece cuando el botón principal sale de pantalla.
+  // Barra fija de compra en móvil: aparece cuando el botón principal sale de pantalla
+  // (el margen inferior enorme hace que un scroll rápido nunca se salte el aviso).
   useEffect(() => {
     const target = buyButton.current;
     if (!target || typeof IntersectionObserver === 'undefined') return;
-    // El margen inferior enorme hace que todo lo que está por debajo cuente como "visible":
-    // así el aviso llega aunque un scroll rápido salte el botón sin cruzar la pantalla.
-    const observer = new IntersectionObserver(([entry]) => setStickyVisible(!entry.isIntersecting), {
-      rootMargin: '0px 0px 100000px 0px',
-    });
+    const observer = new IntersectionObserver(([entry]) => setStickyVisible(!entry.isIntersecting), { rootMargin: '0px 0px 100000px 0px' });
     observer.observe(target);
     return () => observer.disconnect();
   }, []);
 
-  // Indicador del carrusel móvil.
   useEffect(() => {
     const element = slides.current;
     if (!element) return;
@@ -110,8 +136,9 @@ function ProductView({ product }: { product: Product }) {
     return () => element.removeEventListener('scroll', onScroll);
   }, []);
 
-  const buttonLabel = !available ? 'Agotado' : !colorAvailable ? 'Agotado en este color' : 'Añadir al carrito';
+  const buttonLabel = added ? 'Añadido' : !available ? 'Agotado' : !colorAvailable ? 'Agotado en este color' : 'Añadir al carrito';
   const related = relatedProducts(product, 8);
+  const reference = size ? variantSku(product, colorId, size) : product.code;
 
   return (
     <article className={styles.page}>
@@ -128,16 +155,29 @@ function ProductView({ product }: { product: Product }) {
           <div className={styles.gallery}>
             <div ref={slides} className={styles.slides} aria-label={`Imágenes de ${product.name}`} role="region" tabIndex={0}>
               {media.map((item, index) => (
-                <div key={index} className={styles.slide}>
-                  <ProductMedia
-                    product={product}
-                    media={item}
-                    colorId={colorId}
-                    priority={index === 0}
-                    sizes="(min-width: 1024px) 58vw, 100vw"
+                <button
+                  key={index}
+                  type="button"
+                  className={styles.slide}
+                  onClick={() => setLightbox(index)}
+                  aria-label={`Ampliar imagen ${index + 1} de ${media.length}`}
+                >
+                  <ProductMedia product={product} media={item} colorId={colorId} priority={index === 0} sizes="(min-width: 1024px) 58vw, 100vw" />
+                  <span className={styles.zoomHint} aria-hidden="true">
+                    <Expand />
+                  </span>
+                </button>
+              ))}
+              {product.model && (
+                <div className={`${styles.slide} ${styles.slide3d}`}>
+                  <ThreeStage
+                    source={{ kind: 'model', src: product.model.src }}
+                    label={product.model.alt}
+                    className={styles.stage3d}
+                    poster={product.model.poster ? <img src={product.model.poster} alt="" /> : <ProductMedia product={product} media={media[0]} colorId={colorId} decorative />}
                   />
                 </div>
-              ))}
+              )}
             </div>
             {media.length > 1 && (
               <div className={styles.dots} aria-hidden="true">
@@ -152,26 +192,28 @@ function ProductView({ product }: { product: Product }) {
             <div className={styles.head}>
               <ProductBadges product={product} className={styles.badges} />
               <h1 className={styles.title}>{product.name}</h1>
-              <Price amount={product.price} compareAt={product.compareAtPrice} className={styles.price} />
-              <p className={styles.taxNote}>
-                IVA incluido. Envío estándar gratuito desde {formatPrice(store.freeShippingThreshold)}.
-              </p>
+              <div className={styles.priceRow}>
+                <Price amount={product.price} compareAt={product.compareAtPrice} className={styles.price} />
+                {store.demoCatalog && <span className={styles.demoTag}>Producto de demostración</span>}
+              </div>
+              <p className={styles.taxNote}>IVA incluido.</p>
               {product.editionSize && <p className={styles.edition}>Edición limitada de {product.editionSize} unidades</p>}
             </div>
 
             <p className={styles.description}>{product.shortDescription}</p>
 
-            {product.colors.length > 1 && <ColorPicker product={product} value={colorId} onChange={selectColor} />}
+            {product.colors.length > 1 && (
+              <ColorPicker product={product} value={colorId} onChange={selectColor} stock={lookup} stockKnown={known} />
+            )}
 
             {!singleSize && (
               <SizePicker
                 product={product}
                 colorId={colorId}
                 value={size}
-                onChange={(value) => {
-                  setSize(value);
-                  setError(null);
-                }}
+                onChange={selectSize}
+                stock={lookup}
+                stockKnown={known}
                 error={error ?? undefined}
                 errorId={errorId}
                 groupRef={sizeGroup}
@@ -186,7 +228,8 @@ function ProductView({ product }: { product: Product }) {
             )}
 
             <div ref={buyButton} className={styles.purchase}>
-              <Button size="lg" block sheen onClick={addToCart} disabled={!colorAvailable}>
+              <Button size="lg" block sheen onClick={addToCart} disabled={!colorAvailable} className={added ? styles.added : undefined}>
+                {added && <Check aria-hidden="true" size={18} />}
                 {buttonLabel}
               </Button>
               <WishlistButton product={product} withLabel />
@@ -195,27 +238,53 @@ function ProductView({ product }: { product: Product }) {
                   <Alert>{error}</Alert>
                 </div>
               )}
-              {size && stock !== null && stock > 0 && (
-                <p className={styles.stockMessage} data-tone={stock <= 3 ? 'low' : undefined} aria-live="polite">
-                  {stock <= 3 ? `Últimas ${stock} unidades en talla ${size}` : `En stock · envío en 24–48 h laborables`}
-                  {remaining !== null && remaining <= 0 && ' · Ya tienes todas en el carrito'}
-                </p>
-              )}
+              <p className={styles.stockMessage} data-tone={stock !== null && stock > 0 && stock <= 3 ? 'low' : undefined} aria-live="polite">
+                {stockStatus === 'loading' && !known && 'Comprobando disponibilidad…'}
+                {stockStatus === 'error' && 'No hemos podido comprobar el stock ahora mismo; se confirmará al finalizar la compra.'}
+                {known && size && stock !== null && stock > 0 && (stock <= 3 ? `Últimas ${stock} unidades en talla ${size}` : 'Disponible')}
+                {known && size && inCart > 0 && stock !== null && inCart >= Math.min(stock, store.maxQuantityPerLine) && ' · Ya tienes todas en el carrito'}
+              </p>
             </div>
 
+            {soldOutSizes.length > 0 && (
+              <div className={styles.alertBox}>
+                {alertOpen || !colorAvailable ? (
+                  <StockAlertForm product={product} colorId={colorId} sizes={soldOutSizes} />
+                ) : (
+                  <button type="button" className={styles.alertToggle} onClick={() => setAlertOpen(true)}>
+                    ¿No está tu talla? Avísame cuando vuelva
+                  </button>
+                )}
+              </div>
+            )}
+
             <ul role="list" className={styles.trust}>
-              <li>
-                <Truck aria-hidden="true" />
-                Envío estándar gratuito desde {formatPrice(store.freeShippingThreshold)}
-              </li>
+              {shippingMethods.length > 0 ? (
+                shippingMethods.map((method) => (
+                  <li key={method.id}>
+                    <Truck aria-hidden="true" />
+                    {method.name}: {method.description} · {formatPrice(method.price)}
+                    {method.freeFrom !== undefined && ` (gratis desde ${formatPrice(method.freeFrom)})`}
+                  </li>
+                ))
+              ) : (
+                <li>
+                  <Truck aria-hidden="true" />
+                  <Link to={paths.page('envios')} className="link">
+                    Consulta envíos y devoluciones
+                  </Link>
+                </li>
+              )}
               <li>
                 <RotateCcw aria-hidden="true" />
-                Devoluciones durante {store.returnWindowDays} días
+                {returnWindowDays()} días naturales para devolverlo
               </li>
-              <li>
-                <ShieldCheck aria-hidden="true" />
-                Pago seguro cifrado
-              </li>
+              {paymentsReady && (
+                <li>
+                  <ShieldCheck aria-hidden="true" />
+                  Pago seguro con Stripe
+                </li>
+              )}
             </ul>
 
             <Accordion
@@ -233,7 +302,7 @@ function ProductView({ product }: { product: Product }) {
                         ))}
                       </ul>
                       {product.fit && <p>{product.fit}</p>}
-                      <p className="t-micro">Ref. {product.code}</p>
+                      <p className="t-micro">Ref. {reference}</p>
                     </>
                   ),
                 },
@@ -256,9 +325,9 @@ function ProductView({ product }: { product: Product }) {
                   title: 'Envíos y devoluciones',
                   content: (
                     <p>
-                      Envío estándar en 3–5 días laborables y exprés en 24–48 h. Tienes {store.returnWindowDays} días para devolver tu pedido.{' '}
+                      Tienes {returnWindowDays()} días naturales desde la entrega para devolver el pedido.{' '}
                       <Link to={paths.page('envios')} className="link">
-                        Más información
+                        Condiciones de envío y devolución
                       </Link>
                     </p>
                   ),
@@ -298,9 +367,19 @@ function ProductView({ product }: { product: Product }) {
           </span>
         </div>
         <Button onClick={addToCart} disabled={!colorAvailable}>
-          {colorAvailable ? 'Añadir' : 'Agotado'}
+          {added ? 'Añadido' : colorAvailable ? 'Añadir' : 'Agotado'}
         </Button>
       </div>
+
+      <MediaLightbox
+        product={product}
+        media={media}
+        colorId={colorId}
+        open={lightbox !== null}
+        index={lightbox ?? 0}
+        onIndexChange={setLightbox}
+        onClose={() => setLightbox(null)}
+      />
 
       {product.sizeGuide && (
         <Modal open={guideOpen} onClose={() => setGuideOpen(false)} title="Guía de tallas">

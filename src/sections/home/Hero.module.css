@@ -175,3 +175,74 @@
   width: 14px;
   height: 14px;
 }
+
+/* Medio de campaña (foto o vídeo) cuando exista: ocupa todo el bloque. */
+.campaignMedia {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  margin: 0;
+}
+
+.campaignAsset {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+ * Móvil u otras pantallas en horizontal con poca altura: composición en dos columnas
+ * (texto a la izquierda, monograma a la derecha) en lugar de comprimir la vertical.
+ */
+@media (orientation: landscape) and (max-height: 520px) {
+  .hero {
+    min-height: 100svh;
+    align-items: center;
+  }
+
+  .media {
+    place-items: center end;
+  }
+
+  .chromeWrap {
+    width: min(58vw, 620px);
+    margin: 0 -4vw 0 0;
+  }
+
+  .shade {
+    background: linear-gradient(to right, #000 0%, rgb(0 0 0 / 0.85) 40%, rgb(0 0 0 / 0.1) 75%);
+  }
+
+  /* El contenedor conserva su ancho y márgenes; solo se limita el ancho de cada bloque de texto. */
+  .content {
+    gap: var(--space-3);
+    justify-items: start;
+    padding-top: calc(var(--announcement-h) + var(--header-h) + var(--space-4));
+    padding-bottom: var(--space-5);
+  }
+
+  .content > * {
+    max-width: min(62%, 36rem);
+  }
+
+  .content > .ctas {
+    max-width: none;
+    flex-wrap: nowrap;
+  }
+
+  .headline {
+    font-size: clamp(2rem, 11svh, 4rem);
+  }
+
+  .lead {
+    font-size: var(--fs-sm);
+  }
+
+  .ctas > * {
+    flex: 0 0 auto;
+  }
+
+  .meta {
+    display: none;
+  }
+}

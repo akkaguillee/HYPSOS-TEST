@@ -1,4 +1,5 @@
-import { announcements } from '@/content/navigation';
+import { announcements, demoNotice } from '@/content/campaign';
+import { store } from '@shared/config';
 import { useReducedMotion } from '@/hooks/useMediaQuery';
 import { useEffect, useState } from 'react';
 import styles from './AnnouncementBar.module.css';
@@ -14,6 +15,19 @@ export function AnnouncementBar() {
     const timer = window.setInterval(() => setIndex((current) => (current + 1) % announcements.length), 4500);
     return () => window.clearInterval(timer);
   }, [paused, reduced]);
+
+  // Mientras el catálogo sea de demostración, el aviso es fijo y no rota.
+  if (store.demoCatalog) {
+    return (
+      <div className={styles.bar} role="region" aria-label="Aviso">
+        <p className={styles.message} data-active="true">
+          <span className={styles.dot} aria-hidden="true" />
+          <span className={styles.long}>{demoNotice.long}</span>
+          <span className={styles.short}>{demoNotice.short}</span>
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div

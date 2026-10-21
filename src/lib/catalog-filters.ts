@@ -1,5 +1,5 @@
 import { categories, isProductAvailable } from '@shared/catalog';
-import type { CategoryHandle, ColorOption, Product } from '@shared/types';
+import type { CategoryHandle, ColorOption, Product, StockLookup } from '@shared/types';
 
 /** Filtros y orden del catálogo, sincronizados con la URL (?talla=M,L&orden=precio-asc). */
 
@@ -33,15 +33,20 @@ export const emptyFilters: FilterState = { sizes: [], colors: [], prices: [], ca
 
 const SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '35–38', '39–42', '43–46', 'Única'];
 
-const PARAM = { sizes: 'talla', colors: 'color', prices: 'precio', categories: 'categoria', inStock: 'disponible', sort: 'orden' } as const;
+const PARAM = { sizes: 'talla', colors: 'color', prices: 'precio', categories: 'categoria', inStock: 'disponible', sort: 'orden', page: 'pagina' } as const;
+
+/** Productos por página en los listados (el resto se carga con «Cargar más»). */
+export const PAGE_SIZE = 12;
 
 const list = (value: string | null) => (value ? value.split(',').filter(Boolean) : []);
 
-export function parseCatalogParams(params: URLSearchParams): { filters: FilterState; sort: SortKey } {
+export function parseCatalogParams(params: URLSearchParams): { filters: FilterState; sort: SortKey; page: number } {
   const sortParam = params.get(PARAM.sort);
   const sort = sortOptions.some((option) => option.id === sortParam) ? (sortParam as SortKey) : 'destacados';
+  const page = Math.min(50, Math.max(1, Number.parseInt(params.get(PARAM.page) ?? '1', 10) || 1));
   return {
     sort,
+    page,
     filters: {
       sizes: list(params.get(PARAM.sizes)),
       colors: list(params.get(PARAM.colors)),
@@ -54,7 +59,7 @@ export function parseCatalogParams(params: URLSearchParams): { filters: FilterSt
   };
 }
 
-export function toCatalogParams(filters: FilterState, sort: SortKey): URLSearchParams {
+export function toCatalogParams(filters: FilterState, sort: SortKey, page = 1): URLSearchParams {
   const params = new URLSearchParams();
   if (filters.categories.length) params.set(PARAM.categories, filters.categories.join(','));
   if (filters.sizes.length) params.set(PARAM.sizes, filters.sizes.join(','));
@@ -62,6 +67,7 @@ export function toCatalogParams(filters: FilterState, sort: SortKey): URLSearchP
   if (filters.prices.length) params.set(PARAM.prices, filters.prices.join(','));
   if (filters.inStock) params.set(PARAM.inStock, '1');
   if (sort !== 'destacados') params.set(PARAM.sort, sort);
+  if (page > 1) params.set(PARAM.page, String(page));
   return params;
 }
 
@@ -69,15 +75,15 @@ export function activeFilterCount(filters: FilterState): number {
   return filters.sizes.length + filters.colors.length + filters.prices.length + filters.categories.length + (filters.inStock ? 1 : 0);
 }
 
-function matchesSize(product: Product, sizes: string[]): boolean {
+function matchesSize(product: Product, sizes: string[], stock: StockLookup): boolean {
   // Una talla cuenta si existe y tiene stock en algún color.
-  return sizes.some((size) => product.colors.some((color) => (product.inventory[`${color.id}:${size}`] ?? 0) > 0));
+  return sizes.some((size) => product.colors.some((color) => (stock(`${product.id}:${color.id}:${size}`) ?? 0) > 0));
 }
 
-export function applyFilters(products: Product[], filters: FilterState): Product[] {
+export function applyFilters(products: Product[], filters: FilterState, stock: StockLookup): Product[] {
   return products.filter((product) => {
     if (filters.categories.length && !filters.categories.includes(product.category)) return false;
-    if (filters.sizes.length && !matchesSize(product, filters.sizes)) return false;
+    if (filters.sizes.length && !matchesSize(product, filters.sizes, stock)) return false;
     if (filters.colors.length && !product.colors.some((color) => filters.colors.includes(color.id))) return false;
     if (
       filters.prices.length &&
@@ -87,12 +93,12 @@ export function applyFilters(products: Product[], filters: FilterState): Product
       })
     )
       return false;
-    if (filters.inStock && !isProductAvailable(product)) return false;
+    if (filters.inStock && !isProductAvailable(product, stock)) return false;
     return true;
   });
 }
 
-export function sortProducts(products: Product[], sort: SortKey): Product[] {
+export function sortProducts(products: Product[], sort: SortKey, stock: StockLookup): Product[] {
   const sorted = [...products];
   switch (sort) {
     case 'novedades':
@@ -104,7 +110,7 @@ export function sortProducts(products: Product[], sort: SortKey): Product[] {
     default:
       // Destacados, con los agotados al final.
       return sorted.sort(
-        (a, b) => Number(isProductAvailable(b)) - Number(isProductAvailable(a)) || a.featuredRank - b.featuredRank,
+        (a, b) => Number(isProductAvailable(b, stock)) - Number(isProductAvailable(a, stock)) || a.featuredRank - b.featuredRank,
       );
   }
 }

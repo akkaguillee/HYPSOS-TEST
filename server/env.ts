@@ -7,6 +7,15 @@ const envSchema = z.object({
   DATABASE_PATH: z.string().default('./data/hypsos.db'),
   STRIPE_SECRET_KEY: z.string().optional().default(''),
   STRIPE_WEBHOOK_SECRET: z.string().optional().default(''),
+  /** Envío de emails con Resend (https://resend.com). Sin clave no se envían emails en producción. */
+  RESEND_API_KEY: z.string().optional().default(''),
+  /** Remitente verificado en el proveedor, p. ej. "HYPSOS <pedidos@tu-dominio.com>". */
+  MAIL_FROM: z.string().optional().default(''),
+  /** Buzón que recibe una copia de los mensajes del formulario de contacto. */
+  CONTACT_INBOX: z.string().optional().default(''),
+  /** Analítica (solo tras consentimiento): dominio de Plausible o ID de medición de GA4. */
+  PLAUSIBLE_DOMAIN: z.string().optional().default(''),
+  GA4_MEASUREMENT_ID: z.string().optional().default(''),
   /** Confiar en X-Forwarded-For (solo detrás de un proxy propio: Nginx, Render, Fly…). */
   TRUST_PROXY: z
     .enum(['true', 'false'])

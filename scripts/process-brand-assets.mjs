@@ -21,7 +21,7 @@ import sharp from 'sharp';
 const root = resolve(import.meta.dirname, '..');
 const ORIGINALS = join(root, 'assets/brand/original');
 const OUT_VECTORS = join(root, 'src/assets/brand');
-const OUT_IMAGES = join(root, 'public/media/brand');
+const OUT_IMAGES = join(root, 'public/assets/brand');
 const OUT_PUBLIC = join(root, 'public');
 const work = mkdtempSync(join(tmpdir(), 'hypsos-brand-'));
 
@@ -192,6 +192,12 @@ export const mascotVector = {
 } as const;
 `,
 );
+
+// Logotipos oficiales en SVG para uso externo (prensa, emails, datos estructurados).
+writeFileSync(join(OUT_IMAGES, 'hypsos-wordmark.svg'), standaloneSvg(wordmark, '#080808'));
+writeFileSync(join(OUT_IMAGES, 'hypsos-wordmark-white.svg'), standaloneSvg(wordmark, '#F5F5F5'));
+writeFileSync(join(OUT_IMAGES, 'hypsos-monogram.svg'), standaloneSvg(monogram, '#080808'));
+writeFileSync(join(OUT_IMAGES, 'hypsos-star.svg'), standaloneSvg(star, '#F5F5F5'));
 
 console.log('Generando imágenes responsive…');
 const chrome = join(ORIGINALS, 'hypsos-monogram-chrome-on-black.png');
