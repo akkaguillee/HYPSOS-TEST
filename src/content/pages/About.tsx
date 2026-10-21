@@ -38,7 +38,7 @@ export function AboutPage() {
       <section className={styles.visualSection}>
         <Reveal variant="mask" className={styles.visual}>
           <Parallax className={styles.visualInner} amount={7}>
-            <BrandPanel tone="red" mark="wordmark" accent className={styles.banner} />
+            <BrandPanel tone="light" mark="wordmark" accent className={styles.banner} />
           </Parallax>
         </Reveal>
       </section>

@@ -47,7 +47,7 @@ export function Hero() {
       const intro = gsap.timeline({ defaults: { ease: EASE.out } });
       intro.fromTo(marks, { autoAlpha: 0, scale: 0.6 }, { autoAlpha: 1, scale: 1, duration: 0.6, stagger: 0.05 }, 0);
       if (!media) {
-        // Barrido de color: un bloque blanco cubre el marco de abajo arriba y sale por arriba.
+        // Barrido de color: un bloque rojo cubre el marco de abajo arriba y sale por arriba.
         intro
           .fromTo(wipe, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.5, ease: EASE.inOut }, 0.1)
           .set(poster, { clipPath: 'inset(0% 0% 0% 0%)' }, 0.6)

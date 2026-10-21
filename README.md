@@ -33,8 +33,9 @@ Sin configuración, la tienda funciona salvo lo que depende de servicios externo
 | `pnpm dev` | Vite + API con recarga en caliente |
 | `pnpm build` | Typecheck, build de la web, bundle de la API y `sitemap.xml` |
 | `pnpm start` | Producción: un único proceso Node sirve la web (`dist/`) y la API |
+| `pnpm build:static` | Versión estática para Netlify u otro alojamiento sin Node (`dist-static/`, ver [Despliegue](#despliegue)) |
 | `pnpm test` | Tests unitarios, de API y de componentes (Vitest) |
-| `pnpm test:e2e` | Build + Playwright en escritorio, móvil vertical y **móvil horizontal**, con axe |
+| `pnpm test:e2e` | Build + Playwright en escritorio, móvil vertical, **móvil horizontal** y **versión estática** (sin API), con axe |
 | `pnpm lint` / `pnpm typecheck` | ESLint / TypeScript |
 | `pnpm admin …` | Administración por terminal: `stock`, `stock:set <SKU> <n>` (avisa a quien pidió «Avísame»), `orders`, `order <nº>`, `order:status <nº> <shipped\|cancelled>` |
 | `pnpm assets:brand` | Regenera vectores, favicon, iconos y Open Graph desde los originales (requiere `potrace`) |
@@ -104,7 +105,7 @@ Todos los valores viven en `src/styles/tokens.css`:
 
 **Motion graphics** (solo `transform`, `opacity` y `clip-path`):
 
-- **Hero:** cartel rojo con el monograma H plano. Al terminar la intro, las marcas de corte se dibujan, un barrido de color descubre el cartel, el monograma sube, la estrella gira hasta su sitio y el titular se revela por líneas. Al hacer scroll hay paralaje por capas, y con ratón un paralaje leve.
+- **Hero:** cartel claro con el monograma H en negro; el rojo solo aparece como acento (la estrella y el barrido de color). Al terminar la intro, las marcas de corte se dibujan, un barrido de color descubre el cartel, el monograma sube, la estrella gira hasta su sitio y el titular se revela por líneas. Al hacer scroll hay paralaje por capas, y con ratón un paralaje leve.
 - **«Sistema gráfico»:** las cuatro marcas en planos de color se descubren con un barrido escalonado, y cada una se mueve a su ritmo con el scroll.
 - **Colecciones:** tarjetas con planos de marca (carrusel con scroll-snap en móvil).
 
@@ -122,7 +123,7 @@ Los textos de campaña (avisos, hero, rótulos del cartel, ticker, manifiesto) s
 
 Los originales están en `assets/brand/original/` y **no se modifican**. La web usa **solo las versiones planas** (logotipo, monograma H, estrella y mascota) en colores sólidos de la paleta: no hay versión metálica ni 3D del logotipo.
 
-`pnpm assets:brand` traza los vectores con potrace y verifica su fidelidad frente al original (IoU ≥ 98,5 %, actualmente 99,45–99,96 %). Se pintan con `currentColor`, sin alterar forma ni proporciones. El script también genera el favicon, los iconos de app y la imagen Open Graph (monograma blanco sobre plano rojo + logotipo).
+`pnpm assets:brand` traza los vectores con potrace y verifica su fidelidad frente al original (IoU ≥ 98,5 %, actualmente 99,45–99,96 %). Se pintan con `currentColor`, sin alterar forma ni proporciones. El script también genera el favicon, los iconos de app y la imagen Open Graph (monograma negro sobre plano claro + logotipo).
 
 ---
 
@@ -197,6 +198,8 @@ Toda la persistencia pasa por la interfaz `Repositories` (`server/db.ts`). Para 
 
 ## Despliegue
 
+### Tienda completa (servidor Node)
+
 ```bash
 pnpm install --frozen-lockfile
 pnpm build
@@ -208,6 +211,21 @@ NODE_ENV=production PUBLIC_URL=https://tu-dominio.com pnpm start
 - Sirve siempre por HTTPS (se envía HSTS y la cookie de sesión es `Secure`).
 
 Variables: ver `.env.example`. No hay secretos en el repositorio.
+
+### Netlify (solo la web estática)
+
+Netlify no ejecuta el servidor Node, así que ahí se publica la **versión estática**. `netlify.toml` ya lo configura: compila con `pnpm build:static` y publica `dist-static/`. **No publiques la carpeta del repositorio sin compilar** (por ejemplo, arrastrándola a Netlify Drop): el navegador recibiría `src/main.tsx` sin compilar y la web se quedaría en la pantalla de carga.
+
+1. En Netlify: **Add new project → Import an existing project** y elige este repositorio y su rama. La configuración se lee de `netlify.toml`, no hay que tocar nada.
+2. Para publicar a mano: `pnpm build:static` y sube la carpeta `dist-static/` (no la raíz del proyecto).
+
+Qué incluye la versión estática:
+
+- Funciona: catálogo, filtros, fichas con zoom, búsqueda, carrito y favoritos (guardados en el dispositivo).
+- Cada ruta tiene su HTML con título, descripción, Open Graph y JSON-LD. Las rutas inexistentes devuelven un 404 real.
+- No hay stock en vivo, pedidos, cuentas ni formularios: necesitan la API. La web lo indica en cada pantalla, sin simular nada.
+
+Para la tienda completa con el dominio en Netlify, despliega la API en un host Node y cambia en `netlify.toml` la regla de `/api/*` por un proxy a ella (está comentado en el propio archivo).
 
 ---
 

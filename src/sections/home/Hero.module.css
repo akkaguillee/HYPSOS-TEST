@@ -118,8 +118,9 @@
 }
 
 .poster {
-  background: var(--c-red);
-  color: var(--c-white);
+  /* Cartel claro con el monograma en negro: el rojo queda como acento (estrella y barrido). */
+  background: var(--c-white-soft);
+  color: var(--c-black);
   container-type: inline-size;
 }
 
@@ -130,7 +131,7 @@
 .wipe {
   position: absolute;
   inset: 0;
-  background: var(--c-white);
+  background: var(--c-red);
   clip-path: inset(100% 0% 0% 0%);
   pointer-events: none;
 }
@@ -175,7 +176,7 @@
 .star {
   width: 100%;
   height: auto;
-  color: var(--c-black);
+  color: var(--c-red);
 }
 
 .starIdle {

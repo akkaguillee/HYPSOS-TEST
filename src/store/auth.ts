@@ -40,6 +40,8 @@ export const useAuth = create<AuthState>()((set) => ({
   logout: async () => {
     try {
       await apiRequest('/auth/logout', { method: 'POST' });
+    } catch {
+      // Aunque el servidor no responda, la sesión se cierra en este dispositivo.
     } finally {
       set({ user: null, status: 'anonymous' });
       useWishlist.getState().detachAccount();

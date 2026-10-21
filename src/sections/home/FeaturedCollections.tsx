@@ -10,7 +10,7 @@ import styles from './FeaturedCollections.module.css';
 
 /** Cada colección se presenta con una marca oficial distinta sobre un color sólido de la paleta. */
 const artwork: Record<string, { tone: PanelTone; mark: PanelMark }> = {
-  'drop-01-ascenso': { tone: 'red', mark: 'monogram' },
+  'drop-01-ascenso': { tone: 'light', mark: 'monogram' },
   signal: { tone: 'black', mark: 'star' },
   base: { tone: 'graphite', mark: 'mascot' },
 };

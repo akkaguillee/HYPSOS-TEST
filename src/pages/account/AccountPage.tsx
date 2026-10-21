@@ -4,6 +4,7 @@ import { Alert, Checkbox, SelectField, TextField } from '@/components/ui/Field';
 import { Price } from '@/components/ui/Price';
 import { ApiError, apiRequest } from '@/lib/api';
 import { useAuth } from '@/store/auth';
+import { useStoreStatus } from '@/store/storeStatus';
 import { useWishlist } from '@/store/wishlist';
 import { store } from '@shared/config';
 import { paths } from '@shared/routes';
@@ -42,6 +43,7 @@ export default function AccountPage() {
   const { pathname } = useLocation();
   const status = useAuth((state) => state.status);
   const user = useAuth((state) => state.user);
+  const server = useStoreStatus();
 
   if (pathname === paths.accountRecover) return <RecoverPage />;
   if (pathname === paths.accountReset) return <ResetPage />;
@@ -63,7 +65,13 @@ export default function AccountPage() {
     if (pathname !== paths.account) return <Navigate to={`${paths.account}?next=${encodeURIComponent(pathname)}`} replace />;
     return (
       <>
-        <PageHeader eyebrow="Cuenta" title="Accede a HYPSOS" breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Mi cuenta' }]} />
+        <PageHeader eyebrow="Cuenta" title="Accede a HYPSOS" breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Mi cuenta' }]}>
+          {server.loaded && !server.online && (
+            <Alert tone="info" title="Cuentas no disponibles en esta versión">
+              <p>Registrarse e iniciar sesión necesita el servidor de la tienda, que no está activo aquí. Tus favoritos se guardan igualmente en este dispositivo.</p>
+            </Alert>
+          )}
+        </PageHeader>
         <div className="container">
           <AuthForms />
         </div>

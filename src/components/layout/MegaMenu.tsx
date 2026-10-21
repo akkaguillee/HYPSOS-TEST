@@ -66,7 +66,7 @@ export function MegaMenu({ id, open, onNavigate, onMouseEnter }: MegaMenuProps) 
           </ul>
         </div>
         <Link to={paths.collection('drop-01-ascenso')} className={styles.feature} onClick={onNavigate} viewTransition>
-          <BrandPanel tone="red" mark="monogram" className={styles.featureImage} />
+          <BrandPanel tone="graphite" mark="monogram" className={styles.featureImage} />
           <span className={styles.featureText}>
             <span className="eyebrow">Drop 01</span>
             <span className={styles.featureTitle}>Ascenso</span>

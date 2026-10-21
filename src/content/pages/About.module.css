@@ -6,7 +6,7 @@
   position: relative;
   height: clamp(280px, 44vw, 640px);
   overflow: hidden;
-  background: var(--c-red);
+  background: var(--c-white-soft);
 }
 
 /* El plano se sobredimensiona para que el paralaje nunca deje huecos. */

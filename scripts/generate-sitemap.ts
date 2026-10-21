@@ -9,7 +9,8 @@ import { contentPages, paths, specialCollections } from '../shared/routes';
 
 const root = resolve(import.meta.dirname, '..');
 if (existsSync(resolve(root, '.env'))) process.loadEnvFile(resolve(root, '.env'));
-const base = (process.env.PUBLIC_URL ?? 'http://localhost:5173').replace(/\/$/, '');
+// Netlify expone la URL del sitio en URL; PUBLIC_URL tiene prioridad si se define.
+const base = (process.env.PUBLIC_URL ?? process.env.URL ?? 'http://localhost:5173').replace(/\/$/, '');
 const dist = resolve(root, 'dist');
 
 const legal = new Set(['privacidad', 'terminos', 'cookies', 'aviso-legal']);

@@ -22,6 +22,7 @@ import {
 } from '@/lib/catalog-filters';
 import { cn } from '@/lib/cn';
 import { useStock } from '@/store/inventory';
+import { useStoreStatus } from '@/store/storeStatus';
 import { collections, getCategory, getCollection, newArrivals, products, productsByCategory, productsByCollection } from '@shared/catalog';
 import { gridColumns } from '@shared/catalog/listing';
 import { paths, specialCollections } from '@shared/routes';
@@ -82,6 +83,7 @@ function CatalogView({ handle, collection }: { handle: string; collection: Resol
   const [filtersOpen, setFiltersOpen] = useState(false);
   const sortId = useId();
   const { lookup, status: stockStatus } = useStock();
+  const serverOnline = useStoreStatus((state) => state.online || !state.loaded);
 
   const visible = sortProducts(applyFilters(collection.products, filters, lookup), sort, lookup);
   const shown = visible.slice(0, page * PAGE_SIZE);
@@ -151,7 +153,11 @@ function CatalogView({ handle, collection }: { handle: string; collection: Resol
           <ActiveFilters products={collection.products} filters={filters} onChange={(next) => update(next)} />
           {stockStatus === 'error' && (
             <Alert tone="info">
-              <p>No hemos podido comprobar la disponibilidad. Se verificará al finalizar la compra.</p>
+              <p>
+                {serverOnline
+                  ? 'No hemos podido comprobar la disponibilidad. Se verificará al finalizar la compra.'
+                  : 'La disponibilidad en tiempo real necesita el servidor de la tienda, que no está activo en esta versión de la web.'}
+              </p>
             </Alert>
           )}
           {visible.length > 0 ? (

@@ -13,6 +13,8 @@ export class ApiError extends Error {
 }
 
 const NETWORK_MESSAGE = 'No hemos podido conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo.';
+export const BACKEND_UNAVAILABLE_MESSAGE =
+  'Esta función necesita el servidor de la tienda, que no está activo en esta versión de la web. Puedes seguir navegando por el catálogo.';
 
 export async function apiRequest<T>(
   path: string,
@@ -32,11 +34,28 @@ export async function apiRequest<T>(
     throw new ApiError(0, 'network_error', NETWORK_MESSAGE);
   }
 
+  // Un alojamiento estático (Netlify, Vercel…) sin la API responde a /api/* con HTML o un 404:
+  // eso nunca es un éxito, aunque el estado sea 200.
+  const isJson = (response.headers.get('content-type') ?? '').includes('application/json');
   let data: Record<string, unknown> = {};
-  try {
-    data = await response.json();
-  } catch {
-    // Respuesta sin JSON (p. ej. la API no está arrancada y responde el servidor de estáticos).
+  let parsed = false;
+  if (isJson) {
+    try {
+      const body: unknown = await response.json();
+      if (body && typeof body === 'object' && !Array.isArray(body)) {
+        data = body as Record<string, unknown>;
+        parsed = true;
+      }
+    } catch {
+      // JSON inválido: se trata como servidor no disponible.
+    }
+  }
+
+  if (!parsed) {
+    // Sin cuerpo JSON no ha respondido la API: un 2xx/4xx viene del alojamiento estático (la API no
+    // existe ahí); un 5xx, de un proxy con la API caída o reiniciándose.
+    if (response.status >= 500) throw new ApiError(response.status, 'server_error', NETWORK_MESSAGE);
+    throw new ApiError(503, 'backend_unavailable', BACKEND_UNAVAILABLE_MESSAGE);
   }
 
   if (!response.ok) {

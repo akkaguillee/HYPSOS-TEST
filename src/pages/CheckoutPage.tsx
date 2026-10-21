@@ -69,7 +69,7 @@ export default function CheckoutPage() {
   const subtotal = cartSubtotal(lines);
   const method = shippingMethods.find((candidate) => candidate.id === shippingMethod) ?? null;
   const totals = calculateTotals(lines, method);
-  const notReady = status.loaded && (!status.payments || !status.shipping);
+  const notReady = status.loaded && (!status.online || !status.payments || !status.shipping);
 
   useEffect(() => {
     void loadInventory(true);
@@ -164,6 +164,10 @@ export default function CheckoutPage() {
         setFeedback({ tone: 'error', title: 'Error inesperado', message: 'Inténtalo de nuevo en unos segundos.' });
         return;
       }
+      if (error.code === 'backend_unavailable') {
+        setFeedback({ tone: 'info', title: 'Compra online no disponible', message: `${error.message} No se ha creado ningún pedido ni se ha realizado ningún cargo.` });
+        return;
+      }
       if (error.code === 'payments_not_configured' || error.code === 'shipping_not_configured') {
         setFeedback({
           tone: 'info',
@@ -203,13 +207,14 @@ export default function CheckoutPage() {
         {notReady && (
           <Alert tone="info" title="La tienda todavía no acepta pedidos">
             <p>
-              {!status.payments && 'La pasarela de pago aún no está activada. '}
-              {!status.shipping && 'Las tarifas de envío están pendientes de configurar. '}
+              {!status.online
+                ? 'La compra online necesita el servidor de la tienda, que no está activo en esta versión de la web. '
+                : `${!status.payments ? 'La pasarela de pago aún no está activada. ' : ''}${!status.shipping ? 'Las tarifas de envío están pendientes de configurar. ' : ''}`}
               Puedes revisar tu pedido, pero no se realizará ningún cargo.
             </p>
           </Alert>
         )}
-        {!user && (
+        {!user && status.online && (
           <p className="t-small t-muted">
             ¿Tienes cuenta? <Link to={`${paths.account}?next=${encodeURIComponent(paths.checkout)}`} className="link">Inicia sesión</Link> para usar tus direcciones guardadas.
           </p>

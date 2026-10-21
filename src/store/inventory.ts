@@ -27,13 +27,23 @@ export const useInventory = create<InventoryState>()((set, get) => ({
     if (status === 'loading' || (!force && status === 'ready' && Date.now() - fetchedAt < 30_000)) return;
     set({ status: 'loading' });
     try {
-      const data = await apiRequest<{ available: Record<string, number> }>('/inventory');
-      set({ status: 'ready', available: data.available, fetchedAt: Date.now() });
+      const data = await apiRequest<{ available?: unknown }>('/inventory');
+      const available = parseAvailability(data.available);
+      // Sin datos válidos no se inventa disponibilidad: la tienda sigue en modo "desconocido".
+      set(available ? { status: 'ready', available, fetchedAt: Date.now() } : { status: 'error' });
     } catch {
       set({ status: 'error' });
     }
   },
 }));
+
+/** Valida la respuesta de /inventory: un objeto SKU → unidades enteras no negativas. */
+export function parseAvailability(value: unknown): Record<string, number> | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const entries = Object.entries(value as Record<string, unknown>);
+  if (!entries.every(([, units]) => typeof units === 'number' && Number.isInteger(units) && units >= 0)) return null;
+  return Object.fromEntries(entries) as Record<string, number>;
+}
 
 /** Consulta de stock: solo devuelve un número cuando el dato real está cargado. */
 export const liveStock = (state: Pick<InventoryState, 'status' | 'available'>): StockLookup => (id) =>

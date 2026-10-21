@@ -20,9 +20,9 @@ interface Tile {
 }
 
 const tiles: Tile[] = [
-  { tone: 'red', mark: 'monogram', label: 'Monograma', to: paths.collection('drop-01-ascenso'), from: { xPercent: 8 }, motion: { xPercent: -8 } },
+  { tone: 'light', mark: 'monogram', label: 'Monograma', to: paths.collection('drop-01-ascenso'), from: { xPercent: 8 }, motion: { xPercent: -8 } },
   { tone: 'black', mark: 'star', label: 'Estrella · Stickers', to: paths.collection('stickers'), from: { rotation: -24 }, motion: { rotation: 24 } },
-  { tone: 'graphite', mark: 'mascot', label: 'Personaje · Piezas 3D', to: paths.collection('3d'), from: { yPercent: 7 }, motion: { yPercent: -7 } },
+  { tone: 'black', mark: 'mascot', label: 'Personaje · Piezas 3D', to: paths.collection('3d'), from: { yPercent: 7 }, motion: { yPercent: -7 } },
   { tone: 'light', mark: 'wordmark', label: 'Logotipo', to: paths.collection('all'), from: { xPercent: -10 }, motion: { xPercent: 10 } },
 ];
 

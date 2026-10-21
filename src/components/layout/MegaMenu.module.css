@@ -102,7 +102,7 @@
   min-height: 260px;
   padding: var(--space-5);
   overflow: hidden;
-  background: var(--c-red);
+  background: var(--c-graphite);
 }
 
 .featureImage {

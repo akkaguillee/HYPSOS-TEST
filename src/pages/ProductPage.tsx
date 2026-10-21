@@ -41,6 +41,7 @@ function ProductView({ product }: { product: Product }) {
   const { known, lookup, status: stockStatus } = useStock();
   const loadInventory = useInventory((state) => state.load);
   const paymentsReady = useStoreStatus((state) => state.payments);
+  const serverOnline = useStoreStatus((state) => state.online || !state.loaded);
 
   // Color: el pedido en la URL si existe y está disponible; si no, el primero con stock.
   const requested = product.colors.find((color) => color.id === params.get('color'));
@@ -229,7 +230,10 @@ function ProductView({ product }: { product: Product }) {
               )}
               <p className={styles.stockMessage} data-tone={stock !== null && stock > 0 && stock <= 3 ? 'low' : undefined} aria-live="polite">
                 {stockStatus === 'loading' && !known && 'Comprobando disponibilidad…'}
-                {stockStatus === 'error' && 'No hemos podido comprobar el stock ahora mismo; se confirmará al finalizar la compra.'}
+                {stockStatus === 'error' &&
+                  (serverOnline
+                    ? 'No hemos podido comprobar el stock ahora mismo; se confirmará al finalizar la compra.'
+                    : 'Stock en tiempo real no disponible en esta versión de la web.')}
                 {known && size && stock !== null && stock > 0 && (stock <= 3 ? `Últimas ${stock} unidades en talla ${size}` : 'Disponible')}
                 {known && size && inCart > 0 && stock !== null && inCart >= Math.min(stock, store.maxQuantityPerLine) && ' · Ya tienes todas en el carrito'}
               </p>

@@ -1,4 +1,4 @@
-import { getCategory, getCollection, getProductByHandle } from './catalog';
+import { categories, collections as editorialCollections, getCategory, getCollection, getProductByHandle, products } from './catalog';
 
 /** Rutas de la web. Centralizadas para que la navegación, el sitemap y el servidor usen las mismas. */
 export const paths = {
@@ -62,6 +62,17 @@ const staticRoutes = new Set<string>([
   paths.accountRecover,
   paths.accountReset,
 ]);
+
+/** Todas las rutas públicas conocidas (prerenderizado para alojamientos estáticos). */
+export function knownRoutes(): string[] {
+  const collections = [...Object.keys(specialCollections), ...categories.map((c) => c.handle), ...editorialCollections.map((c) => c.handle)];
+  return [
+    ...staticRoutes,
+    ...collections.map((handle) => paths.collection(handle)),
+    ...products.map((product) => paths.product(product.handle)),
+    ...Object.keys(contentPages).map((handle) => paths.page(handle as ContentPageHandle)),
+  ];
+}
 
 /** Indica si una ruta existe (el servidor la usa para responder 404 reales). */
 export function isKnownRoute(pathname: string): boolean {

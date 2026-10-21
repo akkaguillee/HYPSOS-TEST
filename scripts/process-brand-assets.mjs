@@ -220,8 +220,8 @@ for (const [file, size] of [
     .png()
     .toFile(join(OUT_PUBLIC, file));
 }
-// Open Graph 1200×630: monograma H blanco sobre plano rojo de marca + logotipo, sobre negro.
-const ogMonogram = await sharp(Buffer.from(standaloneSvg(monogram, '#ffffff')), { density: 300 })
+// Open Graph 1200×630: monograma H negro sobre plano claro + logotipo blanco, sobre negro.
+const ogMonogram = await sharp(Buffer.from(standaloneSvg(monogram, '#080808')), { density: 300 })
   .resize({ width: 300 })
   .png()
   .toBuffer();
@@ -229,7 +229,7 @@ const ogWordmark = await sharp(Buffer.from(standaloneSvg(wordmark, '#ffffff')), 
   .resize({ width: 520 })
   .png()
   .toBuffer();
-const ogPanel = await sharp({ create: { width: 420, height: 470, channels: 3, background: '#c8102e' } })
+const ogPanel = await sharp({ create: { width: 420, height: 470, channels: 3, background: '#f5f5f5' } })
   .composite([{ input: ogMonogram, gravity: 'center' }])
   .png()
   .toBuffer();
