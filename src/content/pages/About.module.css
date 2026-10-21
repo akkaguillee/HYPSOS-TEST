@@ -1,0 +1,122 @@
+.visualSection {
+  padding-top: var(--space-6);
+}
+
+.visual {
+  position: relative;
+  height: clamp(320px, 62vw, 760px);
+  background: #000;
+}
+
+.visualInner {
+  position: absolute;
+  inset: 0;
+}
+
+.chrome {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.chapters {
+  display: grid;
+  gap: var(--space-7);
+}
+
+@media (min-width: 900px) {
+  .chapters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+}
+
+.chapter {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--line);
+}
+
+.chapterIndex {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--c-red);
+  font-variant-numeric: tabular-nums;
+}
+
+.marks {
+  display: grid;
+  gap: var(--space-7);
+}
+
+@media (min-width: 1024px) {
+  .marks {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    align-items: center;
+    gap: var(--space-9);
+  }
+}
+
+.marksCopy {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 480px;
+}
+
+.markList {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.markItem {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  justify-items: center;
+  gap: var(--space-4);
+  aspect-ratio: 3 / 4;
+  padding: var(--space-5) var(--space-3);
+  background: var(--c-white);
+  border: 1px solid var(--line);
+}
+
+.markItem > svg {
+  align-self: center;
+  height: auto;
+  color: var(--c-black);
+}
+
+.markDark {
+  background: var(--c-black);
+  color: var(--c-white);
+}
+
+.markDark > svg {
+  color: var(--c-white);
+}
+
+.markMonogram {
+  width: 70%;
+}
+
+.markStar {
+  width: 90%;
+}
+
+.markMascot {
+  width: 85%;
+}
+
+.cta {
+  display: grid;
+  gap: var(--space-6);
+  justify-items: start;
+}
+
+.ctaActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}

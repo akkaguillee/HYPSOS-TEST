@@ -1,0 +1,234 @@
+.toolbar {
+  position: sticky;
+  top: var(--header-h);
+  z-index: var(--z-sticky);
+  background: rgb(8 8 8 / 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  transition: top var(--dur-enter) var(--ease-out);
+}
+
+.toolbarInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 60px;
+}
+
+:global(:root[data-header='hidden']) .toolbar {
+  top: 0;
+}
+
+.filterButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.filterButton svg {
+  width: 18px;
+  height: 18px;
+}
+
+.filterCount {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  background: var(--c-red);
+  color: var(--c-white);
+  font-size: 11px;
+}
+
+.resultCount {
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-xs);
+}
+
+.sort label {
+  color: var(--fg-muted);
+}
+
+.sort select {
+  appearance: none;
+  min-height: 44px;
+  padding: 0 var(--space-5) 0 var(--space-2);
+  border: 0;
+  background: transparent
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23fff' stroke-width='1.5'/%3E%3C/svg%3E")
+    no-repeat right 4px center;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.sort select option {
+  background: var(--bg-raised);
+  color: var(--fg);
+  text-transform: none;
+}
+
+.body {
+  display: grid;
+  gap: var(--space-7);
+  padding-block: var(--space-6) var(--section-y);
+}
+
+@media (min-width: 1024px) {
+  .body {
+    grid-template-columns: 232px minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+
+  .mobileOnly {
+    display: none;
+  }
+}
+
+.sidebar {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .sidebar {
+    display: block;
+    position: sticky;
+    top: calc(var(--header-h) + 60px + var(--space-6));
+    align-self: start;
+    max-height: calc(100svh - var(--header-h) - 60px - var(--space-8));
+    overflow-y: auto;
+    padding-right: var(--space-2);
+  }
+}
+
+.results {
+  display: grid;
+  gap: var(--space-5);
+  align-content: start;
+}
+
+.empty {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-4);
+  padding: var(--space-8) 0;
+}
+
+.drawerBody {
+  padding: var(--space-5);
+}
+
+/* Índice de colecciones */
+.collections {
+  display: grid;
+  gap: var(--space-3);
+  padding-block: var(--space-6) var(--section-y);
+}
+
+.collectionCard {
+  position: relative;
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-5);
+  border: 1px solid var(--line);
+  background: var(--bg-raised);
+  overflow: hidden;
+  transition: border-color var(--dur-hover) var(--ease-out);
+}
+
+@media (min-width: 768px) {
+  .collectionCard {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    padding: var(--space-7);
+    min-height: 320px;
+  }
+}
+
+.collectionCard:hover {
+  border-color: var(--line-strong);
+}
+
+.collectionCard::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--c-red);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform var(--dur-enter) var(--ease-out);
+}
+
+.collectionCard:hover::before {
+  transform: scaleY(1);
+}
+
+.collectionName {
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  font-weight: 800;
+  font-stretch: var(--stretch-display);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+}
+
+.collectionMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.collectionMeta svg {
+  width: 20px;
+  height: 20px;
+  transition: transform var(--dur-hover) var(--ease-out);
+}
+
+.collectionCard:hover .collectionMeta svg {
+  transform: translateX(6px);
+}
+
+.collectionThumbs {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.collectionThumb {
+  width: 64px;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #141414;
+}
+
+.collectionThumb > * {
+  width: 100%;
+  height: 100%;
+}

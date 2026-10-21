@@ -1,0 +1,177 @@
+.hero {
+  position: relative;
+  min-height: max(640px, 100svh);
+  display: grid;
+  align-items: end;
+  overflow: hidden;
+  background: #000;
+  color: var(--c-white);
+  isolation: isolate;
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: grid;
+  place-items: center;
+  perspective: 1400px;
+}
+
+/* El monograma cromado: protagonista visual de la campaña. */
+.chromeWrap {
+  position: relative;
+  width: min(112vw, 760px);
+  margin-top: -30svh;
+  isolation: isolate;
+  will-change: transform;
+}
+
+@media (min-width: 768px) {
+  .chromeWrap {
+    width: min(92vw, 980px);
+    margin-top: -18svh;
+  }
+}
+
+@media (min-width: 1024px) {
+  .chromeWrap {
+    width: min(70vw, 1180px);
+    margin: -6svh -8vw 0 auto;
+  }
+}
+
+.chrome {
+  width: 100%;
+  height: auto;
+  transform-style: preserve-3d;
+  user-select: none;
+}
+
+/* Reflejo: barrido de luz que solo ilumina el metal (overlay sobre negro = negro). */
+.sweep {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 38%, rgb(255 255 255 / 0.85) 50%, transparent 62%);
+  mix-blend-mode: overlay;
+  transform: translate3d(-110%, 0, 0);
+  pointer-events: none;
+}
+
+/* Brillo rojo muy contenido detrás del monograma. */
+.glow {
+  position: absolute;
+  width: 60vmax;
+  height: 60vmax;
+  right: -10vmax;
+  bottom: -30vmax;
+  z-index: -3;
+  background: radial-gradient(closest-side, rgb(200 16 46 / 0.2), transparent);
+  pointer-events: none;
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  /* En móvil el texto se superpone al monograma: degradado más alto para garantizar contraste. */
+  background:
+    linear-gradient(to top, #000 0%, #000 38%, rgb(0 0 0 / 0.7) 56%, rgb(0 0 0 / 0) 74%),
+    linear-gradient(to right, rgb(0 0 0 / 0.5), transparent 70%);
+  pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+  .shade {
+    background:
+      linear-gradient(to top, #000 0%, rgb(0 0 0 / 0.85) 22%, rgb(0 0 0 / 0) 58%),
+      linear-gradient(to right, rgb(0 0 0 / 0.6), rgb(0 0 0 / 0.2) 45%, transparent 60%);
+  }
+}
+
+/* Grano cinematográfico estático y muy leve. */
+.grain {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.content {
+  display: grid;
+  gap: var(--space-5);
+  padding-top: calc(var(--announcement-h) + var(--header-h) + var(--space-8));
+  padding-bottom: var(--space-7);
+}
+
+@media (min-width: 1024px) {
+  .content {
+    padding-bottom: var(--space-8);
+  }
+}
+
+.eyebrow {
+  color: rgb(255 255 255 / 0.84);
+}
+
+.headline {
+  max-width: 12ch;
+}
+
+.lead {
+  max-width: 44ch;
+  font-size: var(--fs-lg);
+  line-height: 1.5;
+  color: rgb(255 255 255 / 0.78);
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.ctas > * {
+  flex: 1 1 auto;
+}
+
+@media (min-width: 480px) {
+  .ctas > * {
+    flex: 0 0 auto;
+  }
+}
+
+/* Barra inferior: índice + línea roja + indicador de scroll. */
+.meta {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  font-size: var(--fs-2xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.62);
+}
+
+.metaLine {
+  height: 1px;
+  background: linear-gradient(90deg, var(--c-red), rgb(200 16 46 / 0.15));
+  transform-origin: left;
+}
+
+.scrollHint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.scrollHint svg {
+  width: 14px;
+  height: 14px;
+}

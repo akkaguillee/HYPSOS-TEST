@@ -1,0 +1,135 @@
+.group {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 0;
+  margin-bottom: var(--space-3);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.legendValue {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--fg-muted);
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.sizes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: var(--space-2);
+}
+
+.option {
+  position: relative;
+}
+
+.option input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.option input:disabled {
+  cursor: not-allowed;
+}
+
+.swatch {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  transition: border-color var(--dur-micro) var(--ease-out);
+}
+
+.swatch span {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25);
+}
+
+.option input:checked + .swatch {
+  border-color: var(--fg);
+}
+
+.option input:focus-visible + .swatch,
+.option input:focus-visible + .size {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.option input:disabled + .swatch span {
+  opacity: 0.35;
+}
+
+.size {
+  display: grid;
+  place-items: center;
+  min-height: 48px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-1);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out),
+    border-color var(--dur-micro) var(--ease-out);
+}
+
+.option:hover input:not(:disabled) + .size {
+  border-color: var(--fg);
+}
+
+.option input:checked + .size {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+
+.option input:disabled + .size {
+  color: var(--fg-muted);
+  border-style: dashed;
+  text-decoration: line-through;
+  opacity: 0.55;
+}
+
+.lowStock {
+  position: absolute;
+  top: -6px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-red);
+  pointer-events: none;
+}
+
+.invalid .sizes .size {
+  border-color: var(--error);
+}

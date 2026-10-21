@@ -1,0 +1,128 @@
+.footer {
+  position: relative;
+  background: var(--c-black);
+  color: var(--c-white);
+  padding-top: var(--section-y-tight);
+  overflow: hidden;
+}
+
+/* Línea roja: la firma que cierra cada página. */
+.redline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--c-red);
+  transform-origin: left;
+}
+
+.top {
+  display: grid;
+  gap: var(--space-7);
+}
+
+@media (min-width: 1024px) {
+  .top {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 2fr);
+    gap: var(--space-8);
+  }
+}
+
+.statement {
+  margin-bottom: var(--space-4);
+}
+
+.intro {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  max-width: 420px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6) var(--space-5);
+}
+
+@media (min-width: 768px) {
+  .columns {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.columnTitle {
+  margin-bottom: var(--space-4);
+}
+
+.links {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.links a {
+  font-size: var(--fs-sm);
+  color: var(--c-white-soft);
+  opacity: 0.8;
+  transition: opacity var(--dur-hover) var(--ease-out);
+}
+
+.links a:hover {
+  opacity: 1;
+}
+
+.social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.social a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    background-color var(--dur-hover) var(--ease-out),
+    color var(--dur-hover) var(--ease-out);
+}
+
+.social a:hover {
+  background: var(--c-white);
+  color: var(--c-black);
+}
+
+.wordmark {
+  margin-top: var(--section-y-tight);
+  padding-block: var(--space-4);
+  color: var(--c-white);
+}
+
+.wordmark svg {
+  width: 100%;
+  height: auto;
+}
+
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-6);
+  padding-block: var(--space-5) var(--space-6);
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-xs);
+  color: var(--c-grey);
+}
+
+.bottomMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+}

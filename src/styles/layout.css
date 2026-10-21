@@ -1,0 +1,152 @@
+/* Contenedores, secciones y utilidades de maquetación. */
+
+.container {
+  width: 100%;
+  max-width: calc(var(--container) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.container--text {
+  max-width: calc(var(--container-text) + var(--gutter) * 2);
+}
+
+.section {
+  padding-block: var(--section-y);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.section--tight {
+  padding-block: var(--section-y-tight);
+}
+
+/* Cabecera de sección: título a la izquierda, acción a la derecha. */
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-6);
+  margin-bottom: clamp(var(--space-6), 3vw, var(--space-7));
+}
+
+.section-head__titles {
+  display: grid;
+  gap: var(--space-3);
+}
+
+/* Marca de sección: punto rojo + etiqueta. Firma visual recurrente. */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.stack {
+  display: grid;
+  gap: var(--stack-gap, var(--space-4));
+}
+
+/* Enlace subrayado animado (texto). */
+.link {
+  position: relative;
+  display: inline-block;
+  font-weight: 500;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  transform-origin: right;
+  transform: scaleX(0.35);
+  opacity: 0.5;
+  transition:
+    transform var(--dur-hover) var(--ease-out),
+    opacity var(--dur-hover) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .link:hover::after {
+    transform-origin: left;
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+.breadcrumb-link {
+  transition: color var(--dur-hover) var(--ease-out);
+}
+
+.breadcrumb-link:hover {
+  color: var(--fg);
+}
+
+/* Revelado al entrar en pantalla (controlado por <Reveal>). */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition:
+    opacity var(--dur-enter) var(--ease-out),
+    transform var(--dur-editorial) var(--ease-out);
+  transition-delay: calc(var(--reveal-index, 0) * 70ms);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* La máscara se aplica a los hijos: un elemento recortado por completo no lo detecta IntersectionObserver. */
+.reveal--mask > * {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path var(--dur-editorial) var(--ease-out);
+  transition-delay: calc(var(--reveal-index, 0) * 90ms);
+}
+
+.reveal--mask.is-visible > * {
+  clip-path: inset(0 0 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .reveal--mask > * {
+    clip-path: none;
+  }
+}

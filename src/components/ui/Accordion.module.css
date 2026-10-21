@@ -1,0 +1,79 @@
+.list {
+  border-top: 1px solid var(--line);
+}
+
+.item {
+  border-bottom: 1px solid var(--line);
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: 100%;
+  min-height: 56px;
+  padding: var(--space-4) 0;
+  text-align: left;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.icon {
+  position: relative;
+  flex: none;
+  width: 12px;
+  height: 12px;
+}
+
+.icon::before,
+.icon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 12px;
+  height: 1.5px;
+  margin-top: -0.75px;
+  background: currentColor;
+  transition: transform var(--dur-hover) var(--ease-out);
+}
+
+.icon::after {
+  transform: rotate(90deg);
+}
+
+.trigger[aria-expanded='true'] .icon::after {
+  transform: rotate(0deg);
+}
+
+/* Altura animada con grid 0fr → 1fr (sin medir en JS). */
+.panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--dur-enter) var(--ease-out);
+}
+
+.panel[data-open='true'] {
+  grid-template-rows: 1fr;
+}
+
+.panelInner {
+  overflow: hidden;
+}
+
+.content {
+  padding-bottom: var(--space-5);
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+  color: var(--fg-muted);
+}
+
+.content > * + * {
+  margin-top: var(--space-3);
+}
+
+.content ul {
+  padding-left: 1.1em;
+}

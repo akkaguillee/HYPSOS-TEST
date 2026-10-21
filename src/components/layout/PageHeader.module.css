@@ -1,0 +1,40 @@
+.header {
+  padding-top: clamp(var(--space-6), 4vw, var(--space-8));
+  padding-bottom: clamp(var(--space-6), 4vw, var(--space-7));
+  border-bottom: 1px solid var(--line);
+}
+
+.inner {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.titles {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-7);
+}
+
+.description {
+  max-width: 56ch;
+}
+
+.aside {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.campaign .title {
+  font-size: var(--fs-campaign);
+  line-height: var(--lh-tight);
+}

@@ -1,0 +1,118 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-7) var(--space-3);
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-8) var(--space-5);
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid[data-columns='4'] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.rail {
+  position: relative;
+}
+
+.track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(240px, 72%);
+  gap: var(--space-3);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  padding-inline: var(--gutter);
+  padding-bottom: var(--space-4);
+  scrollbar-width: none;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.track > * {
+  scroll-snap-align: start;
+}
+
+@media (min-width: 640px) {
+  .track {
+    grid-auto-columns: minmax(260px, 42%);
+  }
+}
+
+@media (min-width: 1024px) {
+  .track {
+    grid-auto-columns: calc((100% - var(--gutter) * 2 - var(--space-5) * 3) / 4);
+    gap: var(--space-5);
+  }
+}
+
+/* Alinear el carril con el contenedor máximo en pantallas muy anchas. */
+@media (min-width: 1536px) {
+  .track {
+    padding-inline: calc((100% - var(--container)) / 2);
+    scroll-padding-inline: calc((100% - var(--container)) / 2);
+    grid-auto-columns: calc((var(--container) - var(--space-5) * 3) / 4);
+  }
+}
+
+.controls {
+  display: none;
+  gap: var(--space-2);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .controls {
+    display: flex;
+  }
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  transition:
+    background-color var(--dur-hover) var(--ease-out),
+    color var(--dur-hover) var(--ease-out),
+    opacity var(--dur-hover) var(--ease-out);
+}
+
+.arrow svg {
+  width: 18px;
+  height: 18px;
+}
+
+.arrow:hover:not(:disabled) {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.arrow:disabled {
+  opacity: 0.3;
+}
+
+.progress {
+  height: 1px;
+  margin-top: var(--space-4);
+  background: var(--line);
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background: var(--c-red);
+  transform-origin: left;
+  transition: transform var(--dur-hover) var(--ease-out);
+}

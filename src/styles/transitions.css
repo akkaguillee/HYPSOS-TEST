@@ -1,0 +1,36 @@
+/* Transiciones entre páginas (View Transitions API, mejora progresiva). */
+
+::view-transition-old(root) {
+  animation: 220ms var(--ease-in) both page-out;
+}
+
+::view-transition-new(root) {
+  animation: 420ms var(--ease-out) both page-in;
+}
+
+/* El header permanece fijo durante la transición. */
+::view-transition-old(site-header),
+::view-transition-new(site-header) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}

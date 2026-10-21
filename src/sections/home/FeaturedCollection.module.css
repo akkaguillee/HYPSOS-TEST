@@ -1,0 +1,124 @@
+.section {
+  background: var(--c-black-2);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-7);
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--space-9);
+  }
+}
+
+.visual {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: #000;
+}
+
+@media (min-width: 1024px) {
+  .visual {
+    aspect-ratio: 5 / 6;
+  }
+}
+
+.visualMedia {
+  position: absolute;
+  inset: 0;
+}
+
+.chrome {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1.18);
+}
+
+.visualCaption {
+  position: absolute;
+  left: var(--space-5);
+  right: var(--space-5);
+  bottom: var(--space-5);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  font-size: var(--fs-2xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--c-grey);
+}
+
+.copy {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-block: 1px solid var(--line);
+}
+
+.stat {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-3) var(--space-4) 0;
+}
+
+.stat + .stat {
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--line);
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 800;
+  font-stretch: var(--stretch-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.statLabel {
+  font-size: var(--fs-2xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.mini {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.miniItem {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-sm);
+  transition: color var(--dur-hover) var(--ease-out);
+}
+
+.miniItem:hover {
+  color: var(--fg-muted);
+}
+
+.miniThumb {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #141414;
+}
+
+.miniThumb > * {
+  width: 100%;
+  height: 100%;
+}

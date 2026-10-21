@@ -1,0 +1,76 @@
+.grid {
+  display: grid;
+  gap: var(--space-7);
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-9);
+  }
+}
+
+.mascotWrap {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+}
+
+.mascot {
+  width: min(100%, 520px);
+  height: auto;
+  color: var(--c-white);
+}
+
+/* Línea roja que atraviesa la composición: conecta con el resto de secciones. */
+.mascotWrap::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18%;
+  height: 2px;
+  z-index: -1;
+  background: var(--c-red);
+  transform: scaleX(var(--line-scale, 1));
+  transform-origin: left;
+}
+
+.copy {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.handle {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 800;
+  font-stretch: var(--stretch-display);
+  text-transform: uppercase;
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 var(--space-5);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-1);
+  transition:
+    background-color var(--dur-hover) var(--ease-out),
+    color var(--dur-hover) var(--ease-out);
+}
+
+.socialLink:hover {
+  background: var(--fg);
+  color: var(--bg);
+}

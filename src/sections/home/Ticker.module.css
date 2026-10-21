@@ -1,0 +1,26 @@
+.ticker {
+  padding-block: var(--space-4);
+  background: var(--c-black);
+  border-block: 1px solid var(--line);
+  color: var(--c-white);
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding-right: var(--space-6);
+  font-family: var(--font-display);
+  font-size: clamp(0.9375rem, 0.6vw + 0.8rem, 1.25rem);
+  font-weight: 800;
+  font-stretch: var(--stretch-display);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.star {
+  width: 44px;
+  height: auto;
+  color: var(--c-red);
+}

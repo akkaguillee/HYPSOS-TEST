@@ -1,0 +1,53 @@
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-intro);
+  display: grid;
+  place-items: center;
+  background: var(--c-black);
+  color: var(--c-white);
+  cursor: pointer;
+}
+
+.mark {
+  display: grid;
+  gap: var(--space-4);
+  width: min(68vw, 520px);
+}
+
+.wordmark {
+  width: 100%;
+  height: auto;
+  clip-path: inset(0 100% 0 0);
+}
+
+.line {
+  height: 2px;
+  background: var(--c-red);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-2xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--c-grey);
+  opacity: 0;
+}
+
+.skip {
+  position: absolute;
+  bottom: max(var(--space-6), env(safe-area-inset-bottom));
+  left: 50%;
+  translate: -50% 0;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-2xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--c-grey);
+}

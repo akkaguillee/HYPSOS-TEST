@@ -1,0 +1,38 @@
+.grid {
+  display: grid;
+  gap: var(--space-6);
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-9);
+    align-items: end;
+  }
+}
+
+.copy {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.row {
+  display: grid;
+  gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .row {
+    grid-template-columns: 1fr auto;
+    align-items: start;
+  }
+
+  .row > button {
+    margin-top: 26px;
+  }
+}

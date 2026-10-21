@@ -1,0 +1,32 @@
+.stepper {
+  display: inline-grid;
+  grid-template-columns: 36px 36px 36px;
+  align-items: center;
+  height: 36px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-1);
+}
+
+.button {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--fg);
+  transition: opacity var(--dur-micro) var(--ease-out);
+}
+
+.button:disabled {
+  opacity: 0.3;
+}
+
+.button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.value {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}

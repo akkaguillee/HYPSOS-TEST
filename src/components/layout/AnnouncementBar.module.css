@@ -1,0 +1,40 @@
+.bar {
+  position: relative;
+  height: var(--announcement-h);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--c-black);
+  border-bottom: 1px solid var(--line);
+  color: var(--c-white-soft);
+  font-size: var(--fs-2xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.message {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-inline: var(--gutter);
+  text-align: center;
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  transition:
+    opacity var(--dur-enter) var(--ease-out),
+    transform var(--dur-enter) var(--ease-out);
+}
+
+.message[data-active='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--c-red);
+}

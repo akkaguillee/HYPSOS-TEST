@@ -1,0 +1,124 @@
+.list {
+  border-top: 1px solid var(--line);
+}
+
+.row {
+  border-bottom: 1px solid var(--line);
+}
+
+.link {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding-block: clamp(14px, 1.6vw, 22px);
+  transition: color var(--dur-hover) var(--ease-out);
+}
+
+@media (min-width: 768px) {
+  .link {
+    grid-template-columns: 4rem 1fr auto auto;
+    gap: var(--space-5);
+  }
+}
+
+.index {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4.4vw + 0.4rem, 5rem);
+  font-weight: 800;
+  font-stretch: var(--stretch-display);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  transition: transform var(--dur-enter) var(--ease-out);
+}
+
+.description {
+  display: none;
+  max-width: 30ch;
+  font-size: var(--fs-sm);
+  color: var(--fg-muted);
+}
+
+@media (min-width: 1024px) {
+  .description {
+    display: block;
+  }
+}
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+
+.count svg {
+  width: 20px;
+  height: 20px;
+  transition: transform var(--dur-hover) var(--ease-out);
+}
+
+@media (hover: hover) {
+  /* Al recorrer la lista, las filas no activas se atenúan. */
+  .list:hover .link {
+    color: rgb(255 255 255 / 0.35);
+  }
+
+  .list .link:hover {
+    color: var(--fg);
+  }
+
+  .link:hover .name {
+    transform: translate3d(12px, 0, 0);
+  }
+
+  .link:hover .count svg {
+    transform: translate3d(4px, 0, 0) rotate(-45deg);
+    color: var(--c-red-bright);
+  }
+}
+
+/* Vista previa que sigue al cursor (solo puntero fino). */
+.preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--z-sticky);
+  width: clamp(200px, 18vw, 280px);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  border: 1px solid var(--line);
+  background: #141414;
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.previewItem {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--dur-hover) var(--ease-out);
+}
+
+.previewItem[data-active='true'] {
+  opacity: 1;
+}
+
+.previewItem svg {
+  width: 100%;
+  height: 100%;
+}
