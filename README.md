@@ -95,27 +95,38 @@ Decisiones relevantes:
 
 ## Sistema de diseño y motion
 
-Todos los valores viven en `src/styles/tokens.css`:
+La dirección visual sigue el **Manual de Marca HYPSOS** («negro + rojo, con control») con la estructura de la guía de estilo de referencia: tipografía gigante comprimida, bandas de color a sangre, píldoras con contorno de 1 px y pegatinas troqueladas. Todos los valores viven en `src/styles/tokens.css`:
 
-- **Paleta:** `#080808`, `#F5F5F5`, rojo `#C8102E` como acento, `#242424`, grises, y `--c-studio` para el fondo de las imágenes de producto.
-- **Espaciado:** base 4 px, con márgenes laterales de 16 a 48 px y ritmo vertical de sección fluido.
-- **Tipografía:** escala fluida con Archivo expandida para titulares e Inter para texto.
-- **Motion:** duraciones `--dur-ui` (200 ms), `--dur-panel` (380 ms) y `--dur-enter`/`--dur-editorial`, con curvas `--ease-out` y `--ease-drawer`.
-- **Capas:** tokens de `z-index`.
+- **Paleta del Manual:** HYPSOS Black `#090909` (campo dominante), HYPSOS Red `#D71920` (señal: acción principal, «Edición limitada», indicador activo; una vez por vista), Deep Red `#7A0F1D`, Off White `#F2F0EC` y Concrete Grey `#747474`. Temas por zona: `data-theme="light" | "dark" | "red"` (la banda roja, como mucho una por página).
+- **Tipografía (3 familias, como pide el Manual):** Archivo condensada (eje de anchura al 62 %) para titulares comprimidos tipo cartel, Inter para el texto y JetBrains Mono para capítulos, códigos de producto, etiquetas y botones.
+- **Forma:** botones en píldora, imágenes de producto a 14 px, tarjetas a 20–32 px. Sin sombras en tarjetas.
+- **Espaciado:** base 4 px, márgenes laterales de 16 a 48 px, ritmo vertical fluido.
+- **Motion:** duraciones `--dur-ui` (200 ms), `--dur-panel` (380 ms), `--dur-enter`/`--dur-editorial`; curvas `--ease-out` y `--ease-drawer`.
 
-**Motion graphics** (solo `transform`, `opacity` y `clip-path`):
+**Liquid Glass con refracción** (`src/components/ui/LiquidGlass.tsx`, `src/lib/liquid-glass.ts`): cabecera flotante, megamenú, búsqueda, carrito y cajones, modales, etiquetas y puntos sobre fotos, controles de galería.
 
-- **Hero:** cartel claro con el monograma H en negro; el rojo solo aparece como acento (la estrella y el barrido de color). Al terminar la intro, las marcas de corte se dibujan, un barrido de color descubre el cartel, el monograma sube, la estrella gira hasta su sitio y el titular se revela por líneas. Al hacer scroll hay paralaje por capas, y con ratón un paralaje leve.
-- **«Sistema gráfico»:** las cuatro marcas en planos de color se descubren con un barrido escalonado, y cada una se mueve a su ritmo con el scroll.
-- **Colecciones:** tarjetas con planos de marca (carrusel con scroll-snap en móvil).
+- En Chromium (Chrome, Edge, Opera…) hay **refracción real**: un mapa de desplazamiento generado en canvas (perfil convexo tipo «squircle», ley de Snell con índice 1,5) se aplica con `backdrop-filter: url(#filtro)` y `feDisplacementMap`, con una ligera aberración cromática. El fondo se curva en el bisel y el centro queda plano y legible.
+- Safari y Firefox no admiten filtros SVG en `backdrop-filter`: reciben cristal con desenfoque y las mismas capas de luz, **sin refracción**.
+- Con `prefers-reduced-transparency` el material pasa a sólido; con `prefers-reduced-motion` el brillo no sigue al puntero.
+- Reglas: un cristal no va dentro de otro ni dentro de un ancestro con `opacity`, `filter`, `mask` o `clip-path`.
+
+**Portada** (por bandas): campaña a sangre con «BUILT FOR THE CLIMB.», pegatinas de HYPO y la estrella y puntos interactivos sobre las prendas → Chapter 01 (rejilla de producto) → categorías con fotos de modelos → lookbook «Above ordinary.» con la tipografía cruzándose con las fotos → detalle firma y The Climb System → cápsula Signal en la banda roja → manifiesto del Manual. Marquesina superior con las frases del Manual y el aviso de demo.
+
+**Motion graphics** (solo `transform`, `opacity` y `clip-path`): revelado de imágenes con máscara y escala, titulares que suben línea a línea, pegatinas que se «pegan», paralaje moderado, luz y pegatinas que siguen al puntero fino, transiciones de página (View Transitions) y del carrito.
 
 Accesibilidad y plataforma:
 
-- Todo respeta `prefers-reduced-motion`: contenido estático y visible.
+- Todo respeta `prefers-reduced-motion`: contenido estático y visible (la marquesina se detiene).
 - Los `:hover` solo se aplican con ratón (`hover: hover` y `pointer: fine`).
 - Controles táctiles sin retardo (`touch-action: manipulation`), campos de 16 px y márgenes seguros en horizontal.
 
-Los textos de campaña (avisos, hero, rótulos del cartel, ticker, manifiesto) se editan en `src/content/campaign.ts`. El hero acepta una foto o un vídeo de campaña en `hero.media`: en cuanto exista, sustituye al cartel.
+Los textos de campaña (marquesina, hero, lookbook, detalle firma, cápsula, manifiesto) se editan en `src/content/campaign.ts` y salen del Manual de Marca (eslogan, frases secundarias, manifiesto y biografía).
+
+### Fotografía de campaña (provisional, generada con IA)
+
+Las fotos de campaña de `public/assets/campaign/` (escalera, azotea, looks en estudio, gorra, cargo, detalle de la trabilla, accesorios) **están generadas con IA** (Figma AI) como material provisional hasta la sesión de fotos. Las prendas que aparecen son lisas (sin los gráficos de HYPSOS) y **no representan ningún producto concreto**; por eso enlazan a categorías y no a fichas. La web lo indica junto a las fotos principales («Imágenes de campaña generadas con IA · provisionales»).
+
+Para sustituirlas basta con dejar las fotos reales con el mismo nombre (`<nombre>-<ancho>.avif|webp`, anchos 640/960/original) o cambiar `shared/campaign.ts`. La foto o el vídeo oficial del hero va en `heroMedia`.
 
 ---
 
@@ -138,7 +149,7 @@ El catálogo está en `shared/catalog/`. Cada producto tiene:
 
 **Productos, precios, textos y stock son de ejemplo** (`store.demoCatalog = true` en `shared/config.ts`).
 
-**Mockups 2D:** mientras no haya fotografía, cada producto muestra un mockup digital en flat lay de estudio, en el color elegido y en tres vistas (delantera, trasera y detalle). Los genera `pnpm mockups` (`scripts/mockups/`):
+**Mockups en plano técnico (tech-pack):** mientras no haya fotografía de producto, cada producto muestra un dibujo técnico plano (siluetas oversize, costuras, pespuntes y canalé) en el color elegido y en tres vistas (delantera, trasera y detalle), sobre el fondo de estudio `#ECE9E3`. Todas las prendas llevan la **trabilla roja** firma del Manual, siempre en el mismo sitio. Los genera `pnpm mockups` (`scripts/mockups/`):
 
 - Usa las marcas oficiales como serigrafía, bordado o etiqueta tejida, sin redibujarlas.
 - Se rasteriza con Chromium a WebP de 480 y 960 px: 108 imágenes, unos 4,5 MB en el repositorio y unos 9 KB por imagen en móvil.
@@ -264,11 +275,12 @@ Los E2E de este entorno usan el Chromium del sistema: `PLAYWRIGHT_CHROMIUM_PATH=
 ## Pendientes antes de publicar
 
 1. **Catálogo real:** productos, precios, textos, composiciones, tallas y stock. Después, `demoCatalog: false`.
-2. **Fotografías** de producto y de campaña. Sustituyen automáticamente a los mockups y al cartel del hero.
+2. **Fotografías reales** de producto (frontal, trasera, detalle y puesta) y de campaña. Sustituyen a los mockups técnicos y a las fotos generadas con IA (ver «Fotografía de campaña»).
 3. **Envíos:** tarifas, plazos y países confirmados con el operador logístico (`shippingMethods`).
 4. **Stripe:** claves y webhook. Probar en modo test antes de activar el modo real.
 5. **Email** (`RESEND_API_KEY`, `MAIL_FROM`, `CONTACT_INBOX`): confirmaciones de pedido, recuperación de contraseña, avisos de stock y copia de los mensajes de contacto.
 6. **Textos legales:** datos del titular (razón social, NIF, domicilio) y revisión profesional (`src/content/pages/Legal.tsx`).
 7. **Atención al cliente:** email, plazo de respuesta y redes sociales (`shared/config.ts`).
 8. **Rendimiento en redes lentas:** prerenderizar el HTML de las rutas principales (o SSR) y cargar GSAP bajo demanda para bajar el LCP de 2,5 s en 4G lenta.
-9. **Textos de marca** (manifiesto, «Quiénes somos», colecciones): son borradores a validar.
+9. **Textos de marca:** el eslogan, el manifiesto, los valores y la biografía salen del Manual; las descripciones de colecciones y productos siguen siendo borradores a validar.
+10. **Catálogo según el Manual:** el Manual recomienda un primer drop corto (ASCENT TEE 01, CORE TEE 01, SUMMIT HOODIE 01, HYPOCAP 01, HYPOSTICKER SET 01). El catálogo de demostración aún tiene 20 piezas de ejemplo.

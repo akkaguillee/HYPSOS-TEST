@@ -1,92 +1,97 @@
-import { Mascot, Monogram, Star } from '@/components/brand/BrandVector';
-import { BrandPanel } from '@/components/brand/BrandPanel';
-import { PageHeader } from '@/components/layout/PageHeader';
-import { Parallax } from '@/components/motion/Parallax';
+import { Sticker } from '@/components/brand/Sticker';
+import { CampaignImage } from '@/components/media/CampaignImage';
+import { ImageReveal } from '@/components/motion/ImageReveal';
 import { Reveal } from '@/components/motion/Reveal';
 import { SplitHeadline } from '@/components/motion/SplitHeadline';
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs';
 import { ButtonLink } from '@/components/ui/Button';
+import { generatedImageNotice } from '@/content/campaign';
+import { campaignPhotos } from '@shared/campaign';
 import { paths } from '@shared/routes';
 import styles from './About.module.css';
 
-// TEXTOS EN BORRADOR: validar con HYPSOS. No incluyen datos factuales (fechas, lugares, nombres).
-const chapters = [
-  {
-    title: 'El nombre',
-    text: 'ὕψος significa altura en griego. Para nosotros es una dirección: subir el nivel cada día, en el entrenamiento, en la calle y en lo que creamos.',
-  },
-  {
-    title: 'Lo que hacemos',
-    text: 'Ropa de calle y entrenamiento con identidad propia. Siluetas amplias, tejidos con peso y gráficos que significan algo para quien los lleva.',
-  },
-  {
-    title: 'Cómo lo hacemos',
-    text: 'En tiradas cortas. Preferimos que una pieza se agote a llenar almacenes. Cuidamos el patrón, el gramaje y cada acabado antes de lanzar un drop.',
-  },
+// Textos del Manual de Marca HYPSOS (estrategia, valores y biografía). Sin datos inventados.
+const values = [
+  { title: 'Ascensión', text: 'Seguir siempre hacia arriba: la marca celebra el progreso en lugar de la perfección.' },
+  { title: 'Identidad', text: 'Prendas que ayudan a expresar quién eres sin necesitar una explicación ruidosa.' },
+  { title: 'Oficio', text: 'El fit, el tejido, la impresión, el bordado y los acabados importan tanto como el gráfico.' },
+  { title: 'Valentía', text: 'Campañas y textos que desafían la zona de confort sin caer en agresividad vacía.' },
+  { title: 'Pertenencia', text: 'Quien lleva HYPSOS forma parte de un universo compartido, no solo de una compra.' },
+  { title: 'Evolución', text: 'Cada drop añade un capítulo nuevo y conserva los códigos centrales de HYPSOS.' },
 ];
 
 export function AboutPage() {
   return (
     <>
-      <PageHeader
-        variant="campaign"
-        eyebrow="HYPSOS"
-        title="Quiénes somos"
-        description="Una marca de streetwear construida alrededor de una idea: estar por encima del ruido."
-        breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Quiénes somos' }]}
-      />
-
-      <section className={styles.visualSection}>
-        <Reveal variant="mask" className={styles.visual}>
-          <Parallax className={styles.visualInner} amount={7}>
-            <BrandPanel tone="light" mark="wordmark" accent className={styles.banner} />
-          </Parallax>
-        </Reveal>
-      </section>
-
-      <section className="section">
-        <div className={`container ${styles.chapters}`}>
-          {chapters.map((chapter, index) => (
-            <Reveal key={chapter.title} className={styles.chapter} index={index}>
-              <span className={styles.chapterIndex}>{String(index + 1).padStart(2, '0')}</span>
-              <h2 className="t-h3">{chapter.title}</h2>
-              <p className="t-muted">{chapter.text}</p>
-            </Reveal>
-          ))}
+      <section className={styles.hero} data-theme="dark" aria-labelledby="about-title">
+        <ImageReveal className={styles.heroMedia} from="bottom" parallax={8}>
+          <CampaignImage photo={campaignPhotos.crew} sizes="100vw" priority focus="30% 50%" />
+        </ImageReveal>
+        <div className={`container ${styles.heroContent}`}>
+          <Breadcrumbs items={[{ label: 'Inicio', to: paths.home }, { label: 'Quiénes somos' }]} />
+          <p className="eyebrow">Sobre HYPSOS · Movimiento</p>
+          <h1 id="about-title" className={styles.heroTitle}>
+            The Ascent
+          </h1>
+          <p className={styles.heroLead}>
+            HYPSOS es una marca streetwear independiente construida alrededor de una idea: seguir subiendo. Prendas premium para el día a día, gráficos
+            potentes y un sistema visual basado en capítulos que convierte el progreso personal en algo que puedes vestir.
+          </p>
+          <p className={styles.credit}>{generatedImageNotice}</p>
         </div>
       </section>
 
-      <section className="section" data-theme="light">
-        <div className={`container ${styles.marks}`}>
-          <div className={styles.marksCopy}>
-            <p className="eyebrow">Sistema de marca</p>
-            <SplitHeadline className="t-h2">Tres símbolos, una actitud</SplitHeadline>
-            <p className="t-muted">
-              El monograma H, la estrella y el personaje aparecen en las prendas, en los stickers y en cada drop. Cada uno cuenta una parte de HYPSOS.
+      <section className="section" data-theme="light" aria-labelledby="values-title">
+        <div className="container">
+          <div className="section-head">
+            <SplitHeadline id="values-title" className="t-h2">
+              Valores de marca
+            </SplitHeadline>
+            <p className="eyebrow">Built for the climb.</p>
+          </div>
+          <ol className={styles.values}>
+            {values.map((value, index) => (
+              <Reveal as="li" key={value.title} className={styles.value} index={index % 3}>
+                <span className={styles.code}>{String(index + 1).padStart(2, '0')}</span>
+                <h3 className={styles.valueTitle}>{value.title}</h3>
+                <p className={styles.valueText}>{value.text}</p>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="section" data-theme="dark" aria-labelledby="hypo-title">
+        <div className={`container ${styles.hypo}`}>
+          <div className={styles.hypoArt}>
+            <Sticker mark="mascot" rotate={-6} className={styles.hypoSticker} title="HYPO, la mascota de HYPSOS" />
+            <Sticker mark="star" color="#d71920" rotate={12} className={styles.hypoStar} />
+            <Sticker mark="monogram" color="#090909" rotate={-14} className={styles.hypoMono} />
+          </div>
+          <div className={styles.hypoCopy}>
+            <p className="eyebrow">Mascota</p>
+            <SplitHeadline id="hypo-title" className="t-display">
+              HYPO
+            </SplitHeadline>
+            <p className={styles.text}>
+              El rostro reconocible de la marca, usado como personaje y no como simple logo decorativo. Aparece en gráficos, stickers, piezas limitadas y
+              packaging, siempre separado del logotipo principal.
+            </p>
+            <p className={styles.text}>
+              Junto a él, el monograma H y la estrella completan el sistema: tres símbolos con los que reconocer HYPSOS sin ver el nombre.
             </p>
           </div>
-          <ul role="list" className={styles.markList}>
-            <Reveal as="li" className={styles.markItem} index={0}>
-              <Monogram className={styles.markMonogram} />
-              <span className="t-label">Monograma</span>
-            </Reveal>
-            <Reveal as="li" className={styles.markItem} index={1}>
-              <Star className={styles.markStar} />
-              <span className="t-label">Estrella</span>
-            </Reveal>
-            <Reveal as="li" className={`${styles.markItem} ${styles.markDark}`} index={2}>
-              <Mascot className={styles.markMascot} />
-              <span className="t-label">Personaje</span>
-            </Reveal>
-          </ul>
         </div>
       </section>
 
-      <section className="section">
+      <section className="section" data-theme="red" aria-labelledby="about-cta">
         <div className={`container ${styles.cta}`}>
-          <SplitHeadline className="t-display">Únete al próximo drop</SplitHeadline>
+          <SplitHeadline id="about-cta" className={styles.ctaTitle}>
+            Keep climbing.
+          </SplitHeadline>
           <div className={styles.ctaActions}>
-            <ButtonLink to={paths.collection('novedades')} size="lg">
-              Ver novedades
+            <ButtonLink to={paths.collection('drop-01-ascenso')} size="lg">
+              Ver Chapter 01
             </ButtonLink>
             <ButtonLink to={paths.page('contacto')} size="lg" variant="outline">
               Hablemos

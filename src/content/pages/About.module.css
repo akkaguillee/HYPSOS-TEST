@@ -1,119 +1,178 @@
-.visualSection {
-  padding-top: var(--space-6);
-}
-
-.visual {
+/* ─── Cabecera: foto de campaña a sangre y titular comprimido ───────── */
+.hero {
   position: relative;
-  height: clamp(280px, 44vw, 640px);
+  display: grid;
+  min-height: min(88svh, 860px);
   overflow: hidden;
-  background: var(--c-white-soft);
+  background: var(--bg);
+  color: var(--fg);
+  isolation: isolate;
 }
 
-/* El plano se sobredimensiona para que el paralaje nunca deje huecos. */
-.visualInner {
+.heroMedia {
   position: absolute;
-  inset: -8% 0;
+  inset: 0;
+  z-index: -1;
 }
 
-.banner {
-  width: 100%;
-  height: 100%;
+/* Velo para el contraste del texto sobre la foto. */
+.heroMedia::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(9 9 9 / 0.45) 0%, rgb(9 9 9 / 0.2) 40%, rgb(9 9 9 / 0.9) 100%);
 }
 
-.chapters {
+.heroContent {
   display: grid;
-  gap: var(--space-7);
+  align-content: end;
+  justify-items: start;
+  gap: var(--space-4);
+  padding-block: var(--space-8) var(--space-7);
 }
 
-@media (min-width: 900px) {
-  .chapters {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-6);
+.heroTitle {
+  font-family: var(--font-display);
+  font-size: clamp(4.5rem, 16vw, 16rem);
+  font-weight: 900;
+  font-stretch: var(--stretch-display);
+  line-height: var(--lh-crushed);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+}
+
+.heroLead {
+  max-width: 56ch;
+  font-size: var(--fs-lg);
+  line-height: 1.5;
+  color: rgb(242 240 236 / 0.88);
+}
+
+.credit {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: rgb(242 240 236 / 0.6);
+}
+
+/* ─── Valores: ficha técnica en 3 × 2 ───────────────────────────────── */
+.values {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  border-top: 1px solid var(--line-strong);
+  list-style: none;
+  padding: 0;
+}
+
+@media (min-width: 640px) {
+  .values {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-}
-
-.chapter {
-  display: grid;
-  gap: var(--space-3);
-  align-content: start;
-  padding-top: var(--space-5);
-  border-top: 1px solid var(--line);
-}
-
-.chapterIndex {
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  color: var(--c-red);
-  font-variant-numeric: tabular-nums;
-}
-
-.marks {
-  display: grid;
-  gap: var(--space-7);
 }
 
 @media (min-width: 1024px) {
-  .marks {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
-    align-items: center;
-    gap: var(--space-9);
+  .values {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-.marksCopy {
+.value {
   display: grid;
-  gap: var(--space-4);
-  max-width: 480px;
-}
-
-.markList {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-2);
+  align-content: start;
+  padding: var(--space-5) var(--space-5) var(--space-6) 0;
+  border-bottom: 1px solid var(--line);
 }
 
-.markItem {
+.code {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  color: var(--c-red);
+}
+
+.valueTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 2.6vw + 1rem, 3rem);
+  font-weight: 900;
+  font-stretch: var(--stretch-display);
+  line-height: var(--lh-tight);
+  text-transform: uppercase;
+}
+
+.valueText {
+  max-width: 38ch;
+  color: var(--fg-muted);
+}
+
+/* ─── HYPO ──────────────────────────────────────────────────────────── */
+.hypo {
   display: grid;
-  grid-template-rows: 1fr auto;
-  justify-items: center;
-  gap: var(--space-4);
-  aspect-ratio: 3 / 4;
-  padding: var(--space-5) var(--space-3);
-  background: var(--c-white);
-  border: 1px solid var(--line);
+  gap: var(--space-8);
+  align-items: center;
 }
 
-.markItem > svg {
-  align-self: center;
-  height: auto;
-  color: var(--c-black);
+@media (min-width: 1024px) {
+  .hypo {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
 }
 
-.markDark {
-  background: var(--c-black);
-  color: var(--c-white);
+.hypoArt {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 520px);
+  aspect-ratio: 1;
 }
 
-.markDark > svg {
-  color: var(--c-white);
+.hypoSticker {
+  position: absolute;
+  inset: 8% 6% auto 6%;
+  width: 88%;
 }
 
-.markMonogram {
-  width: 70%;
+.hypoStar {
+  position: absolute;
+  right: -2%;
+  bottom: 4%;
+  width: 46%;
 }
 
-.markStar {
-  width: 90%;
+.hypoMono {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 30%;
 }
 
-.markMascot {
-  width: 85%;
+.hypoCopy {
+  display: grid;
+  gap: var(--space-5);
+  align-content: center;
 }
 
+.text {
+  max-width: 48ch;
+  font-size: var(--fs-lg);
+  line-height: 1.5;
+  color: rgb(242 240 236 / 0.86);
+}
+
+/* ─── Llamada final en la banda roja ────────────────────────────────── */
 .cta {
   display: grid;
   gap: var(--space-6);
   justify-items: start;
+}
+
+.ctaTitle {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 15vw, 15rem);
+  font-weight: 900;
+  font-stretch: var(--stretch-display);
+  line-height: var(--lh-crushed);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
 }
 
 .ctaActions {
