@@ -3,24 +3,21 @@ import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 import { Link, type LinkProps } from 'react-router';
 import styles from './Button.module.css';
 
-type Variant = 'primary' | 'accent' | 'outline' | 'ghost';
+type Variant = 'primary' | 'accent' | 'outline' | 'ghost' | 'text';
 type Size = 'sm' | 'md' | 'lg';
 
 interface StyleProps {
   variant?: Variant;
   size?: Size;
   block?: boolean;
-  /** Reflejo de luz al pasar el cursor. Reservado para la acción principal de una vista. */
-  sheen?: boolean;
 }
 
-function buttonClass({ variant = 'primary', size = 'md', block, sheen }: StyleProps, extra?: string, loading?: boolean) {
+function buttonClass({ variant = 'primary', size = 'md', block }: StyleProps, extra?: string, loading?: boolean) {
   return cn(
     styles.button,
     styles[variant],
     size !== 'md' && styles[size],
     block && styles.block,
-    sheen && styles.sheen,
     loading && styles.loading,
     extra,
   );
@@ -31,11 +28,11 @@ interface ButtonProps extends StyleProps, ButtonHTMLAttributes<HTMLButtonElement
   ref?: Ref<HTMLButtonElement>;
 }
 
-export function Button({ variant, size, block, sheen, loading, className, children, type = 'button', disabled, ...rest }: ButtonProps) {
+export function Button({ variant, size, block, loading, className, children, type = 'button', disabled, ...rest }: ButtonProps) {
   return (
     <button
       type={type}
-      className={buttonClass({ variant, size, block, sheen }, className, loading)}
+      className={buttonClass({ variant, size, block }, className, loading)}
       data-variant={variant ?? 'primary'}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
@@ -51,9 +48,9 @@ interface ButtonLinkProps extends StyleProps, LinkProps {
   children: ReactNode;
 }
 
-export function ButtonLink({ variant, size, block, sheen, className, children, ...rest }: ButtonLinkProps) {
+export function ButtonLink({ variant, size, block, className, children, ...rest }: ButtonLinkProps) {
   return (
-    <Link className={buttonClass({ variant, size, block, sheen }, className)} data-variant={variant ?? 'primary'} viewTransition {...rest}>
+    <Link className={buttonClass({ variant, size, block }, className)} data-variant={variant ?? 'primary'} viewTransition {...rest}>
       <span className={styles.label}>{children}</span>
     </Link>
   );

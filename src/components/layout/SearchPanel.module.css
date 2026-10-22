@@ -16,7 +16,7 @@
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgb(0 0 0 / 0.6);
+  background: rgb(0 0 0 / 0.42);
   opacity: 0;
   transition: opacity var(--dur-panel) var(--ease-out);
 }
@@ -25,28 +25,37 @@
   opacity: 1;
 }
 
+/* Hoja de cristal flotante, alineada con la barra de la cabecera. */
 .panel {
+  --bar-pad: clamp(8px, calc(var(--gutter) - 32px), 16px);
+  --lg-tint: rgb(9 9 9 / 0.78);
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  max-height: 100svh;
+  top: var(--header-inset);
+  left: max(calc(var(--gutter) - var(--bar-pad)), env(safe-area-inset-left, 0px));
+  right: max(calc(var(--gutter) - var(--bar-pad)), env(safe-area-inset-right, 0px));
+  max-width: calc(var(--container) + var(--bar-pad) * 2);
+  max-height: calc(100svh - var(--header-inset) * 2);
+  margin-inline: auto;
   overflow-y: auto;
-  background: var(--c-black);
-  border-bottom: 1px solid var(--line);
-  transform: translate3d(0, -100%, 0);
-  transition: transform var(--dur-panel) var(--ease-drawer);
+  overscroll-behavior: contain;
+  border-radius: var(--radius-3);
+  opacity: 0;
+  transform: translate3d(0, -12px, 0);
+  transition:
+    opacity var(--dur-panel) var(--ease-out),
+    transform var(--dur-panel) var(--ease-drawer);
   outline: none;
 }
 
 .root[data-open='true'] .panel {
+  opacity: 1;
   transform: none;
 }
 
 .inner {
   display: grid;
   gap: var(--space-6);
-  padding-block: var(--space-5) var(--space-7);
+  padding: var(--space-4) calc(var(--bar-pad) + var(--space-2)) var(--space-6);
 }
 
 .form {
@@ -82,9 +91,8 @@
 }
 
 .input::placeholder {
-  color: var(--c-graphite);
+  color: rgb(255 255 255 / 0.38);
   opacity: 1;
-  color: #4a4a4a;
 }
 
 .input::-webkit-search-cancel-button {
@@ -137,22 +145,21 @@
 .result {
   display: grid;
   gap: var(--space-2);
-  padding: var(--space-2);
-  margin: calc(var(--space-2) * -1);
-  border: 1px solid transparent;
   font-size: var(--fs-xs);
   cursor: pointer;
-}
-
-.result[data-active='true'] {
-  border-color: var(--line-strong);
-  background: rgb(245 245 245 / 0.03);
 }
 
 .resultMedia {
   aspect-ratio: 4 / 5;
   overflow: hidden;
+  border-radius: var(--radius-2);
   background: var(--c-studio);
+  transition: box-shadow var(--dur-ui) var(--ease-out);
+}
+
+/* Resultado activo (teclado o puntero): un anillo fino, sin desplazar la rejilla. */
+.result[data-active='true'] .resultMedia {
+  box-shadow: 0 0 0 1px var(--c-white);
 }
 
 .resultMedia > * {

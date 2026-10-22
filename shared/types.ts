@@ -119,6 +119,8 @@ export interface Collection {
   tagline: string;
   description: string;
   releasedAt: string;
+  /** Prenda que representa la colección en tarjetas y menús (dirección de arte, no automática). */
+  cover: { handle: string; colorId: string; view: MediaView };
 }
 
 export interface CartLineInput {

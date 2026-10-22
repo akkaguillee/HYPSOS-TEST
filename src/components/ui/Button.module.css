@@ -8,13 +8,14 @@
   justify-content: center;
   gap: var(--space-2);
   min-height: 48px;
-  padding: 0 var(--space-5);
+  padding: 0 var(--space-6);
   border: 1px solid var(--btn-border);
-  border-radius: var(--radius-1);
+  border-radius: var(--radius-pill);
   background: var(--btn-bg);
   color: var(--btn-fg);
+  font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  font-weight: 650;
+  font-weight: 600;
   letter-spacing: var(--tracking-label);
   line-height: 1;
   text-transform: uppercase;
@@ -40,37 +41,46 @@
 }
 
 .lg {
-  min-height: 56px;
-  padding: 0 var(--space-6);
-  font-size: var(--fs-sm);
-  letter-spacing: 0.1em;
+  min-height: 54px;
+  padding: 0 var(--space-7);
+  font-size: 0.8125rem;
 }
 
 .sm {
   min-height: 40px;
-  padding: 0 var(--space-4);
+  padding: 0 var(--space-5);
 }
 
 .block {
   width: 100%;
 }
 
+/* Acción principal: HYPSOS Red (Manual: el rojo marca la llamada a la acción). Una por pantalla. */
 .primary {
+  --btn-bg: var(--c-red);
+  --btn-fg: var(--c-white-soft);
+  --btn-border: var(--c-red);
+}
+
+/* Sobre la banda roja, la acción principal se invierte. */
+[data-theme='red'] .primary {
+  --btn-bg: var(--c-black);
+  --btn-fg: var(--c-white-soft);
+  --btn-border: var(--c-black);
+}
+
+/* Contraste: relleno del color del texto (negro sobre claro, blanco roto sobre negro). */
+.accent {
   --btn-bg: var(--fg);
   --btn-fg: var(--bg);
   --btn-border: var(--fg);
 }
 
-.accent {
-  --btn-bg: var(--c-red);
-  --btn-fg: var(--c-white);
-  --btn-border: var(--c-red);
-}
-
+/* Secundario: píldora con contorno de 1 px, como una pegatina recortada. */
 .outline {
   --btn-bg: transparent;
   --btn-fg: var(--fg);
-  --btn-border: var(--line-strong);
+  --btn-border: var(--fg);
 }
 
 .ghost {
@@ -80,46 +90,67 @@
   padding-inline: var(--space-3);
 }
 
+/* Acción de texto (cabeceras de sección): sin relleno lateral, el texto se alinea con la rejilla. */
+.text {
+  --btn-bg: transparent;
+  --btn-fg: var(--fg);
+  --btn-border: transparent;
+  min-height: 44px;
+  padding-inline: 0;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.text .label {
+  position: relative;
+}
+
+.text .label::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+  transform: scaleX(0.35);
+  transform-origin: left;
+  transition:
+    transform var(--dur-hover) var(--ease-out),
+    opacity var(--dur-hover) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .text:hover .label::after {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (hover: hover) and (pointer: fine) {
   .primary:hover {
-    --btn-bg: var(--fg-soft);
+    --btn-bg: #b8141a;
+    --btn-border: #b8141a;
+  }
+
+  [data-theme='red'] .primary:hover {
+    --btn-bg: var(--c-black-2);
+    --btn-border: var(--c-black-2);
   }
 
   .accent:hover {
-    --btn-bg: var(--c-red-dark);
-    --btn-border: var(--c-red-dark);
+    --btn-bg: color-mix(in srgb, var(--fg) 86%, var(--bg));
+    --btn-border: color-mix(in srgb, var(--fg) 86%, var(--bg));
   }
 
   .outline:hover {
     --btn-bg: var(--fg);
     --btn-fg: var(--bg);
-    --btn-border: var(--fg);
   }
 
   .ghost:hover {
     --btn-fg: var(--fg-muted);
-  }
-}
-
-/* Reflejo: un barrido de luz breve al pasar el cursor (solo botones destacados). */
-.sheen::after {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  z-index: -1;
-  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.55) 50%, transparent 65%);
-  transform: translateX(-120%);
-  pointer-events: none;
-}
-
-.accent.sheen::after {
-  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.28) 50%, transparent 65%);
-}
-
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .sheen:hover::after {
-    transform: translateX(120%);
-    transition: transform 700ms var(--ease-out);
   }
 }
 

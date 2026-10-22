@@ -10,10 +10,7 @@
   max-height: calc(100svh - var(--space-6));
   overflow-y: auto;
   padding: var(--space-5);
-  border: 1px solid var(--line-strong);
-  background: var(--bg-raised);
-  color: var(--fg);
-  box-shadow: 0 20px 60px rgb(0 0 0 / 0.5);
+  border-radius: var(--radius-3);
   animation: rise var(--dur-enter) var(--ease-out);
 }
 

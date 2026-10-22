@@ -1,0 +1,171 @@
+/*
+ * Liquid Glass con refracción (ver LiquidGlass.tsx y src/lib/liquid-glass.ts).
+ *
+ * Capas, de abajo arriba (todas dentro del contexto de apilamiento de la raíz, bajo los hijos):
+ *   0. Raíz: sombra exterior (no toca la capa óptica).
+ *   1. .lens (z −2): backdrop-filter — refracción SVG (Blink) o blur + saturate (resto) —, tinte
+ *      (--lg-tint) y box-shadow inset: filo de luz de 1 px arriba-izquierda, sombra interior
+ *      abajo-derecha y resplandor interior suave → volumen.
+ *   2. ::before (z −1): luz de borde direccional (anillo de 1 px, gradiente cónico; sigue al puntero).
+ *   3. ::after (z −1): brillo especular (radial en la posición del puntero + lámina superior).
+ *   4. Hijos.
+ *
+ * Mismas reglas que `.glass` (src/styles/glass.css): ningún ancestro con opacity < 1, filter, mask,
+ * clip-path ni otro backdrop-filter, y no anidar cristales.
+ *
+ * Las reglas base van en :where() (especificidad 0) para que la clase del consumidor pueda cambiar
+ * position, padding, display, sombra… sin pelear con el orden de carga de los CSS Modules.
+ */
+:where(.root) {
+  /* Tono oscuro (por defecto) */
+  --lg-tint: rgb(9 9 9 / 0.35);
+  --lg-fg: #f2f0ec;
+  --lg-edge-hi: rgb(255 255 255 / 0.3);
+  --lg-edge-lo: rgb(0 0 0 / 0.42);
+  --lg-glow: rgb(255 255 255 / 0.07);
+  --lg-rim: rgb(255 255 255 / 0.7);
+  --lg-rim-soft: rgb(255 255 255 / 0.22);
+  --lg-sheen: rgb(255 255 255 / 0.09);
+  --lg-spot: rgb(255 255 255 / 0.08);
+  --lg-solid: var(--glass-solid, #141414);
+  --lg-fallback-blur: blur(16px) saturate(170%);
+  --lg-drop: 0 12px 32px rgb(0 0 0 / 0.28), 0 2px 6px rgb(0 0 0 / 0.18);
+
+  /* Luz por defecto: desde arriba-izquierda. El puntero las sobrescribe en línea. */
+  --lg-angle: -45deg;
+  --lg-px: 24%;
+  --lg-py: -12%;
+
+  position: relative;
+  isolation: isolate;
+  border: 0;
+  border-radius: var(--lg-radius, 24px);
+  background: transparent;
+  color: var(--lg-fg);
+  box-shadow: var(--lg-drop);
+  transition: color var(--dur-ui, 200ms) var(--ease-out, ease-out);
+}
+
+:where(.root[data-tone='light']) {
+  --lg-tint: rgb(242 240 236 / 0.45);
+  --lg-fg: #090909;
+  --lg-edge-hi: rgb(255 255 255 / 0.9);
+  --lg-edge-lo: rgb(9 9 9 / 0.16);
+  --lg-glow: rgb(255 255 255 / 0.28);
+  --lg-rim: rgb(255 255 255 / 1);
+  --lg-rim-soft: rgb(255 255 255 / 0.45);
+  --lg-sheen: rgb(255 255 255 / 0.22);
+  --lg-spot: rgb(255 255 255 / 0.16);
+  --lg-solid: #f2f0ec;
+  --lg-drop: 0 12px 30px rgb(0 0 0 / 0.18), 0 2px 6px rgb(0 0 0 / 0.12);
+}
+
+.lens {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  border-radius: inherit;
+  background-color: var(--lg-tint);
+  box-shadow:
+    inset 1px 1px 0 0 var(--lg-edge-hi),
+    inset -1px -1px 0 0 var(--lg-edge-lo),
+    inset 0 0 22px 0 var(--lg-glow);
+  -webkit-backdrop-filter: var(--lg-fallback-blur);
+  backdrop-filter: var(--lg-fallback-blur);
+  pointer-events: none;
+  transition: background-color var(--dur-ui, 200ms) var(--ease-out, ease-out);
+}
+
+/* Refracción real: el filtro SVG (url) lo inyecta el componente solo en Blink y tras medir. */
+.root[data-glass='refraction'] > .lens {
+  -webkit-backdrop-filter: var(--lg-filter);
+  backdrop-filter: var(--lg-filter);
+}
+
+/* Luz de borde direccional: anillo fino (1 px), sin bordes blancos gruesos. */
+.root::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--lg-angle),
+    var(--lg-rim) 0deg,
+    transparent 70deg,
+    transparent 150deg,
+    var(--lg-rim-soft) 180deg,
+    transparent 210deg,
+    transparent 290deg,
+    var(--lg-rim) 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+/* Brillo especular: mancha que sigue al puntero + lámina superior. */
+.root::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(80% 70% at var(--lg-px) var(--lg-py), var(--lg-spot), transparent 62%),
+    linear-gradient(180deg, var(--lg-sheen), transparent 45%);
+  pointer-events: none;
+}
+
+.root[data-lit='true'] {
+  --lg-spot: rgb(255 255 255 / 0.18);
+  --lg-rim: rgb(255 255 255 / 0.9);
+}
+
+.root[data-tone='light'][data-lit='true'] {
+  --lg-spot: rgb(255 255 255 / 0.32);
+}
+
+:where(.root):focus-visible {
+  outline: 2px solid var(--focus-ring, #f2f0ec);
+  outline-offset: 3px;
+}
+
+/* Contenedor del <filter> (portal a <body>): fuera del flujo y sin pintar. */
+.defs {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Sin backdrop-filter en absoluto: superficie sólida equivalente. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .lens {
+    background-color: var(--lg-solid);
+  }
+}
+
+/* Transparencia reducida: superficie sólida (#141414 / #f2f0ec), sin refracción ni especular.
+   Especificidad alta para ganar a cualquier override: la preferencia del usuario manda. */
+@media (prefers-reduced-transparency: reduce) {
+  .root > .lens,
+  .root[data-glass='refraction'] > .lens {
+    background-color: var(--lg-solid);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .root::after {
+    display: none;
+  }
+}

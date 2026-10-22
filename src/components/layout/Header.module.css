@@ -1,3 +1,7 @@
+/*
+ * Cabecera flotante: barra de avisos a todo el ancho y, debajo, una barra de cristal separada de
+ * los bordes. Su tono (claro u oscuro) sigue a la superficie que tiene debajo.
+ */
 .top {
   position: fixed;
   top: 0;
@@ -8,77 +12,69 @@
   view-transition-name: site-header;
 }
 
-/* Al bajar se oculta; al hacer scroll se recoge la barra de avisos. */
+/* Al hacer scroll se recoge la barra de avisos; al bajar se oculta todo. */
 .top[data-condensed='true'] {
   transform: translate3d(0, calc(var(--announcement-h) * -1), 0);
 }
 
 .top[data-hidden='true'] {
-  transform: translate3d(0, -100%, 0);
+  transform: translate3d(0, calc(-100% - var(--header-inset)), 0);
+}
+
+/*
+ * Marco: aparta la barra de los bordes. El relleno interior de la barra (--bar-pad) más este
+ * margen suman el margen lateral de la página, así el contenido de la barra queda alineado con
+ * el de las secciones.
+ */
+.frame {
+  --bar-pad: clamp(8px, calc(var(--gutter) - 32px), 16px);
+  padding: var(--header-inset) max(calc(var(--gutter) - var(--bar-pad)), env(safe-area-inset-right, 0px)) 0
+    max(calc(var(--gutter) - var(--bar-pad)), env(safe-area-inset-left, 0px));
+  pointer-events: none;
 }
 
 .header {
   position: relative;
-  color: var(--c-white);
+  max-width: calc(var(--container) + var(--bar-pad) * 2);
+  margin-inline: auto;
+  pointer-events: auto;
 }
 
-.header::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: rgb(8 8 8 / 0.94);
-  backdrop-filter: saturate(140%) blur(16px);
-  -webkit-backdrop-filter: saturate(140%) blur(16px);
-  border-bottom: 1px solid var(--line);
-  transition: opacity var(--dur-hover) var(--ease-out);
-}
-
-/* Sobre el hero de la portada: transparente con degradado para legibilidad. */
-.top[data-transparent='true'] .header::before {
-  opacity: 0;
-}
-
-.top[data-transparent='true'] .header::after {
-  content: '';
-  position: absolute;
-  inset: 0 0 -40px;
-  z-index: -2;
-  background: linear-gradient(rgb(0 0 0 / 0.5), transparent);
-  pointer-events: none;
-}
-
-.inner {
+.bar {
+  --header-fg: var(--c-white);
+  --header-fg-muted: rgb(255 255 255 / 0.74);
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  height: var(--header-h);
+  height: var(--header-bar-h);
+  padding-inline: calc(var(--bar-pad) + 2px);
+  color: var(--header-fg);
 }
 
-.left {
+.bar[data-tone='light'] {
+  --header-fg: var(--c-black);
+  --header-fg-muted: rgb(8 8 8 / 0.7);
+}
+
+.left,
+.actions {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
-  margin-left: -10px;
+}
+
+.actions {
+  justify-content: flex-end;
 }
 
 .logo {
   display: block;
   padding: var(--space-2) var(--space-3);
-  color: var(--c-white);
+  color: inherit;
 }
 
 .logo svg {
-  width: clamp(104px, 9vw + 60px, 148px);
+  width: clamp(96px, 8vw + 56px, 136px);
   height: auto;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-1);
-  margin-right: -10px;
 }
 
 .nav {
@@ -96,7 +92,6 @@
 
   .nav {
     display: block;
-    margin-left: 10px;
   }
 
   .desktopOnly {
@@ -107,7 +102,6 @@
 .navList {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
 }
 
 .navLink {
@@ -115,35 +109,39 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 44px;
+  height: 40px;
   padding: 0 var(--space-3);
+  border-radius: var(--radius-pill);
   font-size: var(--fs-xs);
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgb(255 255 255 / 0.82);
-  transition: color var(--dur-hover) var(--ease-out);
+  color: var(--header-fg-muted);
+  transition:
+    color var(--dur-hover) var(--ease-out),
+    background-color var(--dur-hover) var(--ease-out);
 }
 
-.navLink[aria-expanded='true'] {
-  color: var(--c-white);
+.navLink[aria-expanded='true'],
+.navLink.active {
+  color: var(--header-fg);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .navLink:hover {
-    color: var(--c-white);
+    color: var(--header-fg);
+    background: color-mix(in srgb, var(--header-fg) 8%, transparent);
   }
 }
 
-/* Indicador rojo de sección activa. */
+/* Sección activa: un punto rojo bajo el texto, el único acento de la barra. */
 .navLink::after {
   content: '';
   position: absolute;
-  left: 50%;
-  bottom: 6px;
+  left: calc(50% - 2px);
+  bottom: 3px;
   width: 4px;
   height: 4px;
-  margin-left: -2px;
   border-radius: 50%;
   background: var(--c-red);
   opacity: 0;
@@ -153,12 +151,7 @@
     transform var(--dur-ui) var(--ease-out);
 }
 
-.navLink.active {
-  color: var(--c-white);
-}
-
-.navLink.active::after,
-.navLink[aria-expanded='true']::after {
+.navLink.active::after {
   opacity: 1;
   transform: scale(1);
 }
@@ -179,13 +172,12 @@
 
 .accountDot {
   position: absolute;
-  right: 9px;
-  bottom: 9px;
-  width: 7px;
-  height: 7px;
+  right: 10px;
+  bottom: 10px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--c-red);
-  box-shadow: 0 0 0 2px var(--c-black);
 }
 
 /* En móviles estrechos la cuenta vive en el menú y el logotipo se reduce para no saturar la cabecera. */
@@ -199,6 +191,6 @@
   }
 
   .logo svg {
-    width: 92px;
+    width: 88px;
   }
 }

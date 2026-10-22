@@ -1,57 +1,58 @@
 /**
  * Qué se dibuja para cada producto: tipo de pieza, gráficos por vista y zona de detalle.
  * Los gráficos son siempre las marcas oficiales, colocadas como se describen en la ficha.
+ * Coordenadas en el espacio de diseño de apparel.ts (la escena se encuadra después).
  */
 import type { MediaView, Product } from '../../shared/types';
 import { hoodie, longsleeve, pants, tee, type ApparelSpec, type Box } from './apparel';
 import { accessory } from './accessories';
-import { FABRIC, H, INK_DARK, INK_LIGHT, Scene, shade, W } from './kit';
+import { FABRIC, INK_DARK, INK_LIGHT, Scene, shade } from './kit';
 
 const RED_INK = '#c8102e';
 const toneOnTone = (scene: Scene) => shade(scene.fabric, scene.dark ? 0.16 : -0.12);
 
 const apparel: Record<string, ApparelSpec> = {
   'p-tee-ascenso': {
-    front: [() => ({ mark: 'monogram', x: 340, y: 286, w: 120, technique: 'screen' })],
-    detail: [250, 200, 300, 375],
+    front: [() => ({ mark: 'monogram', x: 334, y: 300, w: 132, technique: 'screen' })],
+    detail: [256, 190, 288, 360],
   },
   'p-tee-signal': {
-    front: [() => ({ mark: 'star', x: 446, y: 276, w: 96, technique: 'screen', color: RED_INK, rotate: -6 })],
-    back: [() => ({ mark: 'star', x: 196, y: 300, w: 408, technique: 'screen', color: RED_INK, rotate: -6 })],
-    detail: [380, 220, 220, 275],
+    front: [() => ({ mark: 'star', x: 448, y: 288, w: 96, technique: 'screen', color: RED_INK, rotate: -6 })],
+    back: [() => ({ mark: 'star', x: 186, y: 300, w: 428, technique: 'screen', color: RED_INK, rotate: -6 })],
+    detail: [392, 212, 200, 250],
   },
   'p-tee-mascot': {
-    front: [() => ({ mark: 'mascot', x: 290, y: 268, w: 220, technique: 'screen' })],
+    front: [() => ({ mark: 'mascot', x: 283, y: 290, w: 234, technique: 'screen' })],
     detail: [250, 220, 300, 375],
   },
   'p-ls-base': {
-    front: [(s) => ({ mark: 'monogram', x: 452, y: 288, w: 48, technique: 'embroidery', color: toneOnTone(s) })],
-    detail: [380, 220, 180, 225],
+    front: [(s) => ({ mark: 'monogram', x: 454, y: 290, w: 48, technique: 'embroidery', color: toneOnTone(s) })],
+    detail: [398, 232, 160, 200],
   },
   'p-hoodie-ascenso': {
-    front: [() => ({ mark: 'wordmark', x: 316, y: 340, w: 168, technique: 'embroidery' })],
-    detail: [270, 270, 260, 325],
+    front: [() => ({ mark: 'wordmark', x: 314, y: 404, w: 172, technique: 'embroidery' })],
+    detail: [270, 290, 260, 325],
   },
   'p-hoodie-monogram': {
-    back: [() => ({ mark: 'monogram', x: 214, y: 452, w: 372, technique: 'screen' })],
-    detail: [250, 420, 300, 375],
+    back: [() => ({ mark: 'monogram', x: 212, y: 392, w: 376, technique: 'screen' })],
+    detail: [168, 320, 464, 580],
   },
   'p-hoodie-base': {
-    front: [() => ({ mark: 'monogram', x: 450, y: 330, w: 46, technique: 'embroidery' })],
-    detail: [380, 260, 180, 225],
+    front: [() => ({ mark: 'monogram', x: 452, y: 392, w: 46, technique: 'embroidery' })],
+    detail: [356, 290, 200, 250],
     cords: true,
   },
   'p-jogger-tecnico': {
-    front: [() => ({ mark: 'monogram', x: 486, y: 290, w: 42, technique: 'embroidery' })],
-    detail: [420, 200, 180, 225],
+    front: [() => ({ mark: 'monogram', x: 470, y: 296, w: 42, technique: 'embroidery' })],
+    detail: [420, 236, 160, 200],
   },
   'p-cargo-altura': {
-    front: [() => ({ mark: 'monogram', x: 230, y: 410, w: 30, technique: 'woven', color: RED_INK })],
-    detail: [170, 360, 180, 225],
+    front: [() => ({ mark: 'monogram', x: 224, y: 398, w: 34, technique: 'woven', color: RED_INK })],
+    detail: [156, 360, 176, 220],
   },
   'p-short-training': {
-    front: [() => ({ mark: 'monogram', x: 488, y: 560, w: 40, technique: 'screen' })],
-    detail: [420, 480, 180, 225],
+    front: [() => ({ mark: 'monogram', x: 516, y: 618, w: 44, technique: 'screen' })],
+    detail: [460, 560, 160, 200],
   },
 };
 
@@ -69,18 +70,18 @@ export function mockupSVG({ product, colorId, view }: MockupJob): string {
   const baseView = view === 'back' || (view === 'detail' && spec && !spec.front?.length && spec.back?.length) ? 'back' : 'front';
 
   if (spec) {
-    const scene = new Scene(fabric, { heather: colorId === 'gris' });
+    const bottoms = product.silhouette === 'pants' || product.silhouette === 'shorts';
+    const scene = new Scene(fabric, bottoms ? 'bottoms' : 'tops');
     if (product.silhouette === 'tee') tee(scene, baseView, spec);
     else if (product.silhouette === 'longsleeve') longsleeve(scene, baseView, spec);
     else if (product.silhouette === 'hoodie') hoodie(scene, baseView, spec);
     else if (product.silhouette === 'pants') pants(scene, baseView, spec, product.id === 'p-cargo-altura' ? 'cargo' : 'jogger');
     else if (product.silhouette === 'shorts') pants(scene, baseView, spec, 'shorts');
-    return scene.toSVG(view === 'detail' ? viewBox(spec.detail) : undefined);
+    return scene.toSVG(view === 'detail' ? spec.detail : undefined);
   }
-  const { svg, detail } = accessory(product, colorId, view, fabric);
-  return view === 'detail' && detail ? svg.replace(`viewBox="0 0 ${W} ${H}"`, `viewBox="${viewBox(detail)}"`) : svg;
+  const { scene, detail } = accessory(product, colorId, view === 'back' ? 'back' : 'front', fabric);
+  return scene.toSVG(view === 'detail' ? detail : undefined);
 }
 
-const viewBox = ([x, y, w, h]: Box) => `${x} ${y} ${w} ${h}`;
-
+export type { Box };
 export { INK_DARK, INK_LIGHT };

@@ -1,64 +1,59 @@
+/* Marquesina: la cinta se duplica y se desplaza media longitud para un bucle sin saltos. */
 .bar {
   position: relative;
   height: var(--announcement-h);
-  display: grid;
-  place-items: center;
   overflow: hidden;
   background: var(--c-black);
-  border-bottom: 1px solid var(--line);
   color: var(--c-white-soft);
+  font-family: var(--font-mono);
   font-size: var(--fs-2xs);
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
 
-.message {
-  grid-area: 1 / 1;
-  min-width: 0;
-  max-width: 100%;
-  white-space: nowrap;
-  display: inline-flex;
+.track {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  animation: marquee 48s linear infinite;
+}
+
+.bar:hover .track {
+  animation-play-state: paused;
+}
+
+.run {
+  display: flex;
   align-items: center;
-  gap: var(--space-2);
-  padding-inline: var(--gutter);
-  text-align: center;
-  opacity: 0;
-  transform: translate3d(0, 8px, 0);
-  transition:
-    opacity var(--dur-enter) var(--ease-out),
-    transform var(--dur-enter) var(--ease-out);
-}
-
-.message[data-active='true'] {
-  opacity: 1;
-  transform: none;
-}
-
-.long,
-.short {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.short {
-  display: none;
-}
-
-@media (max-width: 559px) {
-  .long {
-    display: none;
-  }
-
-  .short {
-    display: inline;
-  }
-}
-
-.dot {
   flex: none;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--c-red);
+}
+
+.item {
+  padding-inline: var(--space-5);
+  white-space: nowrap;
+}
+
+/* El aviso de demo, siempre presente, en gris para distinguirlo del lema. */
+.item[data-notice] {
+  color: var(--c-grey);
+}
+
+.mark {
+  flex: none;
+  width: 22px;
+  height: auto;
+  color: var(--c-red);
+}
+
+@keyframes marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
 }

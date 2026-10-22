@@ -1,4 +1,5 @@
-import { BrandPanel } from '@/components/brand/BrandPanel';
+import { ProductMedia } from '@/components/commerce/ProductMedia';
+import { LiquidGlass } from '@/components/ui/LiquidGlass';
 import { shopNav } from '@/content/navigation';
 import { productsByCategory, productsByCollection, products } from '@shared/catalog';
 import { paths } from '@shared/routes';
@@ -13,13 +14,16 @@ interface MegaMenuProps {
   onMouseEnter: () => void;
 }
 
+const FEATURED_COLLECTION = 'drop-01-ascenso';
+
 export function MegaMenu({ id, open, onNavigate, onMouseEnter }: MegaMenuProps) {
+  const featured = productsByCollection(FEATURED_COLLECTION)[0];
   let index = 0;
   const item = () => ({ '--i': index++ }) as CSSProperties;
 
   return (
-    <div id={id} className={styles.panel} data-open={open} inert={!open} onMouseEnter={onMouseEnter}>
-      <div className={`container ${styles.grid}`}>
+    <LiquidGlass id={id} radius={20} bezel={18} refraction={22} className={styles.panel} data-open={open} inert={!open} onMouseEnter={onMouseEnter}>
+      <div className={styles.grid}>
         <div>
           <p className={`eyebrow ${styles.columnTitle}`}>Ropa</p>
           <ul role="list" className={styles.list}>
@@ -65,15 +69,19 @@ export function MegaMenu({ id, open, onNavigate, onMouseEnter }: MegaMenuProps) 
             ))}
           </ul>
         </div>
-        <Link to={paths.collection('drop-01-ascenso')} className={styles.feature} onClick={onNavigate} viewTransition>
-          <BrandPanel tone="graphite" mark="monogram" className={styles.featureImage} />
+        <Link to={paths.collection(FEATURED_COLLECTION)} className={styles.feature} data-theme="light" onClick={onNavigate} viewTransition>
+          {featured && (
+            <span className={styles.featureMedia}>
+              <ProductMedia product={featured} media={featured.media[0]} decorative sizes="240px" />
+            </span>
+          )}
           <span className={styles.featureText}>
-            <span className="eyebrow">Drop 01</span>
-            <span className={styles.featureTitle}>Ascenso</span>
-            <span className="t-label link">Comprar ahora</span>
+            <span className="eyebrow">Chapter 01</span>
+            <span className={styles.featureTitle}>Ascent</span>
+            <span className="t-label link">Ver colección</span>
           </span>
         </Link>
       </div>
-    </div>
+    </LiquidGlass>
   );
 }

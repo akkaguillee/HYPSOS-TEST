@@ -52,15 +52,16 @@
   color: var(--c-white);
 }
 
-.bigLink[aria-current='page']::before {
+/* Página actual: punto rojo tras el nombre. */
+.bigLink[aria-current='page'] .label::after {
   content: '';
-  align-self: center;
+  display: inline-block;
   width: 6px;
   height: 6px;
-  margin-right: calc(var(--space-2) * -1);
+  margin-left: var(--space-3);
   border-radius: 50%;
   background: var(--c-red);
-  order: -1;
+  vertical-align: middle;
 }
 
 .count {

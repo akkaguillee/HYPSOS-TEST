@@ -41,7 +41,7 @@ export function renderHtml(template: string, pathname: string, publicUrl: string
     meta.preloadImage
       ? `<link rel="preload" as="image" href="${escapeHtml(meta.preloadImage.href)}"${
           meta.preloadImage.srcset ? ` imagesrcset="${escapeHtml(meta.preloadImage.srcset)}" imagesizes="${escapeHtml(meta.preloadImage.sizes)}"` : ''
-        } fetchpriority="high" />`
+        }${meta.preloadImage.type ? ` type="${escapeHtml(meta.preloadImage.type)}"` : ''} fetchpriority="high" />`
       : '',
     ...(meta.jsonLd ?? []).map((data) => `<script type="application/ld+json">${escapeJsonForScript(data)}</script>`),
   ].filter(Boolean);

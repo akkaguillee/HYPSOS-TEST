@@ -61,7 +61,7 @@ export function Layout() {
       <div className={styles.progress} data-loading={navigation.state === 'loading'} aria-hidden="true" />
       <IntroLoader />
       <Header />
-      <main id="main" ref={mainRef} tabIndex={-1} className={styles.main} data-home={isHome}>
+      <main id="main" ref={mainRef} tabIndex={-1} className={styles.main} data-home={isHome} data-theme="light">
         <Outlet />
       </main>
       <Footer />

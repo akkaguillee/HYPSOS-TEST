@@ -1,29 +1,26 @@
-import { BrandLab } from '@/sections/home/BrandLab';
-import { CategoryIndex } from '@/sections/home/CategoryIndex';
-import { FeaturedCollections } from '@/sections/home/FeaturedCollections';
-import { FeaturedProducts } from '@/sections/home/FeaturedProducts';
+import { CategoryShowcase } from '@/sections/home/CategoryShowcase';
+import { ChapterDrop } from '@/sections/home/ChapterDrop';
+import { Editorial } from '@/sections/home/Editorial';
 import { Hero } from '@/sections/home/Hero';
+import { LimitedDrop } from '@/sections/home/LimitedDrop';
 import { Manifesto } from '@/sections/home/Manifesto';
-import { NewArrivals } from '@/sections/home/NewArrivals';
-import { Newsletter } from '@/sections/home/Newsletter';
-import { Ticker } from '@/sections/home/Ticker';
+import { Signature } from '@/sections/home/Signature';
 
 /**
- * Portada: campaña → colecciones → novedades → destacados → categorías → editorial →
- * laboratorio gráfico/3D → newsletter. Se alternan bloques oscuros y pausas en claro.
+ * Portada por bandas a sangre (Manual: negro dominante, rojo como señal, blanco roto):
+ * campaña (negro) → Chapter 01 (claro) → categorías con modelos (negro) → lookbook y detalle firma
+ * (claro) → cápsula (rojo, una vez) → manifiesto (negro) → newsletter y pie.
  */
 export default function HomePage() {
   return (
     <>
       <Hero />
-      <Ticker />
-      <FeaturedCollections />
-      <NewArrivals />
-      <FeaturedProducts />
-      <CategoryIndex />
+      <ChapterDrop />
+      <CategoryShowcase />
+      <Editorial />
+      <Signature />
+      <LimitedDrop />
       <Manifesto />
-      <BrandLab />
-      <Newsletter />
     </>
   );
 }

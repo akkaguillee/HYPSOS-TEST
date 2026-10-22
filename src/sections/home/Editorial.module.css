@@ -1,0 +1,115 @@
+.section {
+  overflow: hidden;
+}
+
+/*
+ * Escenario: el titular ocupa todo el ancho en dos líneas y las fotos se colocan sobre él en una
+ * rejilla de 12 columnas, tapando parte de las letras (la tipografía queda detrás).
+ */
+.stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  margin-top: var(--space-5);
+}
+
+.title {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  align-self: start;
+  display: grid;
+  align-content: start;
+  font-family: var(--font-display);
+  font-size: clamp(4.5rem, 19vw, 21rem);
+  font-weight: 900;
+  font-stretch: var(--stretch-display);
+  line-height: var(--lh-crushed);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.wordB {
+  justify-self: end;
+}
+
+.figA,
+.figB {
+  position: relative;
+  z-index: 1;
+  grid-row: 1;
+  display: grid;
+  gap: var(--space-2);
+  align-self: start;
+}
+
+.figA {
+  grid-column: 7 / span 4;
+  margin-top: 0.45em;
+  font-size: clamp(4.5rem, 19vw, 21rem);
+}
+
+.figB {
+  grid-column: 2 / span 3;
+  align-self: end;
+  font-size: clamp(4.5rem, 19vw, 21rem);
+  translate: 0 40%; /* propiedad independiente: no choca con el paralaje (transform) */
+}
+
+.frame {
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-4);
+  background: var(--surface);
+}
+
+.caption {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.foot {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+  margin-top: clamp(var(--space-9), 14vw, 15rem);
+}
+
+@media (min-width: 1024px) {
+  .foot {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    margin-left: calc(100% / 12 * 6);
+  }
+}
+
+.text {
+  max-width: 44ch;
+  font-size: var(--fs-lg);
+  line-height: 1.45;
+}
+
+/* Móvil: dos fotos lado a lado bajo el titular, la segunda desplazada. */
+@media (max-width: 767px) {
+  .title,
+  .figA,
+  .figB {
+    font-size: 17vw;
+  }
+
+  .figA {
+    grid-column: 6 / span 7;
+    margin-top: 1.1em;
+  }
+
+  .figB {
+    grid-column: 1 / span 5;
+    translate: 0 60%;
+  }
+
+  .foot {
+    margin-top: calc(var(--space-12) + var(--space-8));
+  }
+}

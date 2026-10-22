@@ -1,5 +1,6 @@
 import { ProductMedia } from '@/components/commerce/ProductMedia';
 import { ButtonLink, IconButton } from '@/components/ui/Button';
+import { LiquidGlass } from '@/components/ui/LiquidGlass';
 import { Price } from '@/components/ui/Price';
 import { useFocusTrap } from '@/hooks/useFocusTrap';
 import { useScrollLock } from '@/hooks/useScrollLock';
@@ -72,10 +73,10 @@ export function SearchPanel() {
   };
 
   return (
-    <div className={styles.root} data-open={open} inert={!open}>
+    <div className={styles.root} data-theme="dark" data-open={open} inert={!open}>
       <div className={styles.overlay} onClick={close} aria-hidden="true" />
-      <div ref={panelRef} className={styles.panel} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
-        <div className={`container ${styles.inner}`}>
+      <LiquidGlass ref={panelRef} radius={20} bezel={18} refraction={22} className={styles.panel} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
+        <div className={styles.inner}>
           <h2 id={titleId} className="visually-hidden">
             Buscar productos
           </h2>
@@ -163,7 +164,7 @@ export function SearchPanel() {
             </>
           )}
         </div>
-      </div>
+      </LiquidGlass>
     </div>
   );
 }

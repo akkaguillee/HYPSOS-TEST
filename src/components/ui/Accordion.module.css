@@ -31,11 +31,10 @@
 .icon::after {
   content: '';
   position: absolute;
-  top: 50%;
+  top: calc(50% - 0.75px);
   left: 0;
   width: 12px;
   height: 1.5px;
-  margin-top: -0.75px;
   background: currentColor;
   transition: transform var(--dur-hover) var(--ease-out);
 }

@@ -218,7 +218,7 @@ function ProductView({ product }: { product: Product }) {
             )}
 
             <div ref={buyButton} className={styles.purchase}>
-              <Button size="lg" block sheen onClick={addToCart} disabled={!colorAvailable} className={added ? styles.added : undefined}>
+              <Button size="lg" block onClick={addToCart} disabled={!colorAvailable} className={added ? styles.added : undefined}>
                 {added && <Check aria-hidden="true" size={18} />}
                 {buttonLabel}
               </Button>

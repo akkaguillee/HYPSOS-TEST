@@ -1,12 +1,15 @@
 /**
  * TEXTOS DE CAMPAÑA EDITABLES.
  * Todo el copy de la portada y de la barra de avisos está aquí para cambiarlo sin tocar componentes.
+ * Fuente: Manual de Marca HYPSOS (eslogan, frases secundarias, manifiesto y biografía).
  * Regla: no incluir promesas comerciales (descuentos, envío gratis, fechas de lanzamiento,
  * plazos) que no estén confirmadas en shared/config.ts.
  */
+import { campaignPhotos, heroMedia, heroPhoto } from '@shared/campaign';
 import { paths } from '@shared/routes';
 
-export const announcements: string[] = ['HYPSOS — Por encima del ruido', 'Colección Ascenso', 'Streetwear · Training · Cultura urbana'];
+/** Banda superior en movimiento: frases del Manual (se repiten en bucle). */
+export const announcements: string[] = ['Built for the climb.', 'Chapter 01 / Ascent', 'Reach higher.', 'Keep climbing.'];
 
 /** Aviso fijo mientras el catálogo sea de demostración (store.demoCatalog). */
 export const demoNotice = {
@@ -14,35 +17,53 @@ export const demoNotice = {
   short: 'Demo · datos no reales',
 };
 
+/** Aviso sobre las imágenes de campaña provisionales. */
+export const generatedImageNotice = 'Imágenes de campaña generadas con IA · provisionales';
+
 export const hero = {
-  eyebrow: 'Colección Ascenso',
-  title: 'Por encima del ruido',
-  lead: 'Siluetas amplias, tejidos con peso y gráficos con intención. Streetwear para entrenar, moverse y destacar.',
-  primaryCta: { label: 'Descubrir la colección', to: paths.collection('drop-01-ascenso') },
-  secondaryCta: { label: 'Toda la tienda', to: paths.collection('all') },
-  /** Rótulos del cartel animado (esquinas). */
-  poster: { topLeft: 'Drop 01', topRight: 'Ascenso', bottomLeft: 'HYPSOS', bottomRight: 'Streetwear' },
-  /**
-   * Medio de campaña opcional. Mientras no exista fotografía o vídeo oficial, el cartel se
-   * compone con las marcas planas (monograma H y estrella). Ejemplos:
-   *   { type: 'image', src: '/assets/campaign/hero.avif', alt: '…', width: 2400, height: 1600 }
-   *   { type: 'video', src: '/assets/campaign/hero.mp4', poster: '/assets/campaign/hero.jpg' }
-   */
-  media: null as
-    | null
-    | { type: 'image'; src: string; alt: string; width: number; height: number }
-    | { type: 'video'; src: string; poster: string },
+  chapter: 'Chapter 01 / Ascent',
+  title: 'Built for the climb.',
+  lead: 'Streetwear independiente con un punto premium, gráficos con intención y drops limitados guiados por historias.',
+  primaryCta: { label: 'Comprar Chapter 01', to: paths.collection('drop-01-ascenso') },
+  secondaryCta: { label: 'Ver el editorial', to: '#editorial' },
+  /** Foto o vídeo oficial de campaña; mientras no exista, la foto provisional (shared/campaign.ts). */
+  media: heroMedia,
+  photo: heroPhoto,
 };
 
-export const ticker = ['Por encima del ruido', 'Streetwear', 'Movimiento', 'Training', 'Cultura urbana', 'Comunidad'];
+export const editorial = {
+  kicker: 'Lookbook · Chapter 01',
+  title: 'Above ordinary.',
+  text: 'Siluetas amplias, algodón con peso y una trabilla roja siempre en el mismo sitio. Así se lleva el primer capítulo.',
+};
+
+export const signature = {
+  kicker: 'El detalle firma',
+  title: 'Una señal roja.',
+  text: 'La firma de HYPSOS: una pequeña trabilla tejida en HYPSOS Red, colocada siempre en el mismo lugar. Sutil de cerca, reconocible a distancia.',
+  photo: campaignPhotos.detail,
+};
+
+export const limited = {
+  kicker: 'Cápsula Signal · Ediciones cortas',
+  title: 'Reach higher.',
+  text: 'La estrella HYPSOS, en gráficos de tirada corta.',
+  cta: { label: 'Ver Signal', to: paths.collection('signal') },
+  photo: campaignPhotos.rooftop,
+};
 
 export const manifesto = {
   title: 'Manifiesto',
-  statement: 'Hecho para quien sube un escalón cada día. Ropa para entrenar, para la calle y para todo lo que pasa entre medias.',
-  accent: 'Sin permiso. Sin ruido.',
-  pillars: [
-    { title: 'Identidad', text: 'Cada pieza lleva una idea detrás. Nada de logos por rellenar.' },
-    { title: 'Movimiento', text: 'Patrones pensados para entrenar, caminar la ciudad y no parar.' },
-    { title: 'Comunidad', text: 'HYPSOS es de quien lo lleva. Cada colección se construye con vosotros.' },
-  ],
+  movement: 'The Ascent',
+  statement: 'Siempre hay otro nivel. HYPSOS existe para las personas que siguen avanzando, aprendiendo, creando y construyendo.',
+  accent: 'No estamos aquí para parecer terminados. Estamos aquí para seguir subiendo.',
+  photo: campaignPhotos.crew,
 };
+
+/** The Climb System (Manual, sección 04): los códigos que hacen reconocible a HYPSOS. */
+export const climbSystem = [
+  { code: '01', title: 'Capítulos', text: 'Cada drop es un capítulo: Chapter 01 / Ascent.' },
+  { code: '02', title: 'Niveles', text: 'Cada pieza lleva su código, como HYP-TS-001.' },
+  { code: '03', title: 'Marca roja', text: 'Una trabilla en HYPSOS Red, siempre en el mismo sitio.' },
+  { code: '04', title: 'Frase oculta', text: 'Una frase corta en el interior: Keep climbing.' },
+];

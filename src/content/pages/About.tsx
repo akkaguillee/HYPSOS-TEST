@@ -85,7 +85,7 @@ export function AboutPage() {
         <div className={`container ${styles.cta}`}>
           <SplitHeadline className="t-display">Únete al próximo drop</SplitHeadline>
           <div className={styles.ctaActions}>
-            <ButtonLink to={paths.collection('novedades')} size="lg" sheen>
+            <ButtonLink to={paths.collection('novedades')} size="lg">
               Ver novedades
             </ButtonLink>
             <ButtonLink to={paths.page('contacto')} size="lg" variant="outline">

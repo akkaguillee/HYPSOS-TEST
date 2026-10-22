@@ -1,365 +1,254 @@
 /*
- * Hero de campaña: copy a la izquierda y cartel de marca a la derecha (escritorio y móvil en
- * horizontal); en móvil vertical el cartel va primero y el copy debajo.
+ * Hero de campaña: foto a sangre bajo la cabecera de cristal, titular comprimido gigante abajo a
+ * la izquierda con dos pegatinas de marca, y la entradilla + acciones en la base.
  */
 .hero {
+  --hero-type: var(--fs-campaign);
   position: relative;
   display: grid;
-  align-content: center;
-  gap: var(--space-7);
   min-height: 100svh;
-  padding-top: calc(var(--announcement-h) + var(--header-h) + var(--space-5));
-  padding-bottom: var(--space-6);
   overflow: hidden;
-  background: var(--c-black);
-  color: var(--c-white);
+  background: var(--bg);
+  color: var(--fg);
   isolation: isolate;
 }
 
-.inner {
-  display: grid;
-  gap: var(--space-7);
+/* ─── Foto ──────────────────────────────────────────────────────────── */
+.media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  container-type: size;
+}
+
+.image,
+.image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.image {
+  /* Margen para el paralaje sin descubrir los bordes. */
+  transform: scale(1.06);
+  transform-origin: 50% 40%;
+}
+
+/* Velo inferior para leer el titular sobre la foto (no decora: garantiza contraste). */
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(9 9 9 / 0.55) 0%, rgb(9 9 9 / 0) 22%, rgb(9 9 9 / 0) 45%, rgb(9 9 9 / 0.88) 100%);
+  pointer-events: none;
+}
+
+/* Capa con la proporción de la foto (1536×864) y su mismo encuadre «cover» (foco 62 % 40 %). */
+.hotspots {
+  --ratio: 1.7778;
+  position: absolute;
+  width: max(100cqw, 100cqh * var(--ratio));
+  height: max(100cqh, 100cqw / var(--ratio));
+  left: calc((100cqw - max(100cqw, 100cqh * var(--ratio))) * 0.62);
+  top: calc((100cqh - max(100cqh, 100cqw / var(--ratio))) * 0.4);
+}
+
+.hotspot {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  display: inline-flex;
   align-items: center;
+  gap: var(--space-2);
+  height: 40px;
+  padding: 0 var(--space-4) 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  transform: translate(-20px, -50%);
 }
 
-@media (min-width: 1024px) {
-  .hero {
-    padding-top: calc(var(--announcement-h) + var(--header-h) + var(--space-7));
-  }
-
-  .inner {
-    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
-    gap: clamp(var(--space-7), 5vw, var(--space-11));
-  }
-}
-
-/* ─── Copy ──────────────────────────────────────────────────────────── */
-.copy {
+.hotspot svg {
   display: grid;
-  gap: var(--space-5);
-  justify-items: start;
-  order: 2;
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  border-radius: 50%;
+  background: var(--c-white-soft);
+  color: var(--c-black);
+  transition: transform var(--dur-hover) var(--ease-out);
 }
 
-@media (min-width: 1024px) {
-  .copy {
-    order: 0;
+@media (hover: hover) and (pointer: fine) {
+  .hotspot:hover svg {
+    transform: rotate(90deg);
   }
 }
 
-.eyebrow {
-  color: rgb(255 255 255 / 0.84);
+/* En móvil vertical solo cabe la prenda central. */
+@media (max-width: 767px) and (orientation: portrait) {
+  .hotspot[data-spot='cargo'] {
+    display: none;
+  }
 }
 
-.headline {
-  max-width: 11ch;
-  font-family: var(--font-display);
-  font-size: clamp(3rem, 6.4vw + 0.5rem, 8.5rem);
-  font-weight: 850;
-  font-stretch: var(--stretch-display);
-  line-height: var(--lh-tight);
-  letter-spacing: var(--tracking-display);
+/* ─── Texto ─────────────────────────────────────────────────────────── */
+.content {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  min-height: 100svh;
+  padding-top: calc(var(--announcement-h) + var(--header-h) + var(--space-4));
+  padding-bottom: var(--space-6);
+  pointer-events: none;
+}
+
+.content a,
+.content button {
+  pointer-events: auto;
+}
+
+.chapter {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 34px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
 
+.chapterDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-red);
+}
+
+.titleBlock {
+  position: relative;
+  align-self: end;
+  justify-self: start;
+  margin-bottom: var(--space-5);
+}
+
+/* Titular-objeto: condensado al máximo y comprimido, como un cartel. */
+.headline {
+  max-width: 7.2em;
+  font-family: var(--font-display);
+  font-size: var(--hero-type);
+  font-weight: 900;
+  font-stretch: var(--stretch-display);
+  line-height: var(--lh-crushed);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  text-wrap: balance;
+  color: var(--c-white-soft);
+}
+
+.stickerSlot {
+  position: absolute;
+  pointer-events: none;
+}
+
+.sticker {
+  width: 100%;
+}
+
+/* Pegatinas «pegadas» sobre el titular: posiciones en em del propio titular, escalan con él. */
+.stickerMascot {
+  top: -0.32em;
+  left: 3.3em;
+  width: 0.78em;
+  font-size: var(--hero-type);
+}
+
+.stickerStar {
+  bottom: 0.02em;
+  left: 4.05em;
+  width: 0.9em;
+  font-size: var(--hero-type);
+}
+
+.footer {
+  display: grid;
+  gap: var(--space-5);
+  align-items: end;
+}
+
+@media (min-width: 1024px) {
+  .footer {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+
 .lead {
-  max-width: 42ch;
+  max-width: 44ch;
   font-size: var(--fs-lg);
-  line-height: var(--lh-snug);
-  color: rgb(255 255 255 / 0.78);
+  line-height: 1.45;
+  color: rgb(242 240 236 / 0.86);
 }
 
 .ctas {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
-  width: 100%;
-  margin-top: var(--space-2);
 }
 
-.ctas > * {
-  flex: 1 1 auto;
-}
-
-@media (min-width: 480px) {
-  .ctas > * {
-    flex: 0 0 auto;
-  }
-}
-
-/* ─── Cartel ────────────────────────────────────────────────────────── */
-.stage {
-  position: relative;
-  width: 100%;
-  max-width: 560px;
-  justify-self: center;
-}
-
-@media (min-width: 1024px) {
-  .stage {
-    /* El cartel nunca supera el alto disponible bajo la cabecera. */
-    max-width: min(100%, calc((100svh - var(--announcement-h) - var(--header-h) - var(--space-12)) * 0.8));
-    justify-self: end;
-  }
-}
-
-.poster,
-.wipe {
-  position: relative;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-}
-
-@media (max-width: 1023px) and (orientation: portrait) {
-  .poster,
-  .wipe {
-    aspect-ratio: 1 / 1;
-  }
-}
-
-.poster {
-  /* Cartel claro con el monograma en negro: el rojo queda como acento (estrella y barrido). */
-  background: var(--c-white-soft);
-  color: var(--c-black);
-  container-type: inline-size;
-}
-
-.poster[data-media] {
-  background: var(--c-black-2);
-}
-
-.wipe {
-  position: absolute;
-  inset: 0;
-  background: var(--c-red);
-  clip-path: inset(100% 0% 0% 0%);
-  pointer-events: none;
-}
-
-.monoShift,
-.starShift {
-  position: absolute;
-}
-
-.monoShift {
-  inset: 0;
-  display: grid;
-  place-items: center;
-}
-
-/* El monograma sangra por la derecha: encuadre editorial, sin alterar sus proporciones. */
-.mono {
-  width: 112%;
-  height: auto;
-  margin-left: 18%;
-}
-
-/* Cartel cuadrado (móvil en vertical): el monograma sube para no tapar los rótulos inferiores. */
-@media (max-width: 1023px) and (orientation: portrait) {
-  .mono {
-    width: 96%;
-    margin: -10% 0 0 22%;
-  }
-}
-
-.starShift {
-  top: 9%;
-  left: 7%;
-  width: 46%;
-}
-
-.starSpin,
-.starIdle {
-  position: relative;
-}
-
-.star {
-  width: 100%;
-  height: auto;
-  color: var(--c-red);
-}
-
-.starIdle {
-  animation: star-drift 48s linear infinite;
-}
-
-@keyframes star-drift {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.label {
-  position: absolute;
-  font-size: clamp(0.625rem, 2.4cqi, 0.75rem);
-  font-weight: 700;
+.credit {
+  margin-top: var(--space-5);
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  line-height: 1;
+  color: rgb(242 240 236 / 0.6);
 }
 
-.label[data-pos='tl'] {
-  top: var(--space-4);
-  left: var(--space-4);
-}
-
-.label[data-pos='tr'] {
-  top: var(--space-4);
-  right: var(--space-4);
-}
-
-.label[data-pos='bl'] {
-  bottom: var(--space-4);
-  left: var(--space-4);
-}
-
-.label[data-pos='br'] {
-  bottom: var(--space-4);
-  right: var(--space-4);
-}
-
-/* Cartel pequeño (móvil en horizontal): solo los rótulos superiores. */
-@container (max-width: 300px) {
-  .label[data-pos='bl'],
-  .label[data-pos='br'] {
-    display: none;
-  }
-}
-
-/* Marcas de corte de imprenta alrededor del cartel. */
-.cropMark {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border-color: rgb(255 255 255 / 0.4);
-  border-style: solid;
-  border-width: 0;
-}
-
-.cropMark[data-corner='tl'] {
-  top: -10px;
-  left: -10px;
-  border-top-width: 1px;
-  border-left-width: 1px;
-}
-
-.cropMark[data-corner='tr'] {
-  top: -10px;
-  right: -10px;
-  border-top-width: 1px;
-  border-right-width: 1px;
-}
-
-.cropMark[data-corner='bl'] {
-  bottom: -10px;
-  left: -10px;
-  border-bottom-width: 1px;
-  border-left-width: 1px;
-}
-
-.cropMark[data-corner='br'] {
-  bottom: -10px;
-  right: -10px;
-  border-bottom-width: 1px;
-  border-right-width: 1px;
-}
-
-.campaignAsset {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* ─── Pie del hero ──────────────────────────────────────────────────── */
-.meta {
-  display: none;
-}
-
-@media (min-width: 1024px) {
-  .meta {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: var(--space-4);
-    font-size: var(--fs-2xs);
-    font-weight: 600;
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
-    color: rgb(255 255 255 / 0.62);
-  }
-}
-
-.metaLine {
-  height: 1px;
-  background: linear-gradient(90deg, var(--c-red), rgb(200 16 46 / 0.15));
-  transform-origin: left;
-}
-
-.scrollHint {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.scrollHint svg {
-  width: 14px;
-  height: 14px;
-}
-
-/*
- * Móvil u otras pantallas en horizontal con poca altura: dos columnas, el cartel dimensionado
- * por la altura disponible.
- */
-@media (orientation: landscape) and (max-height: 520px) {
+/* ─── Móvil vertical ────────────────────────────────────────────────── */
+@media (max-width: 767px) and (orientation: portrait) {
   .hero {
-    gap: 0;
-    padding-top: calc(var(--announcement-h) + var(--header-h) + var(--space-4));
-    padding-bottom: var(--space-5);
+    --hero-type: 20.5vw;
   }
 
-  .inner {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: var(--space-6);
-  }
-
-  .copy {
-    order: 0;
-    gap: var(--space-3);
-  }
-
-  .headline {
-    font-size: clamp(2rem, 11svh, 4rem);
+  .stickerStar {
+    left: 3.85em;
+    width: 0.62em;
   }
 
   .lead {
-    font-size: var(--fs-sm);
-  }
-
-  .ctas {
-    flex-wrap: nowrap;
+    font-size: var(--fs-md);
   }
 
   .ctas > * {
-    flex: 0 0 auto;
-  }
-
-  .stage {
-    width: calc((100svh - var(--announcement-h) - var(--header-h) - var(--space-9)) * 0.8);
-    max-width: none;
-  }
-
-  .poster,
-  .wipe {
-    aspect-ratio: 4 / 5;
-  }
-
-  .meta {
-    display: none;
+    flex: 1 1 auto;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .starIdle {
-    animation: none;
+/* ─── Pantallas apaisadas con poca altura (móvil en horizontal) ─────── */
+@media (orientation: landscape) and (max-height: 520px) {
+  .content {
+    padding-top: calc(var(--announcement-h) + var(--header-h) + var(--space-2));
+    padding-bottom: var(--space-4);
+  }
+
+  .hero {
+    --hero-type: clamp(3rem, 22svh, 6rem);
+  }
+
+  .titleBlock {
+    margin-bottom: var(--space-3);
+  }
+
+  .lead,
+  .credit {
+    display: none;
   }
 }

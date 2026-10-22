@@ -1,81 +1,60 @@
 .section {
   position: relative;
+  display: grid;
+  min-height: min(100svh, 980px);
   overflow: hidden;
-}
-
-.grid {
-  display: grid;
-  gap: var(--space-7);
-}
-
-@media (min-width: 1024px) {
-  .grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
-    gap: var(--space-8);
-  }
-}
-
-.aside {
-  display: grid;
-  align-content: start;
-  gap: var(--space-5);
-}
-
-.monogram {
-  width: 72px;
-  height: auto;
-  color: var(--c-black);
-}
-
-.greek {
-  font-size: var(--fs-sm);
-  line-height: 1.5;
-  color: var(--fg-muted);
-}
-
-.greek strong {
-  display: block;
-  font-size: var(--fs-h3);
-  font-weight: 600;
+  background: var(--bg);
   color: var(--fg);
+  isolation: isolate;
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+/* Velo para leer el manifiesto sobre la foto (contraste AA en todo el bloque). */
+.media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgb(9 9 9 / 0.88) 0%, rgb(9 9 9 / 0.6) 55%, rgb(9 9 9 / 0.2) 100%);
+}
+
+.content {
+  display: grid;
+  align-content: end;
+  gap: var(--space-6);
+  padding-block: var(--section-y);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.head :global(.eyebrow) {
+  color: var(--fg);
+}
+
+.sticker {
+  width: clamp(64px, 7vw, 104px);
 }
 
 .statement {
+  max-width: 24ch;
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 3.6vw + 0.6rem, 4.25rem);
-  font-weight: 800;
-  font-stretch: var(--stretch-heading);
-  line-height: 1.02;
-  letter-spacing: -0.015em;
+  font-size: clamp(2.25rem, 3.8vw, 4.5rem);
+  font-weight: 900;
+  font-stretch: var(--stretch-display);
+  line-height: 0.9;
+  letter-spacing: var(--tracking-display);
   text-transform: uppercase;
-  text-wrap: balance;
 }
 
+/* El acento no cambia de color: el rojo ya tiene su banda. Cambia de peso y de tono. */
 .accent {
-  color: var(--c-red);
-}
-
-.foot {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4) var(--space-7);
-  margin-top: var(--space-7);
-  padding-top: var(--space-5);
-  border-top: 1px solid var(--line);
-}
-
-.pillar {
-  display: grid;
-  gap: var(--space-2);
-  max-width: 260px;
-  font-size: var(--fs-sm);
-  color: var(--fg-muted);
-}
-
-.pillar strong {
-  color: var(--fg);
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
+  color: rgb(242 240 236 / 0.62);
 }

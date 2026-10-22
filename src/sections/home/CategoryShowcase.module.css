@@ -1,0 +1,181 @@
+/*
+ * Rejilla asimétrica: en escritorio, una pieza alta a la izquierda (sudaderas), dos medianas y dos
+ * apaisadas; en móvil, dos columnas con la primera a todo el ancho.
+ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.tile {
+  position: relative;
+  min-width: 0;
+}
+
+.tile[data-index='0'] {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-auto-rows: clamp(240px, 24vw, 360px);
+    gap: var(--space-4);
+  }
+
+  .tile[data-index='0'] {
+    grid-column: 1 / span 5;
+    grid-row: 1 / span 2;
+  }
+
+  .tile[data-index='1'] {
+    grid-column: 6 / span 4;
+  }
+
+  .tile[data-index='2'] {
+    grid-column: 10 / span 3;
+  }
+
+  .tile[data-index='3'] {
+    grid-column: 6 / span 3;
+  }
+
+  .tile[data-index='4'] {
+    grid-column: 9 / span 4;
+  }
+}
+
+.link {
+  position: relative;
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-4);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.media {
+  aspect-ratio: 4 / 5;
+  height: 100%;
+  background: var(--surface);
+}
+
+.tile[data-index='0'] .media {
+  aspect-ratio: 4 / 5;
+}
+
+@media (max-width: 1023px) {
+  .tile[data-index='0'] .media {
+    aspect-ratio: 5 / 4;
+  }
+}
+
+/* En escritorio la altura la marcan las filas de la rejilla. */
+@media (min-width: 1024px) {
+  .media,
+  .tile[data-index='0'] .media {
+    aspect-ratio: auto;
+  }
+}
+
+.media img {
+  transition: transform var(--dur-editorial) var(--ease-out);
+}
+
+/* Velo inferior: garantiza el contraste del nombre sobre la foto. */
+.link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(9 9 9 / 0) 55%, rgb(9 9 9 / 0.72) 100%);
+  pointer-events: none;
+}
+
+.label {
+  position: absolute;
+  left: var(--space-4);
+  right: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.2vw, 3.5rem);
+  font-weight: 900;
+  font-stretch: var(--stretch-display);
+  line-height: var(--lh-crushed);
+  text-transform: uppercase;
+  color: var(--c-white-soft);
+}
+
+.tile[data-index='0'] .name {
+  font-size: clamp(2.5rem, 6vw, 6rem);
+}
+
+.go {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  transition: transform var(--dur-hover) var(--ease-out);
+}
+
+.go svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link:hover .media img {
+    transform: scale(1.04);
+  }
+
+  .link:hover .go {
+    transform: rotate(45deg);
+  }
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 4px;
+}
+
+.more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}
+
+/* Píldoras con contorno de 1 px (pegatina recortada). */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 var(--space-5);
+  border: 1px solid var(--fg);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  transition:
+    background-color var(--dur-hover) var(--ease-out),
+    color var(--dur-hover) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
+}

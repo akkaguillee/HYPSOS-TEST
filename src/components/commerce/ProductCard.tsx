@@ -20,9 +20,16 @@ interface ProductCardProps {
   priority?: boolean;
   sizes?: string;
   headingLevel?: 'h2' | 'h3';
+  /** En listados de novedades la etiqueta «Nuevo» sobra. */
+  hideNewBadge?: boolean;
 }
 
-export function ProductCard({ product, priority, sizes, headingLevel: Heading = 'h3' }: ProductCardProps) {
+/**
+ * Tarjeta de producto: imagen limpia sobre el fondo de estudio (trasera al pasar el cursor),
+ * código técnico del producto, nombre, precio y tallas del color elegido, con las agotadas
+ * tachadas. Toda la tarjeta enlaza a la ficha; añadido rápido con puntero fino.
+ */
+export function ProductCard({ product, priority, sizes, headingLevel: Heading = 'h3', hideNewBadge }: ProductCardProps) {
   const { known, lookup } = useStock();
   const firstAvailable = product.colors.find((color) => isColorAvailable(product, color.id, lookup)) ?? product.colors[0];
   const [chosenColor, setChosenColor] = useState<string | null>(null);
@@ -53,10 +60,10 @@ export function ProductCard({ product, priority, sizes, headingLevel: Heading = 
             <ProductMedia product={product} media={media[1]} colorId={colorId} className={cn(styles.mediaLayer, styles.mediaBack)} sizes={sizes} decorative />
           </span>
         )}
-        <ProductBadges product={product} />
+        <ProductBadges product={product} hideNew={hideNewBadge} />
         <WishlistButton product={product} />
         {available && known && (
-          <div className={styles.quickAdd}>
+          <div className={`glass glass--strong ${styles.quickAdd}`} data-theme="dark">
             <p className={styles.quickLabel}>Añadido rápido · {color.name}</p>
             <div className={styles.quickSizes}>
               {product.sizes.map((size) => {
@@ -79,6 +86,7 @@ export function ProductCard({ product, priority, sizes, headingLevel: Heading = 
         )}
       </div>
       <div className={styles.info}>
+        <p className={styles.code}>{product.code}</p>
         <Heading className={styles.title}>
           <Link to={url} className={styles.titleLink} viewTransition>
             {product.name}
@@ -86,7 +94,7 @@ export function ProductCard({ product, priority, sizes, headingLevel: Heading = 
         </Heading>
         <Price amount={product.price} compareAt={product.compareAtPrice} className={styles.price} />
         <div className={styles.meta}>
-          {product.colors.length > 1 ? (
+          {product.colors.length > 1 && (
             <div className={styles.swatches} role="group" aria-label={`Colores de ${product.name}`}>
               {product.colors.map((option) => (
                 <button
@@ -101,10 +109,22 @@ export function ProductCard({ product, priority, sizes, headingLevel: Heading = 
                 </button>
               ))}
             </div>
-          ) : (
-            <span>{product.colors[0].name}</span>
           )}
-          {!available && <span>Agotado</span>}
+          {/* Agotado: lo indica la etiqueta de la imagen; no se repite aquí. */}
+          {available && product.sizes.length > 1 && (
+            <p className={styles.sizes}>
+              <span className="visually-hidden">Tallas en {color.name.toLowerCase()}: </span>
+              {product.sizes.map((size) => {
+                const inStock = !known || getStock(product, colorId, size, lookup) > 0;
+                return (
+                  <span key={size} className={styles.size} data-out={!inStock || undefined}>
+                    {size}
+                    {!inStock && <span className="visually-hidden"> (agotada)</span>}{' '}
+                  </span>
+                );
+              })}
+            </p>
+          )}
         </div>
       </div>
     </article>

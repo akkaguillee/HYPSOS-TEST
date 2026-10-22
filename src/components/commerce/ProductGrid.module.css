@@ -114,7 +114,7 @@
 
 .progressBar {
   height: 100%;
-  background: var(--c-red);
+  background: var(--fg);
   transform-origin: left;
   transition: transform var(--dur-hover) var(--ease-out);
 }

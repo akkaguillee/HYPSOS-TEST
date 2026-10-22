@@ -1,14 +1,13 @@
-import { Monogram } from '@/components/brand/BrandVector';
-import { Reveal } from '@/components/motion/Reveal';
-import { useReducedMotion } from '@/hooks/useMediaQuery';
-import { gsap, SplitText, useGSAP } from '@/lib/motion';
-import { useRef } from 'react';
+import { Sticker } from '@/components/brand/Sticker';
+import { CampaignImage } from '@/components/media/CampaignImage';
+import { ImageReveal } from '@/components/motion/ImageReveal';
 import { manifesto } from '@/content/campaign';
+import { useReducedMotion } from '@/hooks/useMediaQuery';
+import { EASE, gsap, SplitText, useGSAP } from '@/lib/motion';
+import { useRef } from 'react';
 import styles from './Manifesto.module.css';
 
-const { pillars } = manifesto;
-
-/** Pausa editorial en claro: el manifiesto se ilumina palabra a palabra con el scroll. */
+/** Manifiesto del Manual de Marca sobre una foto de campaña a sangre. El texto entra línea a línea una vez. */
 export function Manifesto() {
   const root = useRef<HTMLElement>(null);
   const statement = useRef<HTMLParagraphElement>(null);
@@ -17,49 +16,39 @@ export function Manifesto() {
   useGSAP(
     () => {
       if (reduced || !statement.current) return;
-      const split = SplitText.create(statement.current, { type: 'words', wordsClass: 'manifesto-word' });
-      gsap.fromTo(
-        split.words,
-        { opacity: 0.14 },
-        {
-          opacity: 1,
-          ease: 'none',
-          stagger: 0.1,
-          scrollTrigger: { trigger: statement.current, start: 'top 80%', end: 'bottom 45%', scrub: 0.4 },
-        },
-      );
+      SplitText.create(statement.current, {
+        type: 'lines',
+        mask: 'lines',
+        linesClass: 'split-line',
+        autoSplit: true,
+        onSplit: (self) =>
+          gsap.from(self.lines, {
+            yPercent: 105,
+            duration: 0.9,
+            ease: EASE.out,
+            stagger: 0.08,
+            scrollTrigger: { trigger: statement.current, start: 'top 85%', once: true },
+          }),
+      });
     },
     { scope: root, dependencies: [reduced], revertOnUpdate: true },
   );
 
   return (
-    <section ref={root} className={`section ${styles.section}`} data-theme="light" aria-labelledby="manifesto-title">
-      <div className="container">
-        <div className={styles.grid}>
-          <Reveal className={styles.aside}>
-            <h2 id="manifesto-title" className="eyebrow">
-              {manifesto.title}
-            </h2>
-            <Monogram className={styles.monogram} />
-            <p className={styles.greek}>
-              <strong lang="grc">ὕψος</strong>
-              Del griego: altura, elevación.
-            </p>
-          </Reveal>
-          <div>
-            <p ref={statement} className={styles.statement}>
-              {manifesto.statement} <span className={styles.accent}>{manifesto.accent}</span>
-            </p>
-            <div className={styles.foot}>
-              {pillars.map((pillar, index) => (
-                <Reveal key={pillar.title} className={styles.pillar} index={index}>
-                  <strong>{pillar.title}</strong>
-                  {pillar.text}
-                </Reveal>
-              ))}
-            </div>
-          </div>
+    <section ref={root} className={styles.section} data-theme="dark" aria-labelledby="manifesto-title">
+      <ImageReveal className={styles.media} from="bottom" parallax={10}>
+        <CampaignImage photo={manifesto.photo} sizes="100vw" decorative focus="30% 50%" />
+      </ImageReveal>
+      <div className={`container ${styles.content}`}>
+        <div className={styles.head}>
+          <h2 id="manifesto-title" className="eyebrow">
+            {manifesto.title} · {manifesto.movement}
+          </h2>
+          <Sticker mark="mascot" rotate={7} className={styles.sticker} />
         </div>
+        <p ref={statement} className={styles.statement}>
+          {manifesto.statement} <span className={styles.accent}>{manifesto.accent}</span>
+        </p>
       </div>
     </section>
   );

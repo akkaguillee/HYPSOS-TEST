@@ -16,7 +16,7 @@
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgb(0 0 0 / 0.62);
+  background: rgb(0 0 0 / 0.42);
   opacity: 0;
   transition: opacity var(--dur-panel) var(--ease-out);
 }
@@ -25,30 +25,30 @@
   opacity: 1;
 }
 
+/* Hoja de cristal flotante, separada de los bordes de la pantalla. */
 .panel {
+  --sheet-inset: var(--space-2);
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: max(var(--sheet-inset), env(safe-area-inset-top, 0px));
+  bottom: max(var(--sheet-inset), env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: column;
-  width: min(100%, var(--drawer-width, 440px));
-  background: var(--bg-raised);
-  color: var(--fg);
-  box-shadow: 0 0 80px rgb(0 0 0 / 0.5);
+  width: min(calc(100% - var(--sheet-inset) * 2), var(--drawer-width, 440px));
+  overflow: hidden;
+  /* Cristal más denso: el panel contiene texto y formularios. */
+  --lg-tint: rgb(9 9 9 / 0.8);
   transition: transform var(--dur-panel) var(--ease-drawer);
   outline: none;
 }
 
 .right {
-  right: 0;
-  transform: translate3d(100%, 0, 0);
-  border-left: 1px solid var(--line);
+  right: max(var(--sheet-inset), env(safe-area-inset-right, 0px));
+  transform: translate3d(calc(100% + var(--sheet-inset) * 2), 0, 0);
 }
 
 .left {
-  left: 0;
-  transform: translate3d(-100%, 0, 0);
-  border-right: 1px solid var(--line);
+  left: max(var(--sheet-inset), env(safe-area-inset-left, 0px));
+  transform: translate3d(calc(-100% - var(--sheet-inset) * 2), 0, 0);
 }
 
 .root[data-open='true'] .panel {
@@ -60,7 +60,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  min-height: var(--header-h);
+  min-height: 60px;
   padding: 0 var(--space-2) 0 var(--space-5);
   border-bottom: 1px solid var(--line);
 }
@@ -82,7 +82,5 @@
 
 .footer {
   padding: var(--space-5);
-  padding-bottom: max(var(--space-5), env(safe-area-inset-bottom));
   border-top: 1px solid var(--line);
-  background: var(--bg-raised);
 }

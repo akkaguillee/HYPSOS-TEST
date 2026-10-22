@@ -325,7 +325,7 @@ export default function CheckoutPage() {
                 )}
                 {errors.lines && <Alert>{errors.lines}</Alert>}
               </div>
-              <Button type="submit" size="lg" block sheen loading={submitting}>
+              <Button type="submit" size="lg" block loading={submitting}>
                 Pagar {formatPrice(totals.total)}
               </Button>
             </div>

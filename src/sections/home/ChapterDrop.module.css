@@ -1,0 +1,56 @@
+.head {
+  display: grid;
+  gap: var(--space-5) var(--space-8);
+  margin-bottom: clamp(var(--space-6), 4vw, var(--space-9));
+}
+
+@media (min-width: 1024px) {
+  .head {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 30rem);
+    align-items: end;
+  }
+}
+
+.titleWrap {
+  position: relative;
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+}
+
+/* Titular-objeto: condensado y comprimido, a gran tamaño. */
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  font-weight: 900;
+  font-stretch: var(--stretch-display);
+  line-height: var(--lh-crushed);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+}
+
+.sticker {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: clamp(56px, 7vw, 110px);
+}
+
+@media (min-width: 1024px) {
+  .sticker {
+    right: auto;
+    left: calc(var(--fs-display) * 4.6);
+    top: calc(var(--fs-display) * -0.1);
+  }
+}
+
+.aside {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+}
+
+.lead {
+  max-width: 42ch;
+  color: var(--fg-muted);
+}

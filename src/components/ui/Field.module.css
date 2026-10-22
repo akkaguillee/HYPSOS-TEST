@@ -71,11 +71,10 @@ textarea.control {
 .selectWrap::after {
   content: '';
   position: absolute;
-  top: 50%;
+  top: calc(50% - 6px);
   right: var(--space-4);
   width: 8px;
   height: 8px;
-  margin-top: -6px;
   border-right: 1.5px solid currentColor;
   border-bottom: 1.5px solid currentColor;
   transform: rotate(45deg);

@@ -9,6 +9,7 @@ import { paths } from '@shared/routes';
 import { useRef } from 'react';
 import { Link } from 'react-router';
 import styles from './Footer.module.css';
+import { Newsletter } from './Newsletter';
 
 export function Footer() {
   const root = useRef<HTMLElement>(null);
@@ -18,12 +19,6 @@ export function Footer() {
   useGSAP(
     () => {
       if (reduced) return;
-      gsap.from(`.${styles.redline}`, {
-        scaleX: 0,
-        duration: 1.4,
-        ease: 'expo.out',
-        scrollTrigger: { trigger: root.current, start: 'top 95%', once: true },
-      });
       // El logotipo emerge desde abajo al llegar al final de la página.
       gsap.from(`.${styles.wordmark} svg`, {
         yPercent: 40,
@@ -39,13 +34,13 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer ref={root} className={styles.footer}>
-      <div className={styles.redline} aria-hidden="true" />
+    <footer ref={root} className={styles.footer} data-theme="dark">
       <div className="container">
+        <Newsletter />
         <div className={styles.top}>
           <Reveal className={styles.intro}>
-            <p className={`t-h2 ${styles.statement}`}>Por encima del ruido.</p>
-            <p className="t-small t-muted">Streetwear, entrenamiento y cultura urbana.</p>
+            <p className={styles.slogan}>Built for the climb.</p>
+            <p className="t-small t-muted">Streetwear independiente construido alrededor de una idea: seguir subiendo.</p>
             {store.social.length > 0 && (
               <ul role="list" className={styles.social} aria-label="Redes sociales">
                 {store.social.map((network) => (

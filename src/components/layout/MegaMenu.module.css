@@ -1,14 +1,17 @@
+/* Panel de cristal bajo la barra de la cabecera, con su mismo ancho. */
 .panel {
+  --lg-tint: rgb(9 9 9 / 0.78);
   position: absolute;
-  top: 100%;
+  top: calc(100% + var(--space-2));
   left: 0;
   right: 0;
-  background: var(--c-black);
-  border-bottom: 1px solid var(--line);
-  clip-path: inset(0 0 100% 0);
+  border-radius: var(--radius-3);
+  opacity: 0;
+  transform: translate3d(0, -6px, 0);
   visibility: hidden;
   transition:
-    clip-path var(--dur-ui) var(--ease-out),
+    opacity var(--dur-ui) var(--ease-out),
+    transform var(--dur-ui) var(--ease-out),
     visibility 0s linear var(--dur-ui);
 }
 
@@ -20,16 +23,17 @@
 }
 
 .panel[data-open='true'] {
-  clip-path: inset(0 0 0 0);
+  opacity: 1;
+  transform: none;
   visibility: visible;
   transition-delay: 0s;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.5fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.4fr);
   gap: var(--space-7);
-  padding-block: var(--space-7) var(--space-8);
+  padding: var(--space-6) var(--bar-pad) var(--bar-pad) calc(var(--bar-pad) + var(--space-3));
 }
 
 .columnTitle {
@@ -96,36 +100,47 @@
 }
 
 .feature {
-  position: relative;
   display: grid;
-  align-content: end;
-  min-height: 260px;
-  padding: var(--space-5);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 44%);
+  min-height: 240px;
   overflow: hidden;
-  background: var(--c-graphite);
+  border-radius: var(--radius-2);
+  background: var(--c-studio);
+  color: var(--c-black);
 }
 
-.featureImage {
+.featureMedia {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.featureMedia img {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .feature [data-brand-mark] {
+  .featureMedia img {
     transition: transform var(--dur-editorial) var(--ease-out);
   }
 
-  .feature:hover [data-brand-mark] {
-    transform: scale(1.05) translate3d(-2%, 2%, 0);
+  .feature:hover .featureMedia img {
+    transform: scale(1.04);
   }
 }
 
 .featureText {
-  position: relative;
-  z-index: 1;
+  grid-column: 1;
+  grid-row: 1;
   display: grid;
+  align-content: end;
   justify-items: start;
   gap: var(--space-2);
+  padding: var(--space-5);
 }
 
 .featureTitle {

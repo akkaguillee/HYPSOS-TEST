@@ -61,7 +61,7 @@ export const products: Product[] = [
     price: 3900,
     shortDescription: 'Oversize de 260 g/m² con monograma H en el pecho.',
     description:
-      'La pieza central del Drop 01. Algodón peinado de 260 g/m², hombro caído y cuello de canalé de 2,5 cm que mantiene la forma lavado tras lavado.',
+      'La pieza central del Chapter 01. Algodón peinado de 260 g/m², hombro caído y cuello de canalé de 2,5 cm que mantiene la forma lavado tras lavado.',
     details: ['Corte oversize con hombro caído', 'Cuello de canalé reforzado', 'Monograma H en serigrafía de alta densidad', 'Etiqueta tejida en el bajo'],
     composition: '100 % algodón peinado, 260 g/m².',
     care: ['Lavar del revés a 30 °C', 'No usar secadora', 'Planchar del revés a temperatura baja'],

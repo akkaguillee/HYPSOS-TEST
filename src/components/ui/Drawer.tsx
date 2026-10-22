@@ -4,6 +4,7 @@ import { cn } from '@/lib/cn';
 import { X } from 'lucide-react';
 import { useId, useRef, type CSSProperties, type ReactNode, type RefObject } from 'react';
 import { IconButton } from './Button';
+import { LiquidGlass } from './LiquidGlass';
 import styles from './Drawer.module.css';
 
 interface DrawerProps {
@@ -28,10 +29,13 @@ export function Drawer({ open, onClose, title, side = 'right', width, footer, ch
   useFocusTrap(panelRef, open, onClose, initialFocusRef);
 
   return (
-    <div className={styles.root} data-open={open} inert={!open} style={width ? ({ '--drawer-width': width } as CSSProperties) : undefined}>
+    <div className={styles.root} data-theme="dark" data-open={open} inert={!open} style={width ? ({ '--drawer-width': width } as CSSProperties) : undefined}>
       <div className={styles.overlay} onClick={onClose} aria-hidden="true" />
-      <div
+      <LiquidGlass
         ref={panelRef}
+        radius={20}
+        bezel={18}
+        refraction={22}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
@@ -55,7 +59,7 @@ export function Drawer({ open, onClose, title, side = 'right', width, footer, ch
         </div>
         <div className={styles.body}>{children}</div>
         {footer && <div className={styles.footer}>{footer}</div>}
-      </div>
+      </LiquidGlass>
     </div>
   );
 }

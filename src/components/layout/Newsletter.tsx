@@ -1,0 +1,84 @@
+import { OfflineNotice } from '@/components/ui/OfflineNotice';
+import { useServerOffline } from '@/store/storeStatus';
+import { Button } from '@/components/ui/Button';
+import { Alert, Checkbox, TextField } from '@/components/ui/Field';
+import { ApiError, apiRequest } from '@/lib/api';
+import { paths } from '@shared/routes';
+import { useState, type FormEvent } from 'react';
+import { Link } from 'react-router';
+import styles from './Newsletter.module.css';
+
+type Status = { state: 'idle' | 'loading' } | { state: 'success'; already: boolean } | { state: 'error'; message: string };
+
+/** Suscripción a la newsletter: banda compacta en la parte alta del pie de todas las páginas. */
+export function Newsletter({ source = 'footer' }: { source?: string }) {
+  const [email, setEmail] = useState('');
+  const [consent, setConsent] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [status, setStatus] = useState<Status>({ state: 'idle' });
+  const offline = useServerOffline();
+
+  const submit = async (event: FormEvent) => {
+    event.preventDefault();
+    // La validación (zod) se carga bajo demanda para no pesar en la portada.
+    const { fieldErrors, newsletterSchema } = await import('@shared/schemas');
+    const parsed = newsletterSchema.safeParse({ email, consent, source });
+    if (!parsed.success) {
+      setErrors(fieldErrors(parsed.error));
+      return;
+    }
+    setErrors({});
+    setStatus({ state: 'loading' });
+    try {
+      const result = await apiRequest<{ status: string }>('/newsletter', { method: 'POST', body: parsed.data });
+      setStatus({ state: 'success', already: result.status === 'already_subscribed' });
+    } catch (error) {
+      if (error instanceof ApiError && Object.keys(error.fields).length) setErrors(error.fields);
+      setStatus({ state: 'error', message: error instanceof ApiError ? error.message : 'No se ha podido completar la suscripción.' });
+    }
+  };
+
+  return (
+    <section className={styles.newsletter} aria-labelledby="newsletter-title">
+      <div className={styles.copy}>
+        <h2 id="newsletter-title" className="t-h2">
+          Acceso anticipado
+        </h2>
+        <p className={styles.lead}>Recibe cada capítulo antes que nadie: avisos de drops y ediciones limitadas, sin relleno.</p>
+      </div>
+
+      {status.state === 'success' ? (
+        <Alert tone="success" title={status.already ? 'Ya estabas dentro' : 'Estás dentro'}>
+          <p>{status.already ? 'Este email ya estaba suscrito. Te avisaremos del próximo drop.' : 'Te avisaremos antes del próximo drop.'}</p>
+        </Alert>
+      ) : (
+        <div className={styles.formArea}>
+          <OfflineNotice>La suscripción necesita el servidor de la tienda, que no está activo en esta versión de la web.</OfflineNotice>
+          <form className={styles.form} onSubmit={submit} noValidate>
+            <div className={styles.row}>
+              <TextField
+                label="Email"
+                type="email"
+                name="email"
+                autoComplete="email"
+                inputMode="email"
+                placeholder="tu@email.com"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                error={errors.email}
+              />
+              <Button type="submit" size="lg" loading={status.state === 'loading'} disabled={offline}>
+                Suscribirme
+              </Button>
+            </div>
+            <Checkbox checked={consent} onChange={(event) => setConsent(event.target.checked)} error={errors.consent}>
+              Acepto recibir comunicaciones de HYPSOS y he leído la{' '}
+              <Link to={paths.page('privacidad')}>política de privacidad</Link>. Puedes darte de baja cuando quieras.
+            </Checkbox>
+            {status.state === 'error' && <Alert>{status.message}</Alert>}
+          </form>
+        </div>
+      )}
+    </section>
+  );
+}

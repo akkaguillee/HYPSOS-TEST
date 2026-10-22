@@ -19,7 +19,9 @@
 }
 
 /* Dos secciones seguidas sobre el mismo fondo no duplican el espacio entre ellas. */
-.section:not([data-theme]) + .section:not([data-theme]) {
+.section:not([data-theme]) + .section:not([data-theme]),
+.section[data-theme='light'] + .section[data-theme='light'],
+.section[data-theme='dark'] + .section[data-theme='dark'] {
   padding-top: 0;
 }
 
@@ -27,23 +29,22 @@
   padding-block: var(--section-y-tight);
 }
 
-/* Cabecera de sección: título a la izquierda, acción a la derecha. */
+/*
+ * Cabecera de sección: título a la izquierda y acción a la derecha, siempre en la misma línea
+ * base del título (también en móvil).
+ */
 .section-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: last baseline;
   gap: var(--space-4) var(--space-6);
-  margin-bottom: clamp(var(--space-6), 3vw, var(--space-7));
+  margin-bottom: clamp(var(--space-5), 2.4vw, var(--space-7));
 }
 
-/* Los botones fantasma alinean su texto (no su relleno) con el borde del contenedor. */
-.section-head [data-variant='ghost'] {
-  margin-left: calc(var(--space-3) * -1);
-}
-
-.section-head > [data-variant='ghost']:last-child {
-  margin-right: calc(var(--space-3) * -1);
+.section-head__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
 }
 
 .section-head__titles {
@@ -51,26 +52,18 @@
   gap: var(--space-3);
 }
 
-/* Marca de sección: punto rojo + etiqueta. Firma visual recurrente. */
+/* Etiqueta de sección en monoespaciada técnica (capítulos, códigos). Neutra: el rojo es una señal. */
 .eyebrow {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+  font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--fg-muted);
-}
-
-.eyebrow::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  flex: none;
 }
 
 .visually-hidden {
@@ -180,4 +173,30 @@
   .reveal--rise {
     transform: none;
   }
+}
+
+/* Marco de <ImageReveal>: recorta la imagen, que lo llena por completo. */
+.image-reveal {
+  position: relative;
+  overflow: hidden;
+}
+
+.image-reveal > * {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.image-reveal img {
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * Máscaras de línea de SplitText: el titular comprimido (interlineado < 1) no debe recortar
+ * tildes ni virgulillas (Á, Ñ). Se amplía solo el área de pintado, sin tocar la maqueta.
+ */
+.split-line-mask {
+  overflow-clip-margin: 0.22em;
 }

@@ -1,13 +1,16 @@
 import { Wordmark } from '@/components/brand/BrandVector';
 import { IconButton, IconLink } from '@/components/ui/Button';
+import { LiquidGlass } from '@/components/ui/LiquidGlass';
 import { primaryNav } from '@/content/navigation';
 import { useScrollState } from '@/hooks/useScrollState';
+import { useSurfaceTone } from '@/hooks/useSurfaceTone';
 import { cn } from '@/lib/cn';
 import { cartCount, useCart } from '@/store/cart';
 import { useUi } from '@/store/ui';
 import { useWishlist } from '@/store/wishlist';
 import { paths } from '@shared/routes';
 import { useAuth } from '@/store/auth';
+import { useIntro } from '@/store/intro';
 import { ChevronDown, Heart, Menu, Search, ShoppingBag, User } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
@@ -29,9 +32,11 @@ export function Header() {
   const megaId = useId();
   const megaTrigger = useRef<HTMLButtonElement>(null);
   const hoverTimer = useRef<number | undefined>(undefined);
-
-  const isHome = pathname === '/';
-  const transparent = isHome && !scrolled && !megaOpen;
+  const bar = useRef<HTMLDivElement>(null);
+  const introPhase = useIntro((state) => state.phase);
+  const surface = useSurfaceTone(bar, `${pathname}|${introPhase}`);
+  // Con el megamenú abierto, cabecera y panel comparten el cristal oscuro.
+  const tone = megaOpen ? 'dark' : surface;
   const hidden = scrolled && direction === 'down' && !megaOpen && !panel && !cartOpen;
 
   // Cerrar el mega menú al navegar.
@@ -67,98 +72,91 @@ export function Header() {
   };
 
   return (
-    <div className={styles.top} data-condensed={scrolled} data-hidden={hidden} data-transparent={transparent}>
+    <div className={styles.top} data-condensed={scrolled} data-hidden={hidden}>
       <AnnouncementBar />
-      <header className={styles.header} onMouseLeave={() => megaOpen && scheduleMega(false, 180)}>
-        <div className={cn('container', styles.inner)}>
-          <div className={styles.left}>
-            <IconButton
-              label="Abrir menú"
-              className={styles.menuButton}
-              onClick={() => openPanel('menu')}
-              aria-expanded={panel === 'menu'}
-              aria-haspopup="dialog"
-            >
-              <Menu aria-hidden="true" />
-            </IconButton>
-            <IconButton label="Buscar" className={styles.menuButton} onClick={() => openPanel('search')} aria-haspopup="dialog">
-              <Search aria-hidden="true" />
-            </IconButton>
-            <nav aria-label="Principal" className={styles.nav}>
-              <ul role="list" className={styles.navList}>
-                {primaryNav.map((item) =>
-                  'mega' in item ? (
-                    <li key={item.id} onMouseEnter={() => scheduleMega(true, 90)}>
-                      <button
-                        ref={megaTrigger}
-                        type="button"
-                        className={cn(styles.navLink, pathname.startsWith('/collections') && !megaOpen && styles.active)}
-                        aria-expanded={megaOpen}
-                        aria-controls={megaId}
-                        onClick={() => {
-                          window.clearTimeout(hoverTimer.current);
-                          setMegaOpen((open) => !open);
-                        }}
-                      >
-                        {item.label}
-                        <ChevronDown className={styles.chevron} aria-hidden="true" />
-                      </button>
-                    </li>
-                  ) : (
-                    <li key={item.id} onMouseEnter={() => megaOpen && scheduleMega(false, 120)}>
-                      <NavLink
-                        to={item.to}
-                        className={({ isActive }) => cn(styles.navLink, isActive && styles.active)}
-                        viewTransition
-                      >
-                        {item.label}
-                      </NavLink>
-                    </li>
-                  ),
-                )}
-              </ul>
-            </nav>
-          </div>
+      <div className={styles.frame}>
+        <header className={styles.header} onMouseLeave={() => megaOpen && scheduleMega(false, 180)}>
+          <LiquidGlass ref={bar} radius="pill" bezel={14} refraction={18} tone={tone} interactive className={styles.bar}>
+            <div className={styles.left}>
+              <IconButton
+                label="Abrir menú"
+                className={styles.menuButton}
+                onClick={() => openPanel('menu')}
+                aria-expanded={panel === 'menu'}
+                aria-haspopup="dialog"
+              >
+                <Menu aria-hidden="true" />
+              </IconButton>
+              <IconButton label="Buscar" className={styles.menuButton} onClick={() => openPanel('search')} aria-haspopup="dialog">
+                <Search aria-hidden="true" />
+              </IconButton>
+              <nav aria-label="Principal" className={styles.nav}>
+                <ul role="list" className={styles.navList}>
+                  {primaryNav.map((item) =>
+                    'mega' in item ? (
+                      <li key={item.id} onMouseEnter={() => scheduleMega(true, 90)}>
+                        <button
+                          ref={megaTrigger}
+                          type="button"
+                          className={cn(styles.navLink, pathname.startsWith('/collections') && !megaOpen && styles.active)}
+                          aria-expanded={megaOpen}
+                          aria-controls={megaId}
+                          onClick={() => {
+                            window.clearTimeout(hoverTimer.current);
+                            setMegaOpen((open) => !open);
+                          }}
+                        >
+                          {item.label}
+                          <ChevronDown className={styles.chevron} aria-hidden="true" />
+                        </button>
+                      </li>
+                    ) : (
+                      <li key={item.id} onMouseEnter={() => megaOpen && scheduleMega(false, 120)}>
+                        <NavLink to={item.to} className={({ isActive }) => cn(styles.navLink, isActive && styles.active)} viewTransition>
+                          {item.label}
+                        </NavLink>
+                      </li>
+                    ),
+                  )}
+                </ul>
+              </nav>
+            </div>
 
-          <Link to={paths.home} className={styles.logo} aria-label="HYPSOS, ir a la portada" viewTransition>
-            <Wordmark />
-          </Link>
+            <Link to={paths.home} className={styles.logo} aria-label="HYPSOS, ir a la portada" viewTransition>
+              <Wordmark />
+            </Link>
 
-          <div className={styles.actions}>
-            <IconButton label="Buscar" className={styles.desktopOnly} onClick={() => openPanel('search')} aria-haspopup="dialog">
-              <Search aria-hidden="true" />
-            </IconButton>
-            <IconLink to={paths.account} label={accountName ? `Mi cuenta (${accountName})` : 'Mi cuenta'} className={styles.accountLink}>
-              <User aria-hidden="true" />
-              {accountName && <span className={styles.accountDot} aria-hidden="true" />}
-            </IconLink>
-            <IconLink
-              to={paths.wishlist}
-              className={styles.desktopOnly}
-              label={`Favoritos${wishlistCount ? ` (${wishlistCount})` : ''}`}
-              badge={wishlistCount}
-              badgeKey={wishlistCount}
-            >
-              <Heart aria-hidden="true" />
-            </IconLink>
-            <IconButton
-              label={`Carrito, ${count} ${count === 1 ? 'artículo' : 'artículos'}`}
-              onClick={openCart}
-              badge={count}
-              badgeKey={count}
-              aria-haspopup="dialog"
-            >
-              <ShoppingBag aria-hidden="true" />
-            </IconButton>
-          </div>
-        </div>
-        <MegaMenu
-          id={megaId}
-          open={megaOpen}
-          onNavigate={() => setMegaOpen(false)}
-          onMouseEnter={() => window.clearTimeout(hoverTimer.current)}
-        />
-      </header>
+            <div className={styles.actions}>
+              <IconButton label="Buscar" className={styles.desktopOnly} onClick={() => openPanel('search')} aria-haspopup="dialog">
+                <Search aria-hidden="true" />
+              </IconButton>
+              <IconLink to={paths.account} label={accountName ? `Mi cuenta (${accountName})` : 'Mi cuenta'} className={styles.accountLink}>
+                <User aria-hidden="true" />
+                {accountName && <span className={styles.accountDot} aria-hidden="true" />}
+              </IconLink>
+              <IconLink
+                to={paths.wishlist}
+                className={styles.desktopOnly}
+                label={`Favoritos${wishlistCount ? ` (${wishlistCount})` : ''}`}
+                badge={wishlistCount}
+                badgeKey={wishlistCount}
+              >
+                <Heart aria-hidden="true" />
+              </IconLink>
+              <IconButton
+                label={`Carrito, ${count} ${count === 1 ? 'artículo' : 'artículos'}`}
+                onClick={openCart}
+                badge={count}
+                badgeKey={count}
+                aria-haspopup="dialog"
+              >
+                <ShoppingBag aria-hidden="true" />
+              </IconButton>
+            </div>
+          </LiquidGlass>
+          <MegaMenu id={megaId} open={megaOpen} onNavigate={() => setMegaOpen(false)} onMouseEnter={() => window.clearTimeout(hoverTimer.current)} />
+        </header>
+      </div>
     </div>
   );
 }

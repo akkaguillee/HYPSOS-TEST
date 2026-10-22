@@ -53,8 +53,8 @@ export function IntroLoader() {
         <Wordmark className={styles.wordmark} />
         <div className={styles.line} />
         <div className={styles.meta}>
-          <span>Drop 01</span>
-          <span>Ascenso</span>
+          <span>Chapter 01</span>
+          <span>Ascent</span>
         </div>
       </div>
       <span className={styles.skip}>Pulsa para saltar</span>

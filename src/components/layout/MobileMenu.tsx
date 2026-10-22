@@ -42,7 +42,7 @@ export function MobileMenu() {
             {primary.map((item, index) => (
               <li key={item.to} className={styles.item} style={{ '--i': index } as CSSProperties}>
                 <NavLink to={item.to} className={styles.bigLink} onClick={close} viewTransition>
-                  {item.label}
+                  <span className={styles.label}>{item.label}</span>
                   <span className={styles.count}>{item.count}</span>
                 </NavLink>
               </li>

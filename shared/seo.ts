@@ -1,3 +1,4 @@
+import { campaignSrcSet, HERO_SIZES, heroMedia, heroPhoto } from './campaign';
 import { getCategory, getCollection, getProductByHandle, isColorAvailable, mockupSrc, variantSku } from './catalog';
 import { GRID_SIZES, gridColumns, listingProducts, sortFeatured } from './catalog/listing';
 import { store } from './config';
@@ -13,7 +14,7 @@ export interface PageMeta {
   noindex?: boolean;
   jsonLd?: Record<string, unknown>[];
   /** Imagen principal de la vista (candidata a LCP): se precarga desde el HTML inicial. */
-  preloadImage?: { href: string; srcset?: string; sizes: string };
+  preloadImage?: { href: string; srcset?: string; sizes: string; type?: string };
 }
 
 /** Precarga de la primera imagen visible de un producto, con el mismo srcset que usa la interfaz. */
@@ -35,6 +36,18 @@ function initialColor(product: Product, stock: StockLookup | undefined, requeste
 }
 
 const GALLERY_SIZES = '(min-width: 1024px) 58vw, 100vw';
+
+/** Imagen del marco de campaña de la portada. */
+function heroPreload(): PageMeta['preloadImage'] {
+  if (heroMedia) return { href: heroMedia.type === 'image' ? heroMedia.src : heroMedia.poster, sizes: HERO_SIZES };
+  // La portada sirve AVIF (con WebP de reserva): se precarga el AVIF para no descargar dos veces.
+  return {
+    href: `${heroPhoto.base}-${heroPhoto.width}.avif`,
+    srcset: campaignSrcSet(heroPhoto, 'avif'),
+    sizes: HERO_SIZES,
+    type: 'image/avif',
+  };
+}
 
 const breadcrumbs = (publicUrl: string, items: { name: string; path?: string }[]) => ({
   '@context': 'https://schema.org',
@@ -153,6 +166,7 @@ export function metaForPath(pathname: string, publicUrl = '', stock?: StockLooku
     case '/':
       return {
         ...base,
+        preloadImage: heroPreload(),
         jsonLd: [
           {
             '@context': 'https://schema.org',

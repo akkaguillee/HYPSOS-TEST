@@ -44,7 +44,6 @@ export function CartDrawer() {
               <Button
                 size="lg"
                 block
-                sheen
                 disabled={blocked}
                 onClick={() => {
                   close();

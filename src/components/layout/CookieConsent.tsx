@@ -37,7 +37,7 @@ export function CookieConsent() {
   return (
     <>
       {provider && analytics === null && !panelOpen && (
-        <section className={styles.banner} aria-labelledby="cookie-title" role="region">
+        <section className={`glass glass--strong ${styles.banner}`} aria-labelledby="cookie-title" role="region">
           <h2 id="cookie-title" className={styles.title}>
             Cookies
           </h2>

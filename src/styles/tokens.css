@@ -5,39 +5,41 @@
  */
 
 :root {
-  /* ─── Paleta de marca ─────────────────────────────────────────────── */
-  --c-black: #080808;
-  --c-black-2: #111111;
-  --c-graphite: #242424;
-  --c-white: #ffffff;
-  --c-white-soft: #f5f5f5;
-  --c-grey: #a1a1a1;
-  --c-red: #c8102e;
-  --c-red-dark: #8f1027;
-  --c-red-bright: #f21d3b; /* solo efectos muy puntuales */
-  --c-studio: #e4e4e2; /* fondo de estudio de las imágenes de producto */
+  /* ─── Paleta del Manual de Marca (negro + rojo, con control) ───────── */
+  /* Regla: ~70-80 % negro / blanco roto, 10-15 % rojo, el resto gris o rojo profundo. */
+  --c-black: #090909; /* HYPSOS Black: campo dominante */
+  --c-black-2: #121212;
+  --c-graphite: #1d1c1b;
+  --c-white: #ffffff; /* solo cuando el blanco roto no basta (raro) */
+  --c-white-soft: #f2f0ec; /* Off White: texto, etiquetas y bandas claras */
+  --c-paper-2: #e7e3dc; /* banda clara secundaria */
+  --c-concrete: #747474; /* Concrete Grey: líneas e información técnica (no texto pequeño) */
+  --c-grey: #a3a09a; /* texto secundario sobre negro (AA) */
+  --c-red: #d71920; /* HYPSOS Red: señal, acción principal, trabilla firma */
+  --c-red-dark: #7a0f1d; /* Deep Red */
+  --c-studio: #ece9e3; /* fondo de los mockups de producto: se funde con el blanco roto */
 
   /* Derivados funcionales */
-  --c-grey-700: #6b6b6b; /* texto secundario sobre fondos claros (AA) */
-  --c-grey-300: #d4d4d4;
+  --c-grey-700: #5e5b56; /* texto secundario sobre blanco roto (AA) */
+  --c-grey-300: #d6d2cb;
   --c-success: #3ddc84;
-  --c-error-on-dark: #ff6b7f; /* rojo legible sobre negro para mensajes (AA) */
-  --c-error-on-light: #b00d28;
+  --c-error-on-dark: #ff6b6f; /* rojo legible sobre negro para mensajes (AA) */
+  --c-error-on-light: #a3121a;
 
   /* ─── Superficies semánticas (oscuro por defecto) ─────────────────── */
   --bg: var(--c-black);
   --bg-raised: var(--c-black-2);
   --bg-sunken: #050505;
   --surface: var(--c-graphite);
-  --fg: var(--c-white);
+  --fg: var(--c-white-soft);
   --fg-soft: var(--c-white-soft);
   --fg-muted: var(--c-grey);
-  --line: rgb(255 255 255 / 0.12);
-  --line-strong: rgb(255 255 255 / 0.28);
+  --line: rgb(242 240 236 / 0.14);
+  --line-strong: rgb(242 240 236 / 0.34);
   --accent: var(--c-red);
   --accent-strong: var(--c-red-dark);
   --error: var(--c-error-on-dark);
-  --focus-ring: var(--c-white);
+  --focus-ring: var(--c-white-soft);
 
   /* ─── Espaciado (base 4 px) ───────────────────────────────────────── */
   --space-1: 4px;
@@ -61,36 +63,42 @@
 
   --container: 1440px;
   --container-text: 720px;
-  --header-h: 60px;
-  --announcement-h: 36px;
+  /* Cabecera flotante: barra de cristal separada de los bordes por --header-inset. */
+  --announcement-h: 32px;
+  --header-bar-h: 52px;
+  --header-inset: 8px;
+  --header-h: calc(var(--header-bar-h) + var(--header-inset) * 2);
 
-  /* ─── Tipografía ──────────────────────────────────────────────────── */
-  --font-display: 'Archivo Variable', 'Archivo', 'Arial Black', system-ui, sans-serif;
+  /* ─── Tipografía (Manual: condensada para titulares, neutra para cuerpo, mono técnica) ─ */
+  --font-display: 'Archivo Variable', 'Archivo', 'Arial Narrow', system-ui, sans-serif;
   --font-body: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
-  --fs-campaign: clamp(3.25rem, 9.6vw + 0.5rem, 11rem);
-  --fs-display: clamp(2.5rem, 5.4vw + 0.75rem, 6.5rem);
-  --fs-h1: clamp(2rem, 2.8vw + 1.1rem, 3.75rem);
-  --fs-h2: clamp(1.625rem, 1.6vw + 1rem, 2.625rem);
-  --fs-h3: clamp(1.25rem, 0.6vw + 1rem, 1.5rem);
+  /* Titulares comprimidos tipo cartel: el texto como objeto. */
+  --fs-campaign: clamp(4.25rem, 13.5vw, 15rem);
+  --fs-display: clamp(3rem, 8vw, 8.5rem);
+  --fs-h1: clamp(2.5rem, 4vw + 1rem, 5rem);
+  --fs-h2: clamp(2rem, 2.6vw + 1rem, 3.75rem);
+  --fs-h3: clamp(1.125rem, 0.35vw + 1rem, 1.375rem);
   --fs-lg: clamp(1.0625rem, 0.3vw + 1rem, 1.25rem);
   --fs-md: 1rem;
   --fs-sm: 0.875rem;
   --fs-xs: 0.75rem;
   --fs-2xs: 0.6875rem;
 
-  --lh-tight: 0.92;
-  --lh-heading: 1.05;
+  --lh-crushed: 0.82;
+  --lh-tight: 0.88;
+  --lh-heading: 0.95;
   --lh-snug: 1.3;
   --lh-body: 1.6;
 
-  --tracking-display: -0.02em;
+  --tracking-display: -0.005em;
   --tracking-tight: -0.01em;
-  --tracking-label: 0.14em;
+  --tracking-label: 0.06em;
 
-  /* Ancho expandido de Archivo para titulares */
-  --stretch-display: 118%;
-  --stretch-heading: 108%;
+  /* Ancho de Archivo (eje 62-125 %): condensada en titulares. */
+  --stretch-display: 62%;
+  --stretch-heading: 68%;
 
   /* ─── Movimiento ──────────────────────────────────────────────────── */
   --dur-micro: 160ms;
@@ -109,7 +117,25 @@
   --radius-0: 0;
   --radius-1: 2px;
   --radius-2: 4px;
+  --radius-3: 12px;
+  --radius-card: 14px; /* imágenes de producto */
+  --radius-4: 20px; /* tarjetas */
+  --radius-5: 32px; /* tarjetas grandes y bandas */
   --radius-pill: 999px;
+
+  /* ─── Liquid Glass (capas flotantes; ver components/ui/LiquidGlass) ─── */
+  --glass-bg: rgb(9 9 9 / 0.42);
+  --glass-bg-strong: rgb(9 9 9 / 0.72);
+  --glass-blur: blur(18px) saturate(160%);
+  --glass-border: rgb(242 240 236 / 0.16);
+  --glass-highlight: inset 0 1px 0 rgb(242 240 236 / 0.14);
+  --glass-shadow: 0 10px 30px rgb(0 0 0 / 0.22);
+  --glass-solid: #141414; /* sin backdrop-filter o con transparencia reducida */
+  /* Variante clara, sobre superficies claras. */
+  --glass-light-bg: rgb(242 240 236 / 0.55);
+  --glass-light-border: rgb(9 9 9 / 0.14);
+  --glass-light-highlight: inset 0 1px 0 rgb(255 255 255 / 0.55);
+  --glass-light-solid: #f2f0ec;
 
   /* ─── Capas ───────────────────────────────────────────────────────── */
   --z-base: 1;
@@ -126,22 +152,58 @@
 
 @media (min-width: 1024px) {
   :root {
-    --header-h: 68px;
+    --header-bar-h: 56px;
+    --header-inset: 12px;
   }
 }
 
-/* Secciones claras: pausas editoriales con alto contraste. */
+/*
+ * Temas por zona. Tienda (catálogo, ficha, carrito, cuenta, contenido): claro, como en las
+ * referencias de comercio premium; el producto oscuro mantiene el contraste. Momentos de marca
+ * (campaña, manifiesto, pie): negro. Las capas de cristal fijan su propio tema oscuro.
+ */
 [data-theme='light'] {
   --bg: var(--c-white-soft);
-  --bg-raised: var(--c-white);
-  --bg-sunken: #ebebeb;
-  --surface: #e6e6e6;
+  --bg-raised: #faf9f7;
+  --bg-sunken: var(--c-paper-2);
+  --surface: var(--c-paper-2);
   --fg: var(--c-black);
   --fg-soft: var(--c-black-2);
   --fg-muted: var(--c-grey-700);
-  --line: rgb(8 8 8 / 0.12);
-  --line-strong: rgb(8 8 8 / 0.3);
+  --line: rgb(9 9 9 / 0.12);
+  --line-strong: rgb(9 9 9 / 0.4);
   --error: var(--c-error-on-light);
   --focus-ring: var(--c-black);
   color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --bg: var(--c-black);
+  --bg-raised: var(--c-black-2);
+  --bg-sunken: #050505;
+  --surface: var(--c-graphite);
+  --fg: var(--c-white-soft);
+  --fg-soft: var(--c-white-soft);
+  --fg-muted: var(--c-grey);
+  --line: rgb(242 240 236 / 0.14);
+  --line-strong: rgb(242 240 236 / 0.34);
+  --error: var(--c-error-on-dark);
+  --focus-ring: var(--c-white-soft);
+  color-scheme: dark;
+}
+
+/* Banda roja: la señal de HYPSOS, una vez por página como mucho. */
+[data-theme='red'] {
+  --bg: var(--c-red);
+  --bg-raised: #c3161c;
+  --bg-sunken: var(--c-red-dark);
+  --surface: var(--c-red-dark);
+  --fg: var(--c-white-soft);
+  --fg-soft: var(--c-white-soft);
+  --fg-muted: rgb(242 240 236 / 0.82);
+  --line: rgb(242 240 236 / 0.24);
+  --line-strong: rgb(242 240 236 / 0.6);
+  --error: var(--c-white-soft);
+  --focus-ring: var(--c-white-soft);
+  color-scheme: dark;
 }

@@ -1,0 +1,71 @@
+.section {
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding-bottom: var(--section-y-tight);
+  }
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-8);
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: center;
+  }
+}
+
+.copy {
+  display: grid;
+  gap: var(--space-5);
+  justify-items: start;
+}
+
+.copy :global(.eyebrow) {
+  color: var(--fg);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 13vw, 13rem);
+  font-weight: 900;
+  font-stretch: var(--stretch-display);
+  line-height: var(--lh-crushed);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+}
+
+.text {
+  max-width: 40ch;
+  font-size: var(--fs-lg);
+}
+
+/* La foto sobresale por arriba de la banda: desplazada con `translate`, sin márgenes negativos. */
+.visual {
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .visual {
+    translate: 0 -20%;
+  }
+}
+
+.media {
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-5);
+  background: var(--c-black);
+}
+
+.sticker {
+  position: absolute;
+  left: -12%;
+  bottom: 8%;
+  width: 38%;
+}

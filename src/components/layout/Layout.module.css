@@ -18,6 +18,8 @@
 .main {
   min-height: 70svh;
   padding-top: calc(var(--announcement-h) + var(--header-h));
+  background: var(--bg);
+  color: var(--fg);
   outline: none;
 }
 

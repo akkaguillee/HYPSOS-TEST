@@ -1,50 +1,35 @@
 import { announcements, demoNotice } from '@/content/campaign';
 import { store } from '@shared/config';
-import { useReducedMotion } from '@/hooks/useMediaQuery';
-import { useEffect, useState } from 'react';
+import { Star } from '@/components/brand/BrandVector';
+import { Fragment } from 'react';
 import styles from './AnnouncementBar.module.css';
 
-/** Barra superior con mensajes rotativos. Se pausa al pasar el cursor o enfocar, y con movimiento reducido. */
+/**
+ * Banda superior en marquesina: frases del Manual de Marca y, mientras el catálogo sea de
+ * demostración, el aviso de datos no reales en cada vuelta. Se detiene al pasar el cursor o al
+ * enfocar, y queda estática con movimiento reducido. Los lectores de pantalla leen el texto una vez.
+ */
 export function AnnouncementBar() {
-  const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const reduced = useReducedMotion();
-
-  useEffect(() => {
-    if (paused || reduced) return;
-    const timer = window.setInterval(() => setIndex((current) => (current + 1) % announcements.length), 4500);
-    return () => window.clearInterval(timer);
-  }, [paused, reduced]);
-
-  // Mientras el catálogo sea de demostración, el aviso es fijo y no rota.
-  if (store.demoCatalog) {
-    return (
-      <div className={styles.bar} role="region" aria-label="Aviso">
-        <p className={styles.message} data-active="true">
-          <span className={styles.dot} aria-hidden="true" />
-          <span className={styles.long}>{demoNotice.long}</span>
-          <span className={styles.short}>{demoNotice.short}</span>
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className={styles.bar}
-      role="region"
-      aria-label="Avisos de la tienda"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
-    >
-      {announcements.map((message, position) => (
-        <p key={message} className={styles.message} data-active={position === index} aria-hidden={position !== index}>
-          {position === index && <span className={styles.dot} aria-hidden="true" />}
-          {message}
-        </p>
+  const items = store.demoCatalog ? [demoNotice.long, ...announcements] : announcements;
+  const run = (hidden: boolean) => (
+    <span className={styles.run} aria-hidden={hidden || undefined}>
+      {items.map((item, index) => (
+        <Fragment key={index}>
+          <span className={styles.item} data-notice={store.demoCatalog && index === 0 ? 'true' : undefined}>
+            {item}
+          </span>
+          <Star className={styles.mark} />
+        </Fragment>
       ))}
+    </span>
+  );
+  return (
+    <div className={styles.bar} role="region" aria-label="Avisos de la tienda">
+      <p className="visually-hidden">{items.join(' · ')}</p>
+      <div className={styles.track} aria-hidden="true">
+        {run(true)}
+        {run(true)}
+      </div>
     </div>
   );
 }

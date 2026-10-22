@@ -8,12 +8,18 @@ export function mediaForColor(product: Product, colorId: string): ProductMedia[]
   return product.media.filter((media) => media.type === 'mockup' || !media.colorId);
 }
 
-/** Etiquetas visibles de un producto (máximo dos). */
-export function productBadges(product: Product, stock: StockLookup | null): { id: string; label: string; tone: 'red' | 'light' | 'muted' }[] {
+/**
+ * Etiqueta visible de un producto: como mucho una, por prioridad Agotado > Edición limitada > Nuevo.
+ * `hideNew`: en listados que ya son de novedades, «Nuevo» sobra.
+ */
+export function productBadges(
+  product: Product,
+  stock: StockLookup | null,
+  { hideNew = false }: { hideNew?: boolean } = {},
+): { id: string; label: string; tone: 'red' | 'light' | 'muted' }[] {
   // "Agotado" solo con el stock real cargado.
   if (stock && !isProductAvailable(product, stock)) return [{ id: 'agotado', label: 'Agotado', tone: 'muted' }];
-  const badges: { id: string; label: string; tone: 'red' | 'light' | 'muted' }[] = [];
-  if (product.badges.includes('edicion-limitada')) badges.push({ id: 'limitada', label: 'Edición limitada', tone: 'red' });
-  if (product.badges.includes('nuevo')) badges.push({ id: 'nuevo', label: 'Nuevo', tone: 'light' });
-  return badges.slice(0, 2);
+  if (product.badges.includes('edicion-limitada')) return [{ id: 'limitada', label: 'Edición limitada', tone: 'red' }];
+  if (product.badges.includes('nuevo') && !hideNew) return [{ id: 'nuevo', label: 'Nuevo', tone: 'light' }];
+  return [];
 }

@@ -19,7 +19,7 @@
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgb(0 0 0 / 0.7);
+  background: rgb(0 0 0 / 0.5);
   opacity: 0;
   transition: opacity var(--dur-panel) var(--ease-out);
 }
@@ -28,17 +28,18 @@
   opacity: 1;
 }
 
+/* Diálogo de cristal: cabecera fija y cuerpo con su propio scroll. */
 .dialog {
+  --lg-tint: rgb(9 9 9 / 0.78);
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: min(100%, 760px);
   max-height: min(88svh, 900px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  background: var(--bg-raised);
-  color: var(--fg);
-  border: 1px solid var(--line);
+  overflow: hidden;
+  border-radius: var(--radius-3);
   opacity: 0;
-  transform: translate3d(0, 24px, 0) scale(0.98);
+  transform: translate3d(0, 16px, 0) scale(0.98);
   transition:
     opacity var(--dur-panel) var(--ease-out),
     transform var(--dur-panel) var(--ease-out);
@@ -51,16 +52,12 @@
 }
 
 .header {
-  position: sticky;
-  top: 0;
-  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
   padding: var(--space-3) var(--space-3) var(--space-3) var(--space-5);
   border-bottom: 1px solid var(--line);
-  background: var(--bg-raised);
 }
 
 .title {
@@ -73,6 +70,8 @@
 }
 
 .body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: var(--space-5);
 }
 

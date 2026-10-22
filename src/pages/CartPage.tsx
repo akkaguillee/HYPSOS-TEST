@@ -65,7 +65,7 @@ export default function CartPage() {
                 <Price amount={subtotal} />
               </div>
               <p className={styles.note}>IVA incluido.</p>
-              <Button size="lg" block sheen disabled={blocked} onClick={() => navigate(paths.checkout, { viewTransition: true })}>
+              <Button size="lg" block disabled={blocked} onClick={() => navigate(paths.checkout, { viewTransition: true })}>
                 Finalizar compra
               </Button>
               {blocked && <p className={styles.note}>Elimina los productos agotados para continuar.</p>}
