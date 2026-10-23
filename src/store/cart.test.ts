@@ -46,7 +46,7 @@ describe('carrito', () => {
     useCart.getState().add({ productId: 'p-hoodie-ascenso', colorId: 'negro', size: 'M', quantity: 1 });
     const resolved = resolveCartLines(useCart.getState().lines, seedStock);
     expect(cartCount(resolved)).toBe(3);
-    expect(cartSubtotal(resolved)).toBe(2 * 3900 + 8900);
+    expect(cartSubtotal(resolved)).toBe(2 * 3200 + 5900);
   });
 
   it('descarta líneas de productos que ya no existen', () => {

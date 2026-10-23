@@ -14,10 +14,10 @@ export const sortOptions = [
 export type SortKey = (typeof sortOptions)[number]['id'];
 
 export const priceRanges = [
-  { id: 'hasta-30', label: 'Hasta 30 €', min: 0, max: 3000 },
-  { id: '30-60', label: '30 € – 60 €', min: 3000, max: 6000 },
-  { id: '60-90', label: '60 € – 90 €', min: 6000, max: 9000 },
-  { id: 'mas-90', label: 'Más de 90 €', min: 9000, max: Number.POSITIVE_INFINITY },
+  { id: 'hasta-20', label: 'Hasta 20 €', min: 0, max: 2000 },
+  { id: '20-40', label: '20 € – 40 €', min: 2000, max: 4000 },
+  { id: '40-60', label: '40 € – 60 €', min: 4000, max: 6000 },
+  { id: 'mas-60', label: 'Más de 60 €', min: 6000, max: Number.POSITIVE_INFINITY },
 ] as const;
 
 export type PriceRangeId = (typeof priceRanges)[number]['id'];

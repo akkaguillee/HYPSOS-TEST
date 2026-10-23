@@ -11,7 +11,7 @@ describe('renderHtml', () => {
     expect(html).toContain('<title>Sudadera Capucha Ascenso | HYPSOS</title>');
     expect(html).toContain('<link rel="canonical" href="https://hypsos.com/products/sudadera-capucha-ascenso" />');
     expect(html).toContain('"@type":"Product"');
-    expect(html).toContain('"price":"89.00"');
+    expect(html).toContain('"price":"59.00"');
     expect(html).toContain('"@type":"BreadcrumbList"');
     // Catálogo de demostración: no se indexa como producto real.
     expect(html).toContain('noindex');

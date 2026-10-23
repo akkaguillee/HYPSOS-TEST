@@ -8,8 +8,9 @@
  * Tres caminos, por producto:
  * - Prendas y accesorios con base fotográfica (scripts/mockups/bases): foto de prenda lisa generada
  *   con IA + marcas oficiales compuestas como serigrafía, bordado o etiqueta (photo.ts, placements.ts).
- * - Productos con forma de marca (llavero, figura, monograma, stickers): foto virtual con filtros
- *   SVG de Chromium (objects.ts).
+ * - Productos con forma de marca (llavero, stickers): foto virtual con filtros SVG de Chromium
+ *   (objects.ts).
+ * - Blind boxes (3D): render físico con three.js de la caja impresa (blindbox.ts).
  * - Productos sin base fotográfica todavía: dibujo técnico plano (catalog.ts), para que la tienda
  *   nunca muestre un hueco. Se avisa en consola de qué bases faltan.
  *
@@ -22,6 +23,7 @@ import { catalogProducts } from '../../shared/catalog';
 import type { MediaView, Product } from '../../shared/types';
 import { mockupSVG } from './catalog';
 import { FABRIC, luminance } from './kit';
+import { blindboxShots, closeBlindboxBrowser } from './blindbox';
 import { OBJECT_SILHOUETTES, objectShot } from './objects';
 import {
   applyPrint,
@@ -167,6 +169,13 @@ async function objectProduct(product: Product, colorId: string) {
   await write(product, colorId, 'detail', sharp(shots.front.png).extract({ left: x, top: y, width: w, height: h }), true);
 }
 
+async function blindboxProduct(product: Product, colorId: string) {
+  const shots = await blindboxShots(product, colorId);
+  await write(product, colorId, 'front', sharp(shots.front));
+  await write(product, colorId, 'back', sharp(shots.back));
+  await write(product, colorId, 'detail', sharp(shots.detail), true);
+}
+
 async function vectorProduct(product: Product, colorId: string) {
   for (const view of VIEWS) {
     const svg = mockupSVG({ product, colorId, view }).replace(/width="800" height="1000"/, `width="${OUT_W}" height="${OUT_H}"`);
@@ -181,6 +190,10 @@ for (const product of products) {
   const plan = PLANS[product.id];
   if (OBJECT_SILHOUETTES.has(product.silhouette)) {
     for (const color of product.colors) await objectProduct(product, color.id);
+    continue;
+  }
+  if (product.silhouette === 'blindbox') {
+    for (const color of product.colors) await blindboxProduct(product, color.id);
     continue;
   }
   // Un producto solo pasa a foto si todas sus variantes y caras tienen base: nunca se mezclan
@@ -204,6 +217,7 @@ for (const product of products) {
   }
 }
 await closeChromium();
+await closeBlindboxBrowser();
 
 if (preview) {
   mkdirSync(preview, { recursive: true });

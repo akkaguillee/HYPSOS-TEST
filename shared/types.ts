@@ -21,8 +21,7 @@ export type Silhouette =
   | 'socks'
   | 'keychain'
   | 'sticker'
-  | 'figure'
-  | 'object';
+  | 'blindbox';
 
 export type ProductBadge = 'nuevo' | 'edicion-limitada';
 

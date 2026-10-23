@@ -39,9 +39,9 @@ export const categories: Category[] = [
   {
     handle: '3d',
     name: '3D',
-    singular: 'Pieza 3D',
-    description: 'Objetos y creaciones impresas en 3D. Tiradas cortas, numeradas a mano.',
-    silhouette: 'figure',
+    singular: 'Blind box',
+    description: 'Blind boxes de HYPO: una figura de vinilo por caja, sin saber cuál hasta abrirla.',
+    silhouette: 'blindbox',
   },
   {
     handle: 'stickers',

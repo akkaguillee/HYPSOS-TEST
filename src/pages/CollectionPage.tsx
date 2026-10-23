@@ -137,7 +137,7 @@ function CatalogView({ handle, collection }: { handle: string; collection: Resol
 
   const endTile =
     collection.layout === 'lab' ? (
-      <EndTile variant="lab" kicker="Laboratorio" title="Impreso en 3D." text={collection.description} note="Imágenes: mockups provisionales hasta la sesión de fotos." />
+      <EndTile variant="lab" kicker="Blind box" title="¿Cuál te toca?" text={collection.description} note="Imágenes: mockups provisionales hasta la sesión de fotos." />
     ) : (
       <EndTile
         kicker="HYPSOS"

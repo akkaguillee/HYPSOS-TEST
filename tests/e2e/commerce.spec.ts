@@ -7,9 +7,9 @@ test('filtros sincronizados con la URL y estado vacío', async ({ page }) => {
   const scope = page.getByRole('dialog', { name: 'Filtrar' });
   await scope.getByRole('button', { name: 'Talla XXL' }).click();
   await expect(page).toHaveURL(/talla=XXL/);
-  await scope.getByRole('button', { name: /^Más de 90 €/ }).click();
+  await scope.getByRole('button', { name: /^Más de 60 €/ }).click();
   await scope.getByRole('switch', { name: 'Solo disponibles' }).click();
-  await expect(page).toHaveURL(/precio=mas-90/);
+  await expect(page).toHaveURL(/precio=mas-60/);
   await page.getByRole('button', { name: /^Ver \d+ productos?$/ }).click();
   await expect(page.getByText(/^\d+ resultados?$/)).toBeVisible();
   // Recarga: los filtros persisten en la URL.
@@ -78,7 +78,7 @@ test('compra: talla obligatoria, carrito y checkout honesto sin envíos ni pagos
 });
 
 test('variantes agotadas: color sin stock no seleccionable y aviso de reposición', async ({ page }) => {
-  await page.goto('/products/figura-mascot-3d');
+  await page.goto('/products/blind-box-hypo-serie-01');
   await expect(page.getByRole('radio', { name: 'Blanco, agotado' })).toBeDisabled();
 
   await page.goto('/products/camiseta-ascenso-heavyweight?color=blanco');

@@ -4,13 +4,13 @@ import { activeFilterCount, applyFilters, emptyFilters, facetOptions, parseCatal
 
 describe('filtros del catálogo', () => {
   it('lee y escribe los filtros en la URL ignorando valores no válidos', () => {
-    const { filters, sort } = parseCatalogParams(new URLSearchParams('talla=M,L&color=negro&precio=30-60,falso&categoria=camisetas,zapatos&disponible=1&orden=precio-asc'));
-    expect(filters).toEqual({ sizes: ['M', 'L'], colors: ['negro'], prices: ['30-60'], categories: ['camisetas'], inStock: true });
+    const { filters, sort } = parseCatalogParams(new URLSearchParams('talla=M,L&color=negro&precio=20-40,falso&categoria=camisetas,zapatos&disponible=1&orden=precio-asc'));
+    expect(filters).toEqual({ sizes: ['M', 'L'], colors: ['negro'], prices: ['20-40'], categories: ['camisetas'], inStock: true });
     expect(parseCatalogParams(new URLSearchParams('pagina=3')).page).toBe(3);
     expect(parseCatalogParams(new URLSearchParams('pagina=-2')).page).toBe(1);
     expect(toCatalogParams(filters, 'destacados', 2).get('pagina')).toBe('2');
     expect(sort).toBe('precio-asc');
-    expect(toCatalogParams(filters, sort).toString()).toBe('categoria=camisetas&talla=M%2CL&color=negro&precio=30-60&disponible=1&orden=precio-asc');
+    expect(toCatalogParams(filters, sort).toString()).toBe('categoria=camisetas&talla=M%2CL&color=negro&precio=20-40&disponible=1&orden=precio-asc');
     expect(parseCatalogParams(new URLSearchParams('orden=inventado')).sort).toBe('destacados');
   });
 
@@ -21,8 +21,8 @@ describe('filtros del catálogo', () => {
   });
 
   it('combina precio, color y disponibilidad', () => {
-    const result = applyFilters(products, { ...emptyFilters, prices: ['mas-90'], colors: ['negro'], inStock: true }, seedStock);
-    expect(result.every((p) => p.price >= 9000)).toBe(true);
+    const result = applyFilters(products, { ...emptyFilters, prices: ['mas-60'], colors: ['negro'], inStock: true }, seedStock);
+    expect(result.every((p) => p.price >= 6000)).toBe(true);
     expect(result.map((p) => p.id)).toContain('p-hoodie-monogram');
     expect(applyFilters(products, { ...emptyFilters, inStock: true }, seedStock).map((p) => p.id)).not.toContain('p-sticker-star');
   });

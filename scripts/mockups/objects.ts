@@ -15,7 +15,7 @@ import type { Product } from '../../shared/types';
 import { markAspect, svgToPng, VECTORS, type Mark } from './raster';
 import { SCALE } from './photo';
 
-export const OBJECT_SILHOUETTES = new Set(['keychain', 'figure', 'object', 'sticker']);
+export const OBJECT_SILHOUETTES = new Set(['keychain', 'sticker']);
 
 const W = 960;
 const H = 1200;
@@ -126,96 +126,6 @@ ${shadowFilter('ground', { blur: 10, dx: 8, dy: 14, opacity: 0.3, contact: 0.45 
     `<defs>${STUDIO}${defs}</defs>${studio()}` +
     `<g transform="rotate(${back ? 12 : -12} 480 640) skewX(${back ? 4 : -4})">${shadow}${jumpBack}${edge}${face}${jumpFront}${ring}</g>${grain()}`;
   return { svg, detail: back ? [250, 330, 520, 650] : [190, 330, 520, 650] };
-}
-
-// ─── Figura de la mascota ───────────────────────────────────────────────────
-
-function figure(colorId: string, side: Side): { svg: string; detail: Box } {
-  const light = colorId === 'blanco';
-  const body = light ? '#e8e5de' : '#1d1d1e';
-  const paint = light ? '#1e1e1e' : '#ece9e2';
-  const plinthTop = light ? '#dfdbd3' : '#272728';
-  const plinthSide = light ? '#cbc6bd' : '#171718';
-  const back = side === 'back';
-  const w = 580;
-  const h = w * markAspect('mascot');
-  const x = 480 - w / 2;
-  const y = 878 - h * 0.965; // la silueta tiene ≈3,5 % de aire bajo los pies
-  const silhouette = (fill: string) => markAt('mascot', x, y, w, `${path('mascot', fill, 'fill')}${path('mascot', fill)}`, back);
-  // Volumen: resina mate (mapa de alturas muy suave = cabeza redondeada) y la línea oficial pintada a mano.
-  // Volumen de cabeza: luz suave arriba a la izquierda y caída hacia abajo a la derecha (sin bandas).
-  const volume = `<mask id="figMask">${silhouette('#fff')}</mask><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#figVolume)" mask="url(#figMask)"/>`;
-  const figureBody =
-    `<g filter="url(#resin)">${silhouette(body)}</g>` +
-    (back ? '' : `<g filter="url(#paintLit)">${markAt('mascot', x, y, w, path('mascot', paint))}</g>`) +
-    volume +
-    `<g filter="url(#rim)">${silhouette('#fff')}</g>`;
-  const plinth =
-    `<g filter="url(#ground)"><ellipse cx="480" cy="900" rx="252" ry="50" fill="#000"/></g>` +
-    `<path d="M228,872 L228,902 A252,50 0 0,0 732,902 L732,872 Z" fill="${plinthSide}" filter="url(#plinthLit)"/>` +
-    `<ellipse cx="480" cy="872" rx="252" ry="50" fill="${plinthTop}" filter="url(#plinthLit)"/>` +
-    `<ellipse cx="480" cy="880" rx="190" ry="26" fill="#000" opacity="0.18" filter="url(#contact)"/>` +
-    `<text x="480" y="938" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12" letter-spacing="2.4" fill="${light ? '#aaa49a' : '#3d3d3e'}">07 / 50</text>`;
-  const defs = `${litFilter('resin', { soft: 10, height: 6, gloss: 0.16, exponent: 10, ambient: 0.36 })}
-<radialGradient id="figVolume" cx="0.38" cy="0.3" r="0.78">
-  <stop offset="0" stop-color="#fff" stop-opacity="${light ? 0.1 : 0.11}"/><stop offset="0.45" stop-color="#fff" stop-opacity="0"/>
-  <stop offset="0.8" stop-color="#000" stop-opacity="${light ? 0.1 : 0.22}"/><stop offset="1" stop-color="#000" stop-opacity="${light ? 0.2 : 0.35}"/>
-</radialGradient>
-${litFilter('paintLit', { soft: 2, height: 2, gloss: 0.1, exponent: 12, ambient: 0.6 })}
-${litFilter('plinthLit', { soft: 6, height: 4, gloss: 0.1, exponent: 8, ambient: 0.5 })}
-${shadowFilter('ground', { blur: 16, dx: 12, dy: 12, opacity: 0.24, contact: 0.42 })}
-<filter id="contact" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="9"/></filter>
-<filter id="rim" x="-10%" y="-10%" width="120%" height="120%">
-  <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="b"/><feOffset in="b" dx="-5" dy="-6" result="o"/>
-  <feComposite in="SourceAlpha" in2="o" operator="out" result="edge"/>
-  <feFlood flood-color="#ffffff" flood-opacity="${light ? 0.15 : 0.1}"/><feComposite in2="edge" operator="in"/>
-</filter>`;
-  const svg = `<defs>${STUDIO}${defs}</defs>${studio()}${plinth}${figureBody}${grain()}`;
-  return { svg, detail: [230, 360, 500, 625] };
-}
-
-// ─── Monograma de escritorio ────────────────────────────────────────────────
-
-function deskMonogram(colorId: string, side: Side): { svg: string; detail: Box } {
-  const light = colorId === 'blanco';
-  const back = side === 'back';
-  const w = 560;
-  const h = w * markAspect('monogram');
-  const x = 190;
-  const baseY = 858; // apoyo de la pieza sobre la base
-  const y = baseY - h;
-  const n = 18;
-  const step: [number, number] = [1.45, -0.95]; // profundidad hacia el fondo, arriba a la derecha
-  const H = (fill: string, dx = 0, dy = 0) => `<g transform="translate(${dx} ${dy})">${markAt('monogram', x, y, w, path('monogram', fill), back)}</g>`;
-  let depth = '';
-  for (let k = n; k >= 1; k--) depth += H(light ? mix('#cbc6bc', '#b0a99d', k / n) : mix('#2c2b2a', '#121212', k / n), step[0] * k, step[1] * k);
-  const faceFill = light ? 'url(#faceLight)' : 'url(#faceDark)';
-  const front = `<g filter="url(#lacquer)">${H(faceFill)}</g>` + `<g mask="url(#faceMask)"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#reflection)"/></g>`;
-  // Base antideslizante: bloque bajo con cara superior en perspectiva.
-  const bx0 = x - 34;
-  const bx1 = x + w + 34;
-  const dx = step[0] * (n + 6);
-  const dy = step[1] * (n + 6);
-  const baseTop = `M${bx0},${baseY + 8} L${bx1},${baseY + 8} L${bx1 + dx},${baseY + 8 + dy} L${bx0 + dx},${baseY + 8 + dy} Z`;
-  const base =
-    `<g filter="url(#ground)"><path d="${baseTop} M${bx0},${baseY + 8} h${bx1 - bx0} v14 h${bx0 - bx1} Z" fill="#000"/></g>` +
-    `<path d="${baseTop}" fill="${light ? '#d8d3ca' : '#262626'}" filter="url(#rubber)"/>` +
-    `<rect x="${bx0}" y="${baseY + 8}" width="${bx1 - bx0}" height="14" fill="${light ? '#bdb7ab' : '#151515'}"/>` +
-    `<path d="M${bx1},${baseY + 8} L${bx1 + dx},${baseY + 8 + dy} L${bx1 + dx},${baseY + 22 + dy} L${bx1},${baseY + 22} Z" fill="${light ? '#aaa397' : '#0f0f0f'}"/>`;
-  // Sombra proyectada sobre la base y el suelo, hacia el fondo a la derecha.
-  const cast = `<g filter="url(#cast)" opacity="0.5"><g transform="translate(0 ${baseY}) skewX(-52) scale(1 0.2) translate(0 ${-baseY})">${H('#000')}</g></g>`;
-  const defs = `${litFilter('lacquer', { soft: 2.5, height: 3, gloss: light ? 0.3 : 0.38, exponent: 30, ambient: 0.45 })}
-${litFilter('rubber', { soft: 2, height: 1.5, gloss: 0.04, exponent: 6, ambient: 0.62 })}
-${shadowFilter('ground', { blur: 12, dx: 10, dy: 8, opacity: 0.22, contact: 0.4 })}
-<filter id="cast" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="7"/></filter>
-<linearGradient id="faceDark" x1="0" y1="0" x2="0.4" y2="1"><stop offset="0" stop-color="#2f2f30"/><stop offset="0.55" stop-color="#1b1b1c"/><stop offset="1" stop-color="#141415"/></linearGradient>
-<linearGradient id="faceLight" x1="0" y1="0" x2="0.4" y2="1"><stop offset="0" stop-color="#f3f1ec"/><stop offset="0.6" stop-color="#e6e2da"/><stop offset="1" stop-color="#d9d4ca"/></linearGradient>
-<linearGradient id="reflection" gradientUnits="userSpaceOnUse" x1="${x}" y1="${y}" x2="${x + w * 0.7}" y2="${y + h}">
-  <stop offset="0.25" stop-color="#fff" stop-opacity="0"/><stop offset="0.33" stop-color="#fff" stop-opacity="${light ? 0.18 : 0.09}"/><stop offset="0.4" stop-color="#fff" stop-opacity="0"/>
-</linearGradient>
-<mask id="faceMask">${H('#fff')}</mask>`;
-  const svg = `<defs>${STUDIO}${defs}</defs>${studio()}${base}${cast}${depth}${front}${grain()}`;
-  return { svg, detail: [230, 400, 500, 625] };
 }
 
 function mix(a: string, b: string, t: number) {
@@ -331,8 +241,6 @@ export interface ObjectShot {
 export async function objectShot(product: Product, colorId: string, side: Side): Promise<ObjectShot> {
   let scene: { svg: string; detail: Box };
   if (product.silhouette === 'keychain') scene = keychain(colorId, side);
-  else if (product.silhouette === 'figure') scene = figure(colorId, side);
-  else if (product.silhouette === 'object') scene = deskMonogram(colorId, side);
   else scene = stickers(product, side);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W * SCALE}" height="${H * SCALE}" viewBox="0 0 ${W} ${H}" style="display:block">${scene.svg}</svg>`;
   return { png: await svgToPng(svg, W * SCALE, H * SCALE, false), detail: scene.detail };

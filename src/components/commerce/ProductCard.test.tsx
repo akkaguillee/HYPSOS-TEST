@@ -27,7 +27,7 @@ describe('ProductCard', () => {
     const link = screen.getByRole('link', { name: 'Sudadera Capucha Monogram' });
     expect(link).toHaveAttribute('href', '/products/sudadera-capucha-monogram');
     expect(screen.getByText('Edición limitada')).toBeInTheDocument();
-    expect(screen.getByText(/95,00/)).toBeInTheDocument();
+    expect(screen.getByText(/62,00/)).toBeInTheDocument();
   });
 
   it('identifica la imagen como mockup digital', () => {

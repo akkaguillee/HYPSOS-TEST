@@ -109,7 +109,7 @@ describe('API', () => {
       expect(response.status).toBe(503);
       const body = await json(response);
       expect(body.error).toBe('payments_not_configured');
-      expect(body.totals).toMatchObject({ subtotal: 7800, shipping: 495, total: 8295 });
+      expect(body.totals).toMatchObject({ subtotal: 6400, shipping: 495, total: 6895 });
       expect(available('p-tee-ascenso:negro:L')).toBe(14); // sin reservas
     });
   });
@@ -138,8 +138,8 @@ describe('API', () => {
       const response = await client(api).post('/checkout/session', tampered);
       expect(response.status).toBe(201);
       const [order, urls] = createCheckoutSession.mock.calls[0];
-      expect(order.items[0]).toMatchObject({ unitPrice: 3900, quantity: 2, sku: 'HYP-TS-001-NEGRO-L', variantId: 'p-tee-ascenso:negro:L' });
-      expect(order.totals.total).toBe(8295);
+      expect(order.items[0]).toMatchObject({ unitPrice: 3200, quantity: 2, sku: 'HYP-TS-001-NEGRO-L', variantId: 'p-tee-ascenso:negro:L' });
+      expect(order.totals.total).toBe(6895);
       expect(order.email).toBe('cliente@example.com');
       expect(order.reservation).toBe('held');
       expect(urls.success).toBe('https://hypsos.test/checkout/success?session_id={CHECKOUT_SESSION_ID}');
@@ -162,8 +162,8 @@ describe('API', () => {
 
     it('aplica el envío gratuito configurado', async () => {
       const api = makeApi();
-      await client(api).post('/checkout/session', { ...validCheckout(), lines: [{ productId: 'p-hoodie-ascenso', colorId: 'negro', size: 'M', quantity: 1 }] });
-      expect(createCheckoutSession.mock.calls[0][0].totals).toMatchObject({ subtotal: 8900, shipping: 0, total: 8900 });
+      await client(api).post('/checkout/session', { ...validCheckout(), lines: [{ productId: 'p-hoodie-ascenso', colorId: 'negro', size: 'M', quantity: 2 }] });
+      expect(createCheckoutSession.mock.calls[0][0].totals).toMatchObject({ subtotal: 11800, shipping: 0, total: 11800 });
     });
 
     it('rechaza variantes agotadas, inexistentes, cantidades excesivas y envíos no válidos', async () => {
@@ -358,7 +358,7 @@ describe('API', () => {
       await http.post('/checkout/session', validCheckout());
       const orders = (await json(await http.get('/account/orders'))).orders;
       expect(orders).toHaveLength(1);
-      expect(orders[0]).toMatchObject({ status: 'pending_payment', total: 8295 });
+      expect(orders[0]).toMatchObject({ status: 'pending_payment', total: 6895 });
     });
   });
 
