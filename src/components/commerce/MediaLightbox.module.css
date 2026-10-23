@@ -1,51 +1,25 @@
+/*
+ * Galería ampliada: fondo de estudio opaco (la prenda se funde con él) y controles de cristal
+ * flotando encima. Sin fundido de entrada: aparece en su sitio (el movimiento lo gestiona la capa
+ * global). Ningún ancestro de los cristales tiene opacity/filter: la refracción ve la imagen.
+ */
 .root {
   position: fixed;
   inset: 0;
   z-index: var(--z-modal);
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  background: rgb(8 8 8 / 0.97);
-  color: var(--c-white);
+  background: var(--c-studio);
+  color: var(--c-black);
+  --focus-ring: var(--c-black);
   visibility: hidden;
-  opacity: 0;
-  transition:
-    opacity var(--dur-panel) var(--ease-out),
-    visibility 0s linear var(--dur-panel);
 }
 
 .root[data-open='true'] {
   visibility: visible;
-  opacity: 1;
-  transition-delay: 0s;
-}
-
-.bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding: max(var(--space-2), env(safe-area-inset-top)) max(var(--gutter), env(safe-area-inset-right)) var(--space-2)
-    max(var(--gutter), env(safe-area-inset-left));
-  border-bottom: 1px solid var(--line);
-}
-
-.counter {
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--c-grey);
-  font-variant-numeric: tabular-nums;
-}
-
-.tools {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
 }
 
 .viewport {
-  position: relative;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   touch-action: none;
   cursor: zoom-in;
@@ -61,74 +35,193 @@
   cursor: grabbing;
 }
 
+/* Caja de la imagen: deja libres la barra superior y las miniaturas; el marco 4:5 cabe entero. */
 .image {
   position: absolute;
-  inset: var(--space-4);
+  inset: calc(64px + env(safe-area-inset-top, 0px)) 0 calc(88px + env(safe-area-inset-bottom, 0px));
   display: grid;
   place-items: center;
+  container-type: size;
   transform-origin: center;
   will-change: transform;
   transition: transform 320ms var(--ease-out);
+}
+
+@media (min-width: 768px) {
+  .image {
+    inset: calc(80px + env(safe-area-inset-top, 0px)) 96px calc(104px + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 .viewport[data-dragging='true'] .image {
   transition: none;
 }
 
-.image > * {
-  width: auto;
-  height: 100%;
-  max-width: 100%;
+@media (prefers-reduced-motion: reduce) {
+  .image {
+    transition: none;
+  }
+}
+
+.frame {
+  width: min(100cqw, 100cqh * 0.8);
   aspect-ratio: 4 / 5;
 }
 
-.nav {
+.frame > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ─── Controles de cristal ─────────────────────────────────────────── */
+.bar,
+.nav,
+.thumbs {
   position: absolute;
-  top: 50%;
-  translate: 0 -50%;
   z-index: 1;
 }
 
+.bar {
+  --lg-tint: rgb(242 240 236 / 0.7);
+  top: max(var(--space-3), env(safe-area-inset-top, 0px));
+  right: max(var(--space-3), env(safe-area-inset-right, 0px));
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 4px 0 var(--space-4);
+  border-radius: var(--radius-pill);
+}
+
+.counter {
+  min-width: 3.5ch;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  font-variant-numeric: tabular-nums;
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  margin-inline: var(--space-3) var(--space-1);
+  background: rgb(9 9 9 / 0.18);
+}
+
+.tool {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: inherit;
+  transition: background-color var(--dur-hover) var(--ease-out);
+}
+
+.tool svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
+}
+
+.tool:disabled {
+  color: rgb(9 9 9 / 0.3);
+  cursor: default;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tool:not(:disabled):hover {
+    background: rgb(9 9 9 / 0.08);
+  }
+}
+
+.tool:focus-visible,
+.thumb:focus-visible {
+  outline: 2px solid var(--c-black);
+  outline-offset: 1px;
+}
+
+.nav {
+  --lg-tint: rgb(242 240 236 / 0.4);
+  top: calc(50% - 26px);
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+}
+
+.nav svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.8;
+}
+
 .prev {
-  left: max(var(--space-3), env(safe-area-inset-left));
+  left: max(var(--space-3), env(safe-area-inset-left, 0px));
 }
 
 .next {
-  right: max(var(--space-3), env(safe-area-inset-right));
+  right: max(var(--space-3), env(safe-area-inset-right, 0px));
+}
+
+@media (min-width: 768px) {
+  .prev {
+    left: max(var(--space-5), env(safe-area-inset-left, 0px));
+  }
+
+  .next {
+    right: max(var(--space-5), env(safe-area-inset-right, 0px));
+  }
 }
 
 .thumbs {
+  --lg-tint: rgb(242 240 236 / 0.6);
+  left: 0;
+  right: 0;
+  bottom: max(var(--space-4), env(safe-area-inset-bottom, 0px));
   display: flex;
-  justify-content: center;
   gap: var(--space-2);
-  padding: var(--space-3) var(--gutter) max(var(--space-3), env(safe-area-inset-bottom));
-  border-top: 1px solid var(--line);
+  width: max-content;
+  margin-inline: auto;
+  padding: 6px;
+  border-radius: var(--radius-pill);
 }
 
 .thumb {
-  width: 48px;
+  width: 44px;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  border: 1px solid transparent;
-  opacity: 0.55;
-  transition:
-    opacity var(--dur-hover) var(--ease-out),
-    border-color var(--dur-hover) var(--ease-out);
+  border-radius: 10px;
+  outline: 1px solid transparent;
+  outline-offset: 2px;
+  transition: outline-color var(--dur-hover) var(--ease-out);
 }
 
 .thumb[aria-current='true'] {
-  opacity: 1;
-  border-color: var(--c-white);
+  outline-color: var(--c-black);
 }
 
-.thumb > * {
+.thumb > img {
+  display: block;
   width: 100%;
   height: 100%;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .thumb:not([aria-current='true']):hover {
+    outline-color: rgb(9 9 9 / 0.3);
+  }
 }
 
 /* Horizontal con poca altura: sin miniaturas para dar todo el alto a la imagen. */
 @media (orientation: landscape) and (max-height: 500px) {
   .thumbs {
     display: none;
+  }
+
+  .image {
+    inset: var(--space-3) 72px;
   }
 }

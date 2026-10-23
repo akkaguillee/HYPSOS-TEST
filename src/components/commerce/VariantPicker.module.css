@@ -1,3 +1,7 @@
+/*
+ * Selectores de variante de la ficha: muestras de color circulares y tallas en píldora.
+ * Radios reales (teclado y lector de pantalla nativos); el aspecto vive en el <span> hermano.
+ */
 .group {
   display: grid;
   gap: var(--space-3);
@@ -7,6 +11,7 @@
   border: 0;
 }
 
+/* «Color · Negro», «Talla · M»: etiqueta técnica en mono, el valor en texto normal. */
 .legend {
   display: flex;
   width: 100%;
@@ -15,38 +20,55 @@
   gap: var(--space-3);
   padding: 0;
   margin-bottom: var(--space-3);
-  font-size: var(--fs-xs);
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  font-weight: 500;
+  line-height: 1.3;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
+  color: var(--fg-muted);
 }
 
 .legendValue {
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0;
   text-transform: none;
-  color: var(--fg-muted);
+  color: var(--fg);
 }
 
 .options {
   display: flex;
   flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+/* Todas las tallas en una fila (hasta 6) que ocupa el ancho exacto del botón de compra. */
+.sizes {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 6), minmax(0, 1fr));
   gap: var(--space-2);
 }
 
-.sizes {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
-  gap: var(--space-2);
+/* Pantallas muy estrechas: rejilla de 3 columnas sin tallas huérfanas. */
+@media (max-width: 359px) {
+  .sizes {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 .option {
   position: relative;
+  display: grid;
 }
 
 .option input {
   position: absolute;
   inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
   opacity: 0;
   margin: 0;
   cursor: pointer;
@@ -56,90 +78,44 @@
   cursor: not-allowed;
 }
 
+/* ─── Color ─────────────────────────────────────────────────────────── */
+/* Área táctil de 44 px; disco de 28 px siempre contorneado (el blanco no se pierde en el claro). */
 .swatch {
   display: grid;
   place-items: center;
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid transparent;
-  transition: border-color var(--dur-micro) var(--ease-out);
 }
 
 .swatch span {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25);
+  outline: 1px solid var(--line-strong);
+  outline-offset: -1px;
+  transition: outline-color var(--dur-micro) var(--ease-out);
 }
 
-.option input:checked + .swatch {
-  border-color: var(--fg);
-}
-
-.option input:focus-visible + .swatch,
-.option input:focus-visible + .size {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
-}
-
-.option input:disabled + .swatch span {
-  opacity: 0.35;
-}
-
-.size {
-  display: grid;
-  place-items: center;
-  min-height: 48px;
-  padding: 0 var(--space-3);
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-1);
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  transition:
-    background-color var(--dur-micro) var(--ease-out),
-    color var(--dur-micro) var(--ease-out),
-    border-color var(--dur-micro) var(--ease-out),
-    transform var(--dur-micro) var(--ease-out);
-}
-
-/* Respuesta al pulsar una talla disponible. */
-.option:active input:not(:disabled) + .size {
-  transform: scale(0.97);
+/* Seleccionado: anillo de 1,5 px separado 3 px del disco. */
+.option input:checked + .swatch span {
+  outline: 1.5px solid var(--fg);
+  outline-offset: 3px;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .option:hover input:not(:disabled) + .size {
-    border-color: var(--fg);
+  .option:hover input:not(:disabled):not(:checked) + .swatch span {
+    outline-color: var(--fg);
   }
 }
 
-.option input:checked + .size {
-  background: var(--fg);
-  color: var(--bg);
-  border-color: var(--fg);
+.option input:focus-visible + .swatch {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 0;
 }
 
-.option input:disabled + .size {
-  color: var(--fg-muted);
-  border-style: dashed;
-  text-decoration: line-through;
-  opacity: 0.55;
-}
-
-.lowStock {
-  position: absolute;
-  top: -6px;
-  right: -4px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--c-red);
-  pointer-events: none;
-}
-
-.invalid .sizes .size {
-  border-color: var(--error);
+.option input:disabled + .swatch span {
+  opacity: 0.4;
 }
 
 /* Color agotado: visible pero no seleccionable, tachado en diagonal. */
@@ -150,8 +126,74 @@
 .unavailable .swatch::after {
   content: '';
   position: absolute;
-  inset: 50% 6px auto;
-  height: 1.5px;
+  inset: 50% 8px auto;
+  height: 1px;
   background: var(--fg);
   transform: rotate(-45deg);
+}
+
+/* ─── Talla ─────────────────────────────────────────────────────────── */
+.size {
+  display: grid;
+  place-items: center;
+  min-height: 48px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out),
+    border-color var(--dur-micro) var(--ease-out),
+    transform var(--dur-micro) var(--ease-out);
+}
+
+/* Respuesta al pulsar una talla disponible. */
+.option:active input:not(:disabled) + .size {
+  transform: scale(0.96);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .option:hover input:not(:disabled):not(:checked) + .size {
+    border-color: var(--fg);
+  }
+}
+
+.option input:checked + .size {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+
+.option input:focus-visible + .size {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Agotada: contorno sólido suave y la talla tachada (nunca discontinuo). */
+.option input:disabled + .size {
+  border-color: var(--line);
+  color: var(--fg-muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.invalid .sizes .size {
+  border-color: var(--error);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .size,
+  .swatch span {
+    transition: none;
+  }
+
+  .option:active input:not(:disabled) + .size {
+    transform: none;
+  }
 }

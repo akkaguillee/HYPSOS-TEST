@@ -68,6 +68,56 @@
   line-height: 1.5;
 }
 
+/*
+ * Mezcla tipográfica streetwear. Se combinan en una misma pieza: comprimida + ancha en un titular,
+ * gótica para el nombre del capítulo, tag pintado detrás, stencil para la cifra y marker anotando.
+ */
+
+/* Ancha: Archivo al 125 % y negra. Para palabras sueltas que tienen que «ocupar» el ancho. */
+.t-wide {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-stretch: var(--stretch-wide);
+  line-height: 0.86;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+}
+
+/* Gótica: nombres de capítulo y colección. Nunca en mayúsculas (la gótica no se lee así). */
+.t-gothic {
+  font-family: var(--font-gothic);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+/* Tag de graffiti: decorativo, palabras cortas pintadas sobre foto o color. */
+.t-tag {
+  font-family: var(--font-tag);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Stencil: cifras, índices de sección y códigos grandes (estética de carga y obra). */
+.t-stencil {
+  font-family: var(--font-stencil);
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+/* Marker: notas escritas a mano sobre la maqueta. Cortas. */
+.t-marker {
+  font-family: var(--font-marker);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+}
+
 /* Etiquetas técnicas: capítulos, códigos, tallas y microcopy. */
 .t-label {
   font-family: var(--font-mono);
@@ -178,4 +228,29 @@
   outline: 1px dashed rgb(200 16 46 / 0.6);
   padding: 0 0.25em;
   border-radius: var(--radius-1);
+}
+
+/*
+ * Titular mixto: un mismo titular compuesto en dos anchos (o con una palabra en gótica).
+ * El titular fija el cuerpo; cada línea se ajusta en em para que la pieza escale entera.
+ */
+.mix-crushed {
+  display: block;
+  font-stretch: var(--stretch-display);
+}
+
+.mix-wide {
+  display: block;
+  margin-top: 0.06em;
+  font-size: 0.5em;
+  font-stretch: var(--stretch-wide);
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+}
+
+.mix-gothic {
+  font-family: var(--font-gothic);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  text-transform: none;
 }

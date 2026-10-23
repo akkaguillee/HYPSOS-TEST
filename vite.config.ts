@@ -27,6 +27,9 @@ export default defineConfig({
   build: {
     target: 'es2022',
     sourcemap: true,
+    // Las fuentes nunca se incrustan como data: (la CSP solo permite `font-src 'self'`); el resto
+    // de recursos pequeños sigue el límite por defecto.
+    assetsInlineLimit: (file) => (/\.(woff2?|ttf|otf)$/.test(file) ? false : undefined),
     rollupOptions: {
       output: {
         // Librerías estables en chunks propios: mejor caché entre despliegues.

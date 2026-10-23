@@ -179,3 +179,28 @@
     color: var(--bg);
   }
 }
+
+/* Titular mixto: comprimida arriba y ancha abajo (oversize). */
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 7.5rem);
+  font-weight: 900;
+  line-height: var(--lh-crushed);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+}
+
+/* Índice en stencil sobre cada foto, como un número de muelle de carga. */
+.index {
+  position: absolute;
+  z-index: 2;
+  top: var(--space-4);
+  left: var(--space-4);
+  font-family: var(--font-stencil);
+  font-size: clamp(2.2rem, 3.4vw, 3.6rem);
+  font-weight: 900;
+  line-height: 0.8;
+  color: var(--c-white-soft);
+  text-shadow: 0 2px 18px rgb(0 0 0 / 0.35);
+  pointer-events: none;
+}

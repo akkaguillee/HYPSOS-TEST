@@ -29,6 +29,8 @@ const photo = (name: string, width: number, height: number, alt: string): Campai
 });
 
 export const campaignPhotos = {
+  underpass: photo('underpass-crew', 1536, 864, 'Tres modelos con sudadera, camiseta y cargo negros oversize en un paso subterráneo lleno de graffiti'),
+  spray: photo('spray-wall', 960, 1280, 'Modelo de espaldas con sudadera y cargo negros pintando con espray rojo un muro de hormigón al atardecer'),
   stairs: photo('chapter01-stairs', 1536, 864, 'Dos modelos con sudadera negra oversize y cargo ancho en una escalera de hormigón'),
   crew: photo('crew-sunset', 1536, 864, 'Tres modelos vestidos de negro en una azotea al atardecer'),
   rooftop: photo('summit-rooftop', 960, 1280, 'Modelo de espaldas con capucha negra mirando la ciudad de noche desde una azotea'),
@@ -44,13 +46,13 @@ export type CampaignPhotoId = keyof typeof campaignPhotos;
 
 /**
  * Marco de campaña de la portada (lo usan la interfaz y la precarga del HTML inicial).
- * `heroMedia`: fotografía o vídeo oficial. Mientras sea `null`, la portada usa `campaignPhotos.stairs`.
+ * `heroMedia`: fotografía o vídeo oficial. Mientras sea `null`, la portada usa `campaignPhotos.underpass`.
  */
 export type HeroMedia = { type: 'image'; src: string; alt: string; width: number; height: number } | { type: 'video'; src: string; poster: string };
 
 export const heroMedia: HeroMedia | null = null;
 
-export const heroPhoto = campaignPhotos.stairs;
+export const heroPhoto = campaignPhotos.underpass;
 
 /** Prenda destacada de la campaña (se usa en tarjetas y menús). */
 export const heroFeature: { handle: string; colorId: string; view: MediaView } = {

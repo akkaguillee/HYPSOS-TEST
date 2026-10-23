@@ -1,50 +1,177 @@
 .page {
-  position: relative;
-  display: grid;
-  min-height: calc(100svh - var(--header-h) - var(--announcement-h));
-  align-items: center;
-  overflow: hidden;
-  padding-block: var(--space-8);
+  padding-block: var(--space-4) var(--section-y-tight);
 }
 
-.grid {
+/* Cartel negro con el número aplastado: el error como objeto de marca. */
+.poster {
+  position: relative;
   display: grid;
   gap: var(--space-6);
-  align-items: center;
+  align-content: space-between;
+  min-height: min(calc(100svh - var(--announcement-h) - var(--header-h) - var(--space-8)), 820px);
+  padding: var(--space-5);
+  overflow: hidden;
+  border-radius: var(--radius-5);
+  background: var(--bg);
+  color: var(--fg);
 }
 
 @media (min-width: 900px) {
-  .grid {
-    grid-template-columns: 1fr 1fr;
+  .poster {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    grid-template-rows: auto 1fr;
+    column-gap: var(--space-8);
+    padding: var(--space-7);
+  }
+
+  .label {
+    grid-column: 1 / -1;
+  }
+
+  .codeWrap {
+    align-self: end;
+  }
+
+  .copy {
+    align-self: end;
   }
 }
 
-.code {
-  font-family: var(--font-display);
-  font-size: clamp(6rem, 22vw, 16rem);
-  font-weight: 850;
-  font-stretch: var(--stretch-display);
-  line-height: 0.8;
-  letter-spacing: -0.04em;
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--line-strong);
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--fg-muted);
 }
 
-.mascot {
-  width: min(100%, 420px);
-  height: auto;
-  margin-inline: auto;
-  color: var(--c-white);
+.codeWrap {
+  position: relative;
+  justify-self: start;
+}
+
+/* Titular aplastado: condensada al máximo, interlineado por debajo de 1. */
+.code {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(10rem, 46vw, 28rem);
+  font-weight: 900;
+  font-stretch: var(--stretch-display);
+  line-height: var(--lh-crushed);
+  letter-spacing: -0.02em;
+}
+
+/* HYPO pegado sobre la esquina del número. */
+.sticker {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: clamp(88px, 13vw, 200px);
+  transform: translate(35%, -20%);
 }
 
 .copy {
   display: grid;
   gap: var(--space-4);
   justify-items: start;
+  max-width: 520px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 2.6vw + 1.25rem, 3.75rem);
+  font-weight: 900;
+  font-stretch: var(--stretch-display);
+  line-height: var(--lh-tight);
+  text-transform: uppercase;
+}
+
+.lead {
+  font-size: var(--fs-lg);
+  line-height: 1.5;
+  color: var(--fg-muted);
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+/* En móvil, acciones a todo el ancho y del mismo tamaño. */
+@media (max-width: 479px) {
+  .actions,
+  .copy {
+    justify-items: stretch;
+  }
+
+  .actions {
+    display: grid;
+    width: 100%;
+  }
+}
+
+.exits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin-top: var(--space-2);
+}
+
+.exit {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  color: var(--fg-soft);
+}
+
+.exit:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .exit:hover {
+    text-decoration-color: transparent;
+  }
+}
+
+/* ─── Error de ruta (sin layout) ──────────────────────────────────────── */
+.errorPage {
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  padding: var(--gutter);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.errorInner {
+  display: grid;
+  gap: var(--space-5);
+  justify-items: center;
+  max-width: 560px;
+  text-align: center;
+}
+
+.errorInner .actions {
+  justify-content: center;
+}
+
+.errorWordmark {
+  width: 140px;
+}
+
+.errorSticker {
+  width: 120px;
 }

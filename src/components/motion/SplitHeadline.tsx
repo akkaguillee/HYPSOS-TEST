@@ -1,5 +1,5 @@
 import { useReducedMotion } from '@/hooks/useMediaQuery';
-import { DURATION, EASE, gsap, SplitText, useGSAP } from '@/lib/motion';
+import { pressIn, SplitText, useGSAP } from '@/lib/motion';
 import { useRef, type ElementType, type ReactNode } from 'react';
 
 interface SplitHeadlineProps {
@@ -15,9 +15,9 @@ interface SplitHeadlineProps {
 }
 
 /**
- * Titular que se revela línea a línea a través de una máscara.
- * SplitText mantiene la accesibilidad (aria-label en el contenedor) y re-divide
- * las líneas si cambia el ancho o cargan las fuentes.
+ * Titular «prensado»: cada letra nace aplastada contra la línea base y se estampa a su forma con
+ * un rebote (ver `pressIn`). SplitText mantiene la accesibilidad (aria-label en el contenedor) y
+ * vuelve a dividir si cambia el ancho o cargan las fuentes.
  */
 export function SplitHeadline({ as: Tag = 'h2', className, children, trigger = 'scroll', delay = 0, id, onReady }: SplitHeadlineProps) {
   const ref = useRef<HTMLElement>(null);
@@ -31,16 +31,12 @@ export function SplitHeadline({ as: Tag = 'h2', className, children, trigger = '
       const element = ref.current;
       if (!element || reduced) return;
       const split = SplitText.create(element, {
-        type: 'lines',
-        mask: 'lines',
-        linesClass: 'split-line',
+        type: 'words,chars',
+        wordsClass: 'split-word',
+        charsClass: 'split-char',
         autoSplit: true,
         onSplit(self) {
-          const tween = gsap.from(self.lines, {
-            yPercent: 110,
-            duration: DURATION.editorial,
-            ease: EASE.out,
-            stagger: 0.08,
+          const tween = pressIn(self.chars, {
             delay,
             paused: trigger === 'manual',
             scrollTrigger: trigger === 'scroll' ? { trigger: element, start: 'top 88%', once: true } : undefined,

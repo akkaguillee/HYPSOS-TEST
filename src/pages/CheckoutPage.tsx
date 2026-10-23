@@ -1,5 +1,6 @@
 import { ProductMedia } from '@/components/commerce/ProductMedia';
-import { PageHeader } from '@/components/layout/PageHeader';
+import { Sticker } from '@/components/brand/Sticker';
+import { PageIntro } from '@/content/pages/PageIntro';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { Alert, Checkbox, SelectField, TextField } from '@/components/ui/Field';
 import { Price } from '@/components/ui/Price';
@@ -7,15 +8,15 @@ import { track } from '@/lib/analytics';
 import { ApiError, apiRequest } from '@/lib/api';
 import { mediaForColor } from '@/lib/product-media';
 import { useAuth } from '@/store/auth';
-import { cartSubtotal, resolveCartLines, useCart } from '@/store/cart';
+import { cartCount, cartSubtotal, resolveCartLines, useCart } from '@/store/cart';
 import { useInventory, useStock } from '@/store/inventory';
 import { useStoreStatus } from '@/store/storeStatus';
 import { shippingMethods, store } from '@shared/config';
 import { calculateTotals, formatPrice } from '@shared/pricing';
 import { paths } from '@shared/routes';
 import { checkoutRequestSchema, fieldErrors, type Address } from '@shared/schemas';
-import { Lock } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
+import { ChevronDown, Lock } from 'lucide-react';
+import { useEffect, useId, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import styles from './CheckoutPage.module.css';
 
@@ -65,6 +66,8 @@ export default function CheckoutPage() {
     params.get('cancelled') ? { tone: 'info', title: 'Pago cancelado', message: 'No se ha realizado ningún cargo. Tu carrito sigue aquí.' } : null,
   );
   const formRef = useRef<HTMLFormElement>(null);
+  const [summaryOpen, setSummaryOpen] = useState(false);
+  const summaryId = useId();
 
   const subtotal = cartSubtotal(lines);
   const method = shippingMethods.find((candidate) => candidate.id === shippingMethod) ?? null;
@@ -186,46 +189,113 @@ export default function CheckoutPage() {
     }
   };
 
+  const crumbs = [{ label: 'Inicio', to: paths.home }, { label: 'Carrito', to: paths.cart }, { label: 'Checkout' }];
+
   if (lines.length === 0) {
     return (
       <>
-        <PageHeader title="Finalizar compra" breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Checkout' }]} />
-        <div className="container" style={{ paddingBlock: 'var(--space-8) var(--section-y)', display: 'grid', gap: 'var(--space-4)', justifyItems: 'start' }}>
-          <p className="t-h3">Tu carrito está vacío</p>
+        <PageIntro title="Finalizar compra" breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Checkout' }]} />
+        <div className={`container ${styles.empty}`}>
+          <Sticker mark="mascot" rotate={-8} className={styles.emptySticker} />
+          <p className={styles.emptyTitle}>Tu carrito está vacío</p>
           <ButtonLink to={paths.collection('all')}>Ir a la tienda</ButtonLink>
         </div>
       </>
     );
   }
 
+  const step = (number: string, title: string) => (
+    <legend className={styles.stepTitle}>
+      <span className={styles.stepNumber}>{number}</span>
+      <span className={styles.stepName}>{title}</span>
+    </legend>
+  );
+
   return (
     <>
-      <PageHeader
-        title="Finalizar compra"
-        breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Carrito', to: paths.cart }, { label: 'Checkout' }]}
-      >
-        {notReady && (
-          <Alert tone="info" title="La tienda todavía no acepta pedidos">
-            <p>
-              {!status.online
-                ? 'La compra online necesita el servidor de la tienda, que no está activo en esta versión de la web. '
-                : `${!status.payments ? 'La pasarela de pago aún no está activada. ' : ''}${!status.shipping ? 'Las tarifas de envío están pendientes de configurar. ' : ''}`}
-              Puedes revisar tu pedido, pero no se realizará ningún cargo.
-            </p>
-          </Alert>
-        )}
-        {!user && status.online && (
-          <p className="t-small t-muted">
-            ¿Tienes cuenta? <Link to={`${paths.account}?next=${encodeURIComponent(paths.checkout)}`} className="link">Inicia sesión</Link> para usar tus direcciones guardadas.
-          </p>
-        )}
-      </PageHeader>
+      <PageIntro title="Finalizar compra" breadcrumbs={crumbs} aside={`${cartCount(lines)} ${cartCount(lines) === 1 ? 'artículo' : 'artículos'}`} />
       <div className={`container ${styles.layout}`}>
+        <aside className={styles.summary} aria-labelledby="checkout-summary-title">
+          <div className={styles.summaryHead}>
+            <h2 id="checkout-summary-title" className={styles.summaryTitle}>
+              Tu pedido
+            </h2>
+            {/* En móvil el resumen se pliega para que el formulario empiece en la primera pantalla. */}
+            <button
+              type="button"
+              className={styles.summaryToggle}
+              aria-expanded={summaryOpen}
+              aria-controls={summaryId}
+              onClick={() => setSummaryOpen((open) => !open)}
+            >
+              <span>{summaryOpen ? 'Ocultar' : 'Ver'} detalle</span>
+              <ChevronDown aria-hidden="true" />
+            </button>
+            <Price amount={totals.total} className={styles.summaryHeadTotal} />
+          </div>
+          <div id={summaryId} className={styles.summaryBody} data-open={summaryOpen}>
+            <ul role="list" className={styles.summaryLines}>
+              {lines.map((line) => (
+                <li key={line.id} className={styles.summaryLine}>
+                  <span className={styles.summaryThumb}>
+                    <ProductMedia product={line.product} media={mediaForColor(line.product, line.colorId)[0]} colorId={line.colorId} decorative sizes="64px" />
+                  </span>
+                  <span className={styles.summaryName}>
+                    <span className={styles.summaryCode}>{line.product.code}</span>
+                    {line.product.name}
+                    <span className={styles.summaryMeta}>
+                      {line.colorName} · {line.size} · {line.quantity} {line.quantity === 1 ? 'ud.' : 'uds.'}
+                    </span>
+                  </span>
+                  <Price amount={line.lineTotal} className={styles.summaryPrice} />
+                </li>
+              ))}
+            </ul>
+            <dl className={styles.rows}>
+              <div className={styles.row}>
+                <dt>Subtotal</dt>
+                <dd>
+                  <Price amount={subtotal} />
+                </dd>
+              </div>
+              <div className={styles.row}>
+                <dt>Envío</dt>
+                <dd>{!method ? 'Pendiente' : totals.shipping === 0 ? 'Gratis' : formatPrice(totals.shipping)}</dd>
+              </div>
+              <div className={`${styles.row} ${styles.total}`}>
+                <dt>Total</dt>
+                <dd>
+                  <Price amount={totals.total} />
+                </dd>
+              </div>
+            </dl>
+            <p className={styles.note}>Incluye {formatPrice(totals.taxIncluded)} de IVA.</p>
+          </div>
+        </aside>
+
         <form ref={formRef} className={styles.form} onSubmit={submit} noValidate aria-describedby="checkout-feedback">
+          {notReady && (
+            <Alert tone="info" title="La tienda todavía no acepta pedidos">
+              <p>
+                {!status.online
+                  ? 'La compra online necesita el servidor de la tienda, que no está activo en esta versión de la web. '
+                  : `${!status.payments ? 'La pasarela de pago aún no está activada. ' : ''}${!status.shipping ? 'Las tarifas de envío están pendientes de configurar. ' : ''}`}
+                Puedes revisar tu pedido, pero no se realizará ningún cargo.
+              </p>
+            </Alert>
+          )}
+
           <fieldset className={styles.step}>
-            <legend className={styles.stepTitle}>
-              <span className={styles.stepNumber}>1</span> Contacto
-            </legend>
+            {step('01', 'Contacto')}
+            {!user && status.online && (
+              <p className={styles.stepAside}>
+                ¿Tienes cuenta?{' '}
+                <Link to={`${paths.account}?next=${encodeURIComponent(paths.checkout)}`} className={styles.inlineLink}>
+                  Inicia sesión
+                </Link>{' '}
+                para usar tus direcciones guardadas.
+              </p>
+            )}
             <div className={styles.fields}>
               <TextField
                 className={styles.full}
@@ -246,9 +316,7 @@ export default function CheckoutPage() {
           </fieldset>
 
           <fieldset className={styles.step}>
-            <legend className={styles.stepTitle}>
-              <span className={styles.stepNumber}>2</span> Dirección de envío
-            </legend>
+            {step('02', 'Dirección de envío')}
             <div className={styles.fields}>
               <TextField label="Nombre" autoComplete="given-name" {...field('firstName')} />
               <TextField label="Apellidos" autoComplete="family-name" {...field('lastName')} />
@@ -268,9 +336,7 @@ export default function CheckoutPage() {
           </fieldset>
 
           <fieldset className={styles.step}>
-            <legend className={styles.stepTitle}>
-              <span className={styles.stepNumber}>3</span> Método de envío
-            </legend>
+            {step('03', 'Método de envío')}
             {shippingMethods.length === 0 ? (
               <Alert tone="info" title="Envíos pendientes de configurar">
                 <p>Las tarifas y los plazos de envío se publicarán cuando la tienda abra los pedidos.</p>
@@ -292,7 +358,7 @@ export default function CheckoutPage() {
                         {option.name}
                         <span>{option.description}</span>
                       </span>
-                      <strong className="t-num">{cost === 0 ? 'Gratis' : formatPrice(cost)}</strong>
+                      <strong className={styles.methodPrice}>{cost === 0 ? 'Gratis' : formatPrice(cost)}</strong>
                     </label>
                   );
                 })}
@@ -301,23 +367,24 @@ export default function CheckoutPage() {
           </fieldset>
 
           <fieldset className={styles.step}>
-            <legend className={styles.stepTitle}>
-              <span className={styles.stepNumber}>4</span> Pago
-            </legend>
+            {step('04', 'Pago')}
             <div className={styles.payment}>
-              <p className={styles.paymentHead}>
-                <Lock aria-hidden="true" /> Pago con Stripe Checkout
-              </p>
-              <p>
-                Al continuar irás a la página de pago de Stripe. Los datos de tu tarjeta se introducen allí y nunca pasan por nuestros servidores.
-              </p>
+              <span className={styles.paymentIcon}>
+                <Lock aria-hidden="true" />
+              </span>
+              <div>
+                <p className={styles.paymentHead}>Pago con Stripe Checkout</p>
+                <p>
+                  Al continuar irás a la página de pago de Stripe. Los datos de tu tarjeta se introducen allí y nunca pasan por nuestros servidores.
+                </p>
+              </div>
             </div>
             <div className={styles.submit}>
               <Checkbox checked={acceptTerms} onChange={(event) => setAcceptTerms(event.target.checked)} error={errors.acceptTerms}>
                 He leído y acepto las <Link to={paths.page('terminos')}>condiciones de compra</Link> y la{' '}
                 <Link to={paths.page('privacidad')}>política de privacidad</Link>.
               </Checkbox>
-              <div id="checkout-feedback" aria-live="polite">
+              <div id="checkout-feedback" aria-live="polite" className={styles.feedback}>
                 {feedback && (
                   <Alert tone={feedback.tone} title={feedback.title}>
                     <p>{feedback.message}</p>
@@ -331,44 +398,6 @@ export default function CheckoutPage() {
             </div>
           </fieldset>
         </form>
-
-        <aside className={styles.summary} aria-labelledby="checkout-summary-title">
-          <h2 id="checkout-summary-title" className={styles.stepTitle} style={{ marginBottom: 0 }}>
-            Tu pedido
-          </h2>
-          <ul role="list" className={styles.summaryLines}>
-            {lines.map((line) => (
-              <li key={line.id} className={styles.summaryLine}>
-                <span className={styles.summaryThumb}>
-                  <ProductMedia product={line.product} media={mediaForColor(line.product, line.colorId)[0]} colorId={line.colorId} decorative sizes="56px" />
-                  <span className={styles.qty} aria-label={`${line.quantity} unidades`}>
-                    {line.quantity}
-                  </span>
-                </span>
-                <span className={styles.summaryName}>
-                  {line.product.name}
-                  <span>
-                    {line.colorName} · {line.size}
-                  </span>
-                </span>
-                <Price amount={line.lineTotal} />
-              </li>
-            ))}
-          </ul>
-          <div className={styles.row}>
-            <span>Subtotal</span>
-            <Price amount={subtotal} />
-          </div>
-          <div className={styles.row}>
-            <span>Envío</span>
-            <span className="t-num">{!method ? 'Pendiente' : totals.shipping === 0 ? 'Gratis' : formatPrice(totals.shipping)}</span>
-          </div>
-          <div className={`${styles.row} ${styles.total}`}>
-            <span>Total</span>
-            <Price amount={totals.total} />
-          </div>
-          <p className={styles.note}>Incluye {formatPrice(totals.taxIncluded)} de IVA.</p>
-        </aside>
       </div>
     </>
   );

@@ -56,9 +56,27 @@
 }
 
 .code {
-  font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
+  font-family: var(--font-stencil);
+  font-size: clamp(2rem, 2.6vw, 2.8rem);
+  font-weight: 900;
+  line-height: 0.85;
   color: var(--c-red);
+}
+
+.visual {
+  position: relative;
+}
+
+/* Óvalo vertical centrado en la trabilla (88 % / 62 % de la foto cuadrada). */
+.circle {
+  position: absolute;
+  left: 75%;
+  top: 62%;
+  width: 26%;
+  height: auto;
+  translate: 0 -50%;
+  rotate: 78deg;
+  pointer-events: none;
 }
 
 .itemTitle {

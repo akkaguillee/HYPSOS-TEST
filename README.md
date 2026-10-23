@@ -39,7 +39,7 @@ Sin configuración, la tienda funciona salvo lo que depende de servicios externo
 | `pnpm lint` / `pnpm typecheck` | ESLint / TypeScript |
 | `pnpm admin …` | Administración por terminal: `stock`, `stock:set <SKU> <n>` (avisa a quien pidió «Avísame»), `orders`, `order <nº>`, `order:status <nº> <shipped\|cancelled>` |
 | `pnpm assets:brand` | Regenera vectores, favicon, iconos y Open Graph desde los originales (requiere `potrace`) |
-| `pnpm mockups` | Regenera los mockups 2D de producto (`--only <ids>`, `--preview <carpeta>`) |
+| `pnpm mockups` | Regenera las fotos de producto provisionales: prenda lisa generada con IA + marcas oficiales compuestas (`--only <ids>`, `--preview <carpeta>`) |
 | `node scripts/responsive-audit.mjs` | Auditoría responsive en 12 tamaños (320–1920 px y 3 móviles en horizontal) con capturas |
 
 ---
@@ -98,21 +98,36 @@ Decisiones relevantes:
 La dirección visual sigue el **Manual de Marca HYPSOS** («negro + rojo, con control») con la estructura de la guía de estilo de referencia: tipografía gigante comprimida, bandas de color a sangre, píldoras con contorno de 1 px y pegatinas troqueladas. Todos los valores viven en `src/styles/tokens.css`:
 
 - **Paleta del Manual:** HYPSOS Black `#090909` (campo dominante), HYPSOS Red `#D71920` (señal: acción principal, «Edición limitada», indicador activo; una vez por vista), Deep Red `#7A0F1D`, Off White `#F2F0EC` y Concrete Grey `#747474`. Temas por zona: `data-theme="light" | "dark" | "red"` (la banda roja, como mucho una por página).
-- **Tipografía (3 familias, como pide el Manual):** Archivo condensada (eje de anchura al 62 %) para titulares comprimidos tipo cartel, Inter para el texto y JetBrains Mono para capítulos, códigos de producto, etiquetas y botones.
+- **Tipografía base (las 3 familias del Manual):** Archivo variable en sus dos extremos —comprimida al 62 % para titulares tipo cartel y **ancha al 125 %** para palabras que tienen que ocupar el ancho—, Inter para el texto y JetBrains Mono para capítulos, códigos, etiquetas y botones.
+- **Familias de acento (añadidas a petición, fuera de las 3 del Manual; todas OFL vía Fontsource, solo latín y un peso):** cada una con un único papel, definido en `src/styles/typography.css` (`.t-gothic`, `.t-tag`, `.t-stencil`, `.t-marker`, y `.mix-*` para titulares de dos anchos):
+  - **Grenze Gotisch** (gótica): nombres de capítulo y colección («Chapter», «Ascent», «Signal»).
+  - **Sedgwick Ave Display** (tag de graffiti): pintadas decorativas, siempre `aria-hidden` y con el texto real en otro sitio.
+  - **Big Shoulders Stencil Display** (stencil): cifras, índices y recuentos.
+  - **Permanent Marker** (rotulador): notas cortas escritas a mano.
 - **Forma:** botones en píldora, imágenes de producto a 14 px, tarjetas a 20–32 px. Sin sombras en tarjetas.
 - **Espaciado:** base 4 px, márgenes laterales de 16 a 48 px, ritmo vertical fluido.
-- **Motion:** duraciones `--dur-ui` (200 ms), `--dur-panel` (380 ms), `--dur-enter`/`--dur-editorial`; curvas `--ease-out` y `--ease-drawer`.
+- **Motion:** duraciones `--dur-ui` (200 ms), `--dur-panel` (380 ms); en JavaScript, curvas propias de GSAP (`hyp.press`, `hyp.slap`, `hyp.drip`, `hyp.stroke`) en `src/lib/motion.ts`.
 
 **Liquid Glass con refracción** (`src/components/ui/LiquidGlass.tsx`, `src/lib/liquid-glass.ts`): cabecera flotante, megamenú, búsqueda, carrito y cajones, modales, etiquetas y puntos sobre fotos, controles de galería.
 
 - En Chromium (Chrome, Edge, Opera…) hay **refracción real**: un mapa de desplazamiento generado en canvas (perfil convexo tipo «squircle», ley de Snell con índice 1,5) se aplica con `backdrop-filter: url(#filtro)` y `feDisplacementMap`, con una ligera aberración cromática. El fondo se curva en el bisel y el centro queda plano y legible.
+- **Cabecera = gota de agua** (perfil `drop`): toda la píldora actúa como lente; el borde comprime y el centro amplía lo que pasa por detrás (remapeo de Hermite monótono, sin inversiones). Al hacer scroll la gota «se carga» con la velocidad (más refracción) y al parar rebota con un muelle elástico (`useLiquidWobble`, que solo reescala el filtro, sin re-render).
 - Safari y Firefox no admiten filtros SVG en `backdrop-filter`: reciben cristal con desenfoque y las mismas capas de luz, **sin refracción**.
 - Con `prefers-reduced-transparency` el material pasa a sólido; con `prefers-reduced-motion` el brillo no sigue al puntero.
-- Reglas: un cristal no va dentro de otro ni dentro de un ancestro con `opacity`, `filter`, `mask` o `clip-path`.
+- Reglas: un cristal no va dentro de otro ni dentro de un ancestro con `opacity`, `filter`, `mask`, `clip-path` o **`view-transition-name`** (este último lo convierte en raíz del fondo y el cristal deja de ver la página).
 
-**Portada** (por bandas): campaña a sangre con «BUILT FOR THE CLIMB.», pegatinas de HYPO y la estrella y puntos interactivos sobre las prendas → Chapter 01 (rejilla de producto) → categorías con fotos de modelos → lookbook «Above ordinary.» con la tipografía cruzándose con las fotos → detalle firma y The Climb System → cápsula Signal en la banda roja → manifiesto del Manual. Marquesina superior con las frases del Manual y el aviso de demo.
+**Portada** (por bandas, oversize y con graffiti): campaña en un túnel con graffiti, titular de dos anchos «BUILT FOR / THE CLIMB.», el capítulo «Ascent» pintado a espray, subrayado que gotea, pegatinas de HYPO y la estrella y puntos sobre las prendas → dos cintas de precinto cruzadas sobre el corte → Chapter 01 (gótica + stencil rodeado a espray, rejilla de producto) → categorías con índices stencil → lookbook «Above ordinary.» con corona a espray → detalle firma con la trabilla señalada a rotulador → cápsula Signal (tag negro sobre la banda roja) → **el muro**: manifiesto que se enciende con el scroll, foto pintando con espray, «keep climbing» pintado sobre el muro y rótulo gigante cortado. Marquesina superior con las frases del Manual y el aviso de demo.
 
-**Motion graphics** (solo `transform`, `opacity` y `clip-path`): revelado de imágenes con máscara y escala, titulares que suben línea a línea, pegatinas que se «pegan», paralaje moderado, luz y pegatinas que siguen al puntero fino, transiciones de página (View Transitions) y del carrito.
+**Sistema de movimiento** (JavaScript: GSAP con DrawSVG, ScrambleText, SplitText y CustomEase; canvas y SVG). Nada de fundidos, desenfoques ni deslizamientos de entrada; cada gesto imita un proceso físico:
+
+- **Prensado** (`pressIn`): las letras de los titulares nacen aplastadas contra la línea base y se estampan con rebote.
+- **Espray** (`src/lib/spray.ts`): las imágenes se pintan con una boquilla virtual en pasadas en zigzag (núcleo, bruma y gotas que perforan el color). La intro termina borrando la pantalla negra a espray.
+- **Trazo y goteo** (`SprayMark`, `GraffitiTag`): círculos, subrayados, coronas y tags se dibujan a la velocidad de un brazo y después escurren con gravedad; textura de espray con un filtro SVG compartido (`#hyp-spray`).
+- **Golpe** (`slap`): las pegatinas se estampan con un pequeño temblor del soporte.
+- **Decodificación** (`Scramble`): las etiquetas técnicas giran como un panel de salidas.
+- **Scroll**: cintas que aceleran, se inclinan e invierten según la velocidad; barrido rojo que se pinta con el scroll; manifiesto que se enciende palabra a palabra; paralaje moderado.
+- **Puntero**: anillo con inercia (crece con etiqueta sobre imágenes de producto) y botones magnéticos con rebote elástico; luz del cristal que sigue al puntero.
+- **Páginas**: transición de obturador (View Transitions): la nueva se abre desde una línea central y la anterior se hunde.
 
 Accesibilidad y plataforma:
 
@@ -124,7 +139,7 @@ Los textos de campaña (marquesina, hero, lookbook, detalle firma, cápsula, man
 
 ### Fotografía de campaña (provisional, generada con IA)
 
-Las fotos de campaña de `public/assets/campaign/` (escalera, azotea, looks en estudio, gorra, cargo, detalle de la trabilla, accesorios) **están generadas con IA** (Figma AI) como material provisional hasta la sesión de fotos. Las prendas que aparecen son lisas (sin los gráficos de HYPSOS) y **no representan ningún producto concreto**; por eso enlazan a categorías y no a fichas. La web lo indica junto a las fotos principales («Imágenes de campaña generadas con IA · provisionales»).
+Las fotos de campaña de `public/assets/campaign/` (túnel con graffiti, muro pintado a espray, escalera, azotea, looks en estudio, gorra, cargo, detalle de la trabilla, accesorios) **están generadas con IA** (Figma AI) como material provisional hasta la sesión de fotos. Las prendas que aparecen son lisas (sin los gráficos de HYPSOS) y **no representan ningún producto concreto**; por eso enlazan a categorías y no a fichas. La web lo indica junto a las fotos principales («Imágenes de campaña generadas con IA · provisionales»).
 
 Para sustituirlas basta con dejar las fotos reales con el mismo nombre (`<nombre>-<ancho>.avif|webp`, anchos 640/960/original) o cambiar `shared/campaign.ts`. La foto o el vídeo oficial del hero va en `heroMedia`.
 
@@ -149,10 +164,13 @@ El catálogo está en `shared/catalog/`. Cada producto tiene:
 
 **Productos, precios, textos y stock son de ejemplo** (`store.demoCatalog = true` en `shared/config.ts`).
 
-**Mockups en plano técnico (tech-pack):** mientras no haya fotografía de producto, cada producto muestra un dibujo técnico plano (siluetas oversize, costuras, pespuntes y canalé) en el color elegido y en tres vistas (delantera, trasera y detalle), sobre el fondo de estudio `#ECE9E3`. Todas las prendas llevan la **trabilla roja** firma del Manual, siempre en el mismo sitio. Los genera `pnpm mockups` (`scripts/mockups/`):
+**Fotos de producto provisionales (no son fotografía real):** las prendas son **fotos de prenda lisa generadas con IA** (maniquí invisible sobre el fondo de estudio `#ECE9E3`, con la trabilla roja) y las marcas oficiales se **componen encima** para que parezcan serigrafiadas o bordadas: la tinta sigue los pliegues (mapa de desplazamiento), recibe la luz de la tela y deja ver su textura; el bordado lleva relieve, puntada y una sombra de 1 px. Ninguna prenda se ha fabricado ni fotografiado: sirven para construir la tienda y se sustituyen por fotos reales antes de vender. Las genera `pnpm mockups` (`scripts/mockups/`, `--only <ids>`, `--preview <carpeta>`):
 
-- Usa las marcas oficiales como serigrafía, bordado o etiqueta tejida, sin redibujarlas.
-- Se rasteriza con Chromium a WebP de 480 y 960 px: 108 imágenes, unos 4,5 MB en el repositorio y unos 9 KB por imagen en móvil.
+- **Bases** en `scripts/mockups/bases/<tipo>-<color>-<cara>.webp` (960×1280), exportadas del archivo de Figma del proyecto. Las zonas de estampación de cada base están en `placements.ts`; el compositor en `photo.ts`.
+- **Faltan bases**: solo hay camiseta negra y blanca (frente y espalda) y sudadera negra (frente). Mientras falten, se derivan (camiseta grafito y sudaderas gris, grafito y blanca teñidas desde la negra; espalda de sudadera reconstruida desde el frente; sudadera con cordones = sin cordones) y el resto de productos textiles (manga larga, pantalones, short, gorra, gorro, bolsa, calcetines) sigue con el **dibujo técnico plano** de antes. Basta con añadir la base que falta y volver a ejecutar `pnpm mockups`; la consola lista qué se ha sustituido.
+- **Llavero, figura, monograma de escritorio y stickers** no tienen base: son una foto virtual hecha con filtros SVG en Chromium (`objects.ts`), con la silueta oficial sin redibujar.
+- Las marcas son siempre las oficiales (`src/assets/brand/`): solo se escalan, giran, recolorean y deforman con la tela.
+- WebP de 480 y 960 px (4:5): 216 imágenes, unos 3,2 MB en el repositorio y unos 7 KB por imagen en móvil.
 - El texto alternativo dice «Mockup digital de…» y la ficha indica «Producto de demostración».
 
 Para usar fotografías reales, sustituye en el producto `media: mockupViews` por:
@@ -275,7 +293,7 @@ Los E2E de este entorno usan el Chromium del sistema: `PLAYWRIGHT_CHROMIUM_PATH=
 ## Pendientes antes de publicar
 
 1. **Catálogo real:** productos, precios, textos, composiciones, tallas y stock. Después, `demoCatalog: false`.
-2. **Fotografías reales** de producto (frontal, trasera, detalle y puesta) y de campaña. Sustituyen a los mockups técnicos y a las fotos generadas con IA (ver «Fotografía de campaña»).
+2. **Fotografías reales** de producto (frontal, trasera, detalle y puesta) y de campaña. Sustituyen a las fotos de producto provisionales (prendas generadas con IA con las marcas compuestas, y dibujos técnicos donde aún no hay base) y a las fotos de campaña generadas con IA (ver «Fotografía de campaña»).
 3. **Envíos:** tarifas, plazos y países confirmados con el operador logístico (`shippingMethods`).
 4. **Stripe:** claves y webhook. Probar en modo test antes de activar el modo real.
 5. **Email** (`RESEND_API_KEY`, `MAIL_FROM`, `CONTACT_INBOX`): confirmaciones de pedido, recuperación de contraseña, avisos de stock y copia de los mensajes de contacto.

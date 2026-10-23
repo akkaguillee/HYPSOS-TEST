@@ -69,3 +69,29 @@
   bottom: 8%;
   width: 38%;
 }
+
+/* Tag negro a espray sobre la banda roja, asomando por detrás de la foto. */
+.tag {
+  position: absolute;
+  z-index: 1;
+  left: -30%;
+  top: 4%;
+  width: 72%;
+  height: auto;
+  rotate: -9deg;
+  pointer-events: none;
+}
+
+/* En la banda roja el titular abre con la palabra ancha. */
+.title :global(.mix-wide) {
+  margin-top: 0;
+  margin-bottom: 0.06em;
+}
+
+@media (max-width: 1023px) {
+  .tag {
+    left: -2%;
+    top: -7%;
+    width: 58%;
+  }
+}

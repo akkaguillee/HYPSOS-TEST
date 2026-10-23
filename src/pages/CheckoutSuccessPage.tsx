@@ -1,5 +1,5 @@
-import { Mascot } from '@/components/brand/BrandVector';
-import { PageHeader } from '@/components/layout/PageHeader';
+import { Sticker } from '@/components/brand/Sticker';
+import { PageIntro } from '@/content/pages/PageIntro';
 import { ButtonLink } from '@/components/ui/Button';
 import { Alert } from '@/components/ui/Field';
 import { trackPurchaseOnce } from '@/lib/analytics';
@@ -9,6 +9,7 @@ import { formatPrice } from '@shared/pricing';
 import { paths } from '@shared/routes';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
+import styles from './CheckoutPage.module.css';
 
 interface OrderStatus {
   orderNumber: string;
@@ -56,48 +57,54 @@ export default function CheckoutSuccessPage() {
 
   return (
     <>
-      <PageHeader title="Gracias" eyebrow="Pedido" breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Pedido' }]} />
-      <div className="container" style={{ display: 'grid', gap: 'var(--space-6)', paddingBlock: 'var(--space-7) var(--section-y)', maxWidth: 760 }}>
-        <Mascot style={{ width: 140, height: 'auto', color: 'var(--c-white)' }} />
-        {state.kind === 'loading' && <p className="t-lead">Comprobando tu pedido…</p>}
-        {state.kind === 'missing' && (
-          <Alert tone="info" title="No encontramos la referencia del pago">
-            <p>Si has completado un pago, recibirás la confirmación por email. Si tienes dudas, escríbenos.</p>
-          </Alert>
-        )}
-        {state.kind === 'offline' && (
-          <Alert tone="info" title="Esta versión de la web no procesa pedidos">
-            <p>Los pedidos necesitan el servidor de la tienda, que no está activo aquí. No se ha realizado ningún cargo.</p>
-          </Alert>
-        )}
-        {state.kind === 'error' && (
-          <Alert title="No hemos podido consultar el pedido">
-            <p>Si el pago se completó, recibirás un email de confirmación. Si no llega, contacta con nosotros.</p>
-          </Alert>
-        )}
-        {state.kind === 'order' && state.order.status === 'paid' && (
-          <Alert tone="success" title={`Pedido ${state.order.orderNumber} confirmado`}>
-            <p>
-              {state.order.itemCount} {state.order.itemCount === 1 ? 'artículo' : 'artículos'} · {formatPrice(state.order.total)}. Enviaremos la
-              confirmación a {state.order.email}.
+      <PageIntro title="Gracias" breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Pedido' }]} />
+      <div className="container">
+        <div className={styles.result}>
+          <Sticker mark="mascot" rotate={-8} className={styles.resultSticker} />
+          {state.kind === 'loading' && (
+            <p className="t-lead" role="status">
+              Comprobando tu pedido…
             </p>
-          </Alert>
-        )}
-        {state.kind === 'order' && state.order.status === 'pending_payment' && (
-          <Alert tone="info" title={`Pedido ${state.order.orderNumber} pendiente de confirmación`}>
-            <p>Estamos esperando la confirmación del pago. Esta página se actualizará sola.</p>
-          </Alert>
-        )}
-        {state.kind === 'order' && (state.order.status === 'expired' || state.order.status === 'cancelled') && (
-          <Alert title="El pago no se ha completado">
-            <p>No se ha realizado ningún cargo. Puedes volver a intentarlo desde el carrito.</p>
-          </Alert>
-        )}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
-          <ButtonLink to={paths.collection('novedades')}>Seguir comprando</ButtonLink>
-          <ButtonLink to={paths.page('contacto')} variant="outline">
-            Contacto
-          </ButtonLink>
+          )}
+          {state.kind === 'missing' && (
+            <Alert tone="info" title="No encontramos la referencia del pago">
+              <p>Si has completado un pago, recibirás la confirmación por email. Si tienes dudas, escríbenos.</p>
+            </Alert>
+          )}
+          {state.kind === 'offline' && (
+            <Alert tone="info" title="Esta versión de la web no procesa pedidos">
+              <p>Los pedidos necesitan el servidor de la tienda, que no está activo aquí. No se ha realizado ningún cargo.</p>
+            </Alert>
+          )}
+          {state.kind === 'error' && (
+            <Alert title="No hemos podido consultar el pedido">
+              <p>Si el pago se completó, recibirás un email de confirmación. Si no llega, contacta con nosotros.</p>
+            </Alert>
+          )}
+          {state.kind === 'order' && state.order.status === 'paid' && (
+            <Alert tone="success" title={`Pedido ${state.order.orderNumber} confirmado`}>
+              <p>
+                {state.order.itemCount} {state.order.itemCount === 1 ? 'artículo' : 'artículos'} · {formatPrice(state.order.total)}. Enviaremos la
+                confirmación a {state.order.email}.
+              </p>
+            </Alert>
+          )}
+          {state.kind === 'order' && state.order.status === 'pending_payment' && (
+            <Alert tone="info" title={`Pedido ${state.order.orderNumber} pendiente de confirmación`}>
+              <p>Estamos esperando la confirmación del pago. Esta página se actualizará sola.</p>
+            </Alert>
+          )}
+          {state.kind === 'order' && (state.order.status === 'expired' || state.order.status === 'cancelled') && (
+            <Alert title="El pago no se ha completado">
+              <p>No se ha realizado ningún cargo. Puedes volver a intentarlo desde el carrito.</p>
+            </Alert>
+          )}
+          <div className={styles.resultActions}>
+            <ButtonLink to={paths.collection('novedades')}>Seguir comprando</ButtonLink>
+            <ButtonLink to={paths.page('contacto')} variant="outline">
+              Contacto
+            </ButtonLink>
+          </div>
         </div>
       </div>
     </>

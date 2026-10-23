@@ -1,4 +1,4 @@
-import { PageHeader } from '@/components/layout/PageHeader';
+import { PageIntro } from '@/content/pages/PageIntro';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { Alert, Checkbox, SelectField, TextField } from '@/components/ui/Field';
 import { Price } from '@/components/ui/Price';
@@ -52,8 +52,8 @@ export default function AccountPage() {
   if (status === 'unknown') {
     return (
       <>
-        <PageHeader title="Mi cuenta" breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Mi cuenta' }]} />
-        <div className="container" style={{ paddingBlock: 'var(--space-8)' }}>
+        <PageIntro title="Mi cuenta" breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Mi cuenta' }]} />
+        <div className={`container ${styles.loading}`}>
           <p className="t-muted" role="status">
             Cargando tu cuenta…
           </p>
@@ -66,15 +66,18 @@ export default function AccountPage() {
     if (pathname !== paths.account) return <Navigate to={`${paths.account}?next=${encodeURIComponent(pathname)}`} replace />;
     return (
       <>
-        <PageHeader eyebrow="Cuenta" title="Accede a HYPSOS" breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Mi cuenta' }]}>
-          {server.loaded && !server.online && (
-            <Alert tone="info" title="Cuentas no disponibles en esta versión">
-              <p>Registrarse e iniciar sesión necesita el servidor de la tienda, que no está activo aquí. Tus favoritos se guardan igualmente en este dispositivo.</p>
-            </Alert>
-          )}
-        </PageHeader>
+        <PageIntro title="Accede a HYPSOS" breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Mi cuenta' }]} />
         <div className="container">
-          <AuthForms />
+          <AuthForms
+            notice={
+              server.loaded &&
+              !server.online && (
+                <Alert tone="info" title="Cuentas no disponibles en esta versión">
+                  <p>Registrarse e iniciar sesión necesita el servidor de la tienda, que no está activo aquí. Tus favoritos se guardan igualmente en este dispositivo.</p>
+                </Alert>
+              )
+            }
+          />
         </div>
       </>
     );
@@ -82,12 +85,7 @@ export default function AccountPage() {
 
   return (
     <>
-      <PageHeader
-        eyebrow="Cuenta"
-        title={`Hola, ${user.name.split(' ')[0]}`}
-        breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Mi cuenta' }]}
-        aside={user.email}
-      />
+      <PageIntro title={`Hola, ${user.name.split(' ')[0]}`} breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Mi cuenta' }]} aside={<span className={styles.email}>{user.email}</span>} />
       <div className={`container ${styles.layout}`}>
         <nav className={styles.nav} aria-label="Secciones de la cuenta">
           {sections.map((section) => (
@@ -114,7 +112,7 @@ function LogoutButton() {
   return (
     <button
       type="button"
-      className={styles.navLink}
+      className={`${styles.navLink} ${styles.logout}`}
       onClick={async () => {
         await logout();
         navigate(paths.home, { viewTransition: true });
@@ -147,23 +145,21 @@ function OverviewSection() {
       <h2 className={styles.sectionTitle}>Resumen</h2>
       <div className={styles.cards}>
         <Link to={paths.accountOrders} className={styles.card}>
-          <span className="t-label">Pedidos</span>
+          <span className={styles.cardLabel}>Pedidos</span>
           <span className={styles.cardValue}>{orders.status === 'ready' ? orders.orders.length : '—'}</span>
         </Link>
         <Link to={paths.wishlist} className={styles.card}>
-          <span className="t-label">Favoritos</span>
+          <span className={styles.cardLabel}>Favoritos</span>
           <span className={styles.cardValue}>{favorites}</span>
         </Link>
         <Link to={paths.accountAddresses} className={styles.card}>
-          <span className="t-label">Direcciones</span>
-          <span className="t-small t-muted">Guarda dónde quieres recibir tus pedidos.</span>
+          <span className={styles.cardLabel}>Direcciones</span>
+          <span className={styles.cardText}>Guarda dónde quieres recibir tus pedidos.</span>
         </Link>
       </div>
       {orders.status === 'ready' && orders.orders[0] && (
-        <div>
-          <p className="eyebrow" style={{ marginBottom: 'var(--space-3)' }}>
-            Último pedido
-          </p>
+        <div className={styles.block}>
+          <p className="eyebrow">Último pedido</p>
           <OrderCard order={orders.orders[0]} />
         </div>
       )}
@@ -175,12 +171,12 @@ function OrderCard({ order }: { order: OrderSummary }) {
   return (
     <article className={styles.order} aria-label={`Pedido ${order.number}`}>
       <div className={styles.orderHead}>
-        <strong>{order.number}</strong>
+        <strong className={styles.orderNumber}>{order.number}</strong>
         <span className={styles.status} data-status={order.status}>
           {STATUS_LABEL[order.status]}
         </span>
-        <span className="t-muted">{new Date(order.createdAt).toLocaleDateString(store.locale, { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-        <Price amount={order.total} />
+        <span className={styles.orderDate}>{new Date(order.createdAt).toLocaleDateString(store.locale, { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+        <Price amount={order.total} className={styles.orderTotal} />
       </div>
       <ul role="list" className={styles.orderItems}>
         {order.items.map((item) => (
@@ -276,7 +272,7 @@ function AddressesSection() {
           <div className={styles.addresses}>
             {addresses?.map((address) => (
               <article key={address.id} className={styles.address} aria-label={address.label || `${address.firstName} ${address.lastName}`}>
-                <p className="t-label">
+                <p className={styles.cardLabel}>
                   {address.label || 'Dirección'}
                   {address.isDefault && ' · Predeterminada'}
                 </p>
@@ -363,7 +359,7 @@ function AddressForm({ initial, onCancel, onSaved }: { initial: StoredAddress | 
         Usar como dirección predeterminada
       </Checkbox>
       {failure && <Alert>{failure}</Alert>}
-      <div style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
+      <div className={styles.formActions}>
         <Button type="submit" loading={sending}>
           Guardar dirección
         </Button>
@@ -434,6 +430,7 @@ function ProfileSection() {
       {notice && <Alert tone={notice.tone === 'success' ? 'success' : 'error'}>{notice.text}</Alert>}
 
       <form className={styles.form} onSubmit={saveProfile} noValidate aria-label="Datos del perfil">
+        <h3 className={styles.formTitle}>Datos del perfil</h3>
         <TextField label="Nombre" autoComplete="name" value={profile.name} onChange={(event) => setProfile({ ...profile, name: event.target.value })} error={errors.name} />
         <TextField label="Email" value={user.email} readOnly hint="Para cambiar el email, escríbenos desde contacto." />
         <Checkbox checked={profile.marketingOptIn} onChange={(event) => setProfile({ ...profile, marketingOptIn: event.target.checked })}>
@@ -445,7 +442,7 @@ function ProfileSection() {
       </form>
 
       <form className={styles.form} onSubmit={changePassword} noValidate aria-label="Cambiar contraseña">
-        <p className="t-label">Cambiar contraseña</p>
+        <h3 className={styles.formTitle}>Cambiar contraseña</h3>
         <TextField
           label="Contraseña actual"
           type="password"
@@ -471,7 +468,7 @@ function ProfileSection() {
       </form>
 
       <form className={`${styles.form} ${styles.danger}`} onSubmit={deleteAccount} noValidate aria-label="Eliminar cuenta">
-        <p className="t-label">Eliminar cuenta</p>
+        <h3 className={styles.formTitle}>Eliminar cuenta</h3>
         <p className="t-small t-muted">
           Se borrarán tus datos de perfil, direcciones y favoritos. Los pedidos se conservan el tiempo que exige la normativa fiscal, desvinculados de tu cuenta.
         </p>
@@ -521,12 +518,11 @@ function RecoverPage() {
 
   return (
     <>
-      <PageHeader
-        eyebrow="Cuenta"
+      <PageIntro
         title="Recuperar contraseña"
         breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Mi cuenta', to: paths.account }, { label: 'Recuperar contraseña' }]}
       />
-      <div className="container" style={{ maxWidth: 'calc(520px + var(--gutter) * 2)', paddingBlock: 'var(--space-7) var(--section-y)' }}>
+      <div className={`container ${styles.narrow}`}>
         {result?.tone === 'success' ? (
           <Alert tone="success">{result.text}</Alert>
         ) : (
@@ -538,7 +534,7 @@ function RecoverPage() {
               <Button type="submit" size="lg" block loading={sending} disabled={offline}>
                 Enviar enlace
               </Button>
-              <Link to={paths.account} className="link t-small" style={{ justifySelf: 'start' }}>
+              <Link to={paths.account} className={styles.textLink}>
                 Volver a iniciar sesión
               </Link>
             </form>
@@ -583,14 +579,13 @@ function ResetPage() {
 
   return (
     <>
-      <PageHeader
-        eyebrow="Cuenta"
+      <PageIntro
         title="Nueva contraseña"
         breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Mi cuenta', to: paths.account }, { label: 'Nueva contraseña' }]}
       />
-      <div className="container" style={{ maxWidth: 'calc(520px + var(--gutter) * 2)', paddingBlock: 'var(--space-7) var(--section-y)' }}>
+      <div className={`container ${styles.narrow}`}>
         <OfflineNotice>Restablecer la contraseña necesita el servidor de la tienda, que no está activo en esta versión de la web.</OfflineNotice>
-          <form className={styles.form} onSubmit={submit} noValidate>
+        <form className={styles.form} onSubmit={submit} noValidate>
           <TextField
             label="Nueva contraseña"
             type="password"

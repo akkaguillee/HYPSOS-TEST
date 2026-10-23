@@ -1,6 +1,11 @@
 @import '@fontsource-variable/archivo/wdth.css';
 @import '@fontsource-variable/inter/wght.css';
 @import '@fontsource-variable/jetbrains-mono/index.css';
+/* Familias de acento (solo latín y el peso que se usa; el navegador las descarga al usarse). */
+@import '@fontsource/grenze-gotisch/latin-900.css';
+@import '@fontsource/sedgwick-ave-display/latin-400.css';
+@import '@fontsource/big-shoulders-stencil-display/latin-900';
+@import '@fontsource/permanent-marker/latin-400.css';
 @import './tokens.css';
 @import './base.css';
 @import './typography.css';

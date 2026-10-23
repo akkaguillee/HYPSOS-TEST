@@ -1,7 +1,8 @@
 import { activeFilterCount, facetOptions, priceRanges, type FilterState } from '@/lib/catalog-filters';
+import { cn } from '@/lib/cn';
 import type { Product } from '@shared/types';
-import { Check, X } from 'lucide-react';
-import { useId } from 'react';
+import { Check, ChevronDown, X } from 'lucide-react';
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
 import styles from './Filters.module.css';
 
 interface FiltersProps {
@@ -14,19 +15,38 @@ function toggle<T>(list: T[], value: T): T[] {
   return list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
 }
 
-/** Panel de filtros. Cada opción muestra cuántos productos quedarían al aplicarla. */
+/** Tallas de calcetines (rangos numéricos): van en su propio subgrupo. */
+const isSockSize = (size: string) => /^\d/.test(size);
+
+/**
+ * Panel de filtros. Cada opción muestra cuántos productos quedarían al aplicarla y solo se
+ * muestran las facetas con al menos dos opciones (o con alguna ya elegida, para poder quitarla).
+ */
 export function Filters({ products, filters, onChange }: FiltersProps) {
   const facets = facetOptions(products);
   const id = useId();
   const countWhere = (predicate: (product: Product) => boolean) => products.filter(predicate).length;
 
+  // «Única» no filtra nada: es la talla de los accesorios.
+  const sizes = facets.sizes.filter((size) => size !== 'Única');
+  const sizeGroups = [
+    { id: 'ropa', label: 'Ropa', sizes: sizes.filter((size) => !isSockSize(size)) },
+    { id: 'calcetines', label: 'Calcetines', sizes: sizes.filter(isSockSize) },
+  ].filter((group) => group.sizes.length > 0);
+  const prices = priceRanges
+    .map((range) => ({ ...range, count: countWhere((product) => product.price >= range.min && product.price < range.max) }))
+    .filter((range) => range.count > 0 || filters.prices.includes(range.id));
+
+  const showCategories = facets.categories.length > 1 || filters.categories.length > 0;
+  const showSizes = sizes.length > 1 || filters.sizes.length > 0;
+  const showColors = facets.colors.length > 1 || filters.colors.length > 0;
+  const showPrices = prices.length > 1 || filters.prices.length > 0;
+
   return (
     <div className={styles.panel}>
-      {facets.categories.length > 1 && (
+      {showCategories && (
         <fieldset className={styles.group}>
-          <legend className={styles.groupTitle}>
-            Categoría
-          </legend>
+          <legend className={styles.groupTitle}>Categoría</legend>
           <div className={styles.options}>
             {facets.categories.map((category) => (
               <button
@@ -47,33 +67,36 @@ export function Filters({ products, filters, onChange }: FiltersProps) {
         </fieldset>
       )}
 
-      {facets.sizes.length > 1 && (
+      {showSizes && (
         <fieldset className={styles.group}>
-          <legend className={styles.groupTitle}>
-            Talla
-          </legend>
-          <div className={styles.chips}>
-            {facets.sizes.map((size) => (
-              <button
-                key={size}
-                type="button"
-                className={styles.chip}
-                aria-pressed={filters.sizes.includes(size)}
-                aria-label={`Talla ${size}`}
-                onClick={() => onChange({ ...filters, sizes: toggle(filters.sizes, size) })}
-              >
-                {size}
-              </button>
+          <legend className={styles.groupTitle}>Talla</legend>
+          <div className={styles.sizeGroups}>
+            {sizeGroups.map((group) => (
+              <div key={group.id} className={styles.sizeGroup}>
+                {sizeGroups.length > 1 && <p className={styles.subTitle}>{group.label}</p>}
+                <div className={styles.chips} data-wide={group.id === 'calcetines' || undefined}>
+                  {group.sizes.map((size) => (
+                    <button
+                      key={size}
+                      type="button"
+                      className={styles.chip}
+                      aria-pressed={filters.sizes.includes(size)}
+                      aria-label={`Talla ${size}`}
+                      onClick={() => onChange({ ...filters, sizes: toggle(filters.sizes, size) })}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </fieldset>
       )}
 
-      {facets.colors.length > 1 && (
+      {showColors && (
         <fieldset className={styles.group}>
-          <legend className={styles.groupTitle}>
-            Color
-          </legend>
+          <legend className={styles.groupTitle}>Color</legend>
           <div className={styles.options}>
             {facets.colors.map((color) => (
               <button
@@ -92,15 +115,11 @@ export function Filters({ products, filters, onChange }: FiltersProps) {
         </fieldset>
       )}
 
-      <fieldset className={styles.group}>
-        <legend className={styles.groupTitle}>
-          Precio
-        </legend>
-        <div className={styles.options}>
-          {priceRanges.map((range) => {
-            const count = countWhere((product) => product.price >= range.min && product.price < range.max);
-            if (count === 0) return null;
-            return (
+      {showPrices && (
+        <fieldset className={styles.group}>
+          <legend className={styles.groupTitle}>Precio</legend>
+          <div className={styles.options}>
+            {prices.map((range) => (
               <button
                 key={range.id}
                 type="button"
@@ -112,12 +131,12 @@ export function Filters({ products, filters, onChange }: FiltersProps) {
                   <Check aria-hidden="true" />
                 </span>
                 {range.label}
-                <span className={styles.count}>{count}</span>
+                <span className={styles.count}>{range.count}</span>
               </button>
-            );
-          })}
-        </div>
-      </fieldset>
+            ))}
+          </div>
+        </fieldset>
+      )}
 
       <button
         type="button"
@@ -178,6 +197,132 @@ export function ActiveFilters({ products, filters, onChange }: FiltersProps) {
       >
         Limpiar todo
       </button>
+    </div>
+  );
+}
+
+interface SortMenuProps<T extends string> {
+  options: readonly { id: T; label: string }[];
+  value: T;
+  onChange: (value: T) => void;
+  className?: string;
+}
+
+/**
+ * Selector de orden: botón «Ordenar: Destacados ▾» que abre una lista (listbox) con teclado
+ * completo (flechas, Inicio/Fin, Intro, Escape) y cierre al pulsar fuera.
+ */
+export function SortMenu<T extends string>({ options, value, onChange, className }: SortMenuProps<T>) {
+  const [open, setOpen] = useState(false);
+  const current = Math.max(
+    0,
+    options.findIndex((option) => option.id === value),
+  );
+  const [active, setActive] = useState(current);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const listId = useId();
+
+  useEffect(() => {
+    if (!open) return;
+    listRef.current?.focus();
+    const onPointer = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    document.addEventListener('pointerdown', onPointer);
+    return () => document.removeEventListener('pointerdown', onPointer);
+  }, [open]);
+
+  const show = () => {
+    setActive(current);
+    setOpen(true);
+  };
+  const close = (refocus = true) => {
+    setOpen(false);
+    if (refocus) buttonRef.current?.focus();
+  };
+  const choose = (index: number) => {
+    const option = options[index];
+    if (option && option.id !== value) onChange(option.id);
+    close();
+  };
+
+  const onButtonKey = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      show();
+    }
+  };
+
+  const onListKey = (event: KeyboardEvent<HTMLUListElement>) => {
+    const last = options.length - 1;
+    const moves: Record<string, () => number> = {
+      ArrowDown: () => Math.min(last, active + 1),
+      ArrowUp: () => Math.max(0, active - 1),
+      Home: () => 0,
+      End: () => last,
+    };
+    if (moves[event.key]) {
+      event.preventDefault();
+      setActive(moves[event.key]());
+    } else if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      choose(active);
+    } else if (event.key === 'Escape') {
+      event.preventDefault();
+      close();
+    } else if (event.key === 'Tab') {
+      close(false);
+    }
+  };
+
+  return (
+    <div ref={rootRef} className={cn(styles.sort, className)}>
+      <button
+        ref={buttonRef}
+        type="button"
+        className={styles.sortButton}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-controls={open ? listId : undefined}
+        onClick={() => (open ? close() : show())}
+        onKeyDown={onButtonKey}
+      >
+        <span className={styles.sortLabel}>
+          Ordenar<span className={styles.sortExtra}>:</span>
+        </span>{' '}
+        <span className={cn(styles.sortValue, styles.sortExtra)}>{options[current]?.label}</span>
+        <ChevronDown aria-hidden="true" className={styles.sortChevron} />
+      </button>
+      {open && (
+        <ul
+          ref={listRef}
+          id={listId}
+          role="listbox"
+          aria-label="Ordenar por"
+          tabIndex={-1}
+          aria-activedescendant={`${listId}-${active}`}
+          className={styles.sortList}
+          onKeyDown={onListKey}
+        >
+          {options.map((option, index) => (
+            <li
+              key={option.id}
+              id={`${listId}-${index}`}
+              role="option"
+              aria-selected={option.id === value}
+              data-active={index === active || undefined}
+              className={styles.sortOption}
+              onPointerEnter={() => setActive(index)}
+              onClick={() => choose(index)}
+            >
+              {option.label}
+              <Check aria-hidden="true" />
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

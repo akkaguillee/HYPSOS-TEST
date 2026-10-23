@@ -1,6 +1,7 @@
 import { Price } from '@/components/ui/Price';
 import { track } from '@/lib/analytics';
 import { cn } from '@/lib/cn';
+import { useProductHoverGL } from '@/lib/gl/useProductHoverGL';
 import { mediaForColor } from '@/lib/product-media';
 import { useCart } from '@/store/cart';
 import { useStock } from '@/store/inventory';
@@ -8,7 +9,7 @@ import { useUi } from '@/store/ui';
 import { getStock, isColorAvailable, isProductAvailable, variantSku } from '@shared/catalog';
 import { paths } from '@shared/routes';
 import type { Product } from '@shared/types';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { ProductBadges } from './ProductBadges';
 import styles from './ProductCard.module.css';
@@ -28,11 +29,15 @@ interface ProductCardProps {
  * Tarjeta de producto: imagen limpia sobre el fondo de estudio (trasera al pasar el cursor),
  * código técnico del producto, nombre, precio y tallas del color elegido, con las agotadas
  * tachadas. Toda la tarjeta enlaza a la ficha; añadido rápido con puntero fino.
+ * Con puntero fino y WebGL, el paso a la trasera es una transición líquida con lupa e inclinación
+ * (src/lib/gl); si no, el fundido CSS de siempre.
  */
 export function ProductCard({ product, priority, sizes, headingLevel: Heading = 'h3', hideNewBadge }: ProductCardProps) {
   const { known, lookup } = useStock();
   const firstAvailable = product.colors.find((color) => isColorAvailable(product, color.id, lookup)) ?? product.colors[0];
   const [chosenColor, setChosenColor] = useState<string | null>(null);
+  const cardRef = useRef<HTMLElement>(null);
+  useProductHoverGL(cardRef, { mode: 'swap' });
   const colorId = chosenColor ?? firstAvailable.id;
   const add = useCart((state) => state.add);
   const openCart = useCart((state) => state.open);
@@ -52,8 +57,8 @@ export function ProductCard({ product, priority, sizes, headingLevel: Heading = 
   };
 
   return (
-    <article className={cn(styles.card, !available && styles.soldOut)}>
-      <div className={styles.media}>
+    <article ref={cardRef} className={cn(styles.card, !available && styles.soldOut)}>
+      <div className={styles.media} data-product-media="">
         <ProductMedia product={product} media={media[0]} colorId={colorId} className={styles.mediaLayer} sizes={sizes} priority={priority} />
         {media[1] && (
           <span aria-hidden="true">
@@ -63,7 +68,7 @@ export function ProductCard({ product, priority, sizes, headingLevel: Heading = 
         <ProductBadges product={product} hideNew={hideNewBadge} />
         <WishlistButton product={product} />
         {available && known && (
-          <div className={`glass glass--strong ${styles.quickAdd}`} data-theme="dark">
+          <div className={`glass glass--strong ${styles.quickAdd}`} data-theme="dark" data-gl-calm="">
             <p className={styles.quickLabel}>Añadido rápido · {color.name}</p>
             <div className={styles.quickSizes}>
               {product.sizes.map((size) => {
@@ -88,7 +93,8 @@ export function ProductCard({ product, priority, sizes, headingLevel: Heading = 
       <div className={styles.info}>
         <p className={styles.code}>{product.code}</p>
         <Heading className={styles.title}>
-          <Link to={url} className={styles.titleLink} viewTransition>
+          {/* El enlace estirado cubre la imagen: es lo que recibe el cursor (anillo «Ver»). */}
+          <Link to={url} className={styles.titleLink} data-cursor="view" viewTransition>
             {product.name}
           </Link>
         </Heading>

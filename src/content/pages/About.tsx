@@ -30,9 +30,10 @@ export function AboutPage() {
         <div className={`container ${styles.heroContent}`}>
           <Breadcrumbs items={[{ label: 'Inicio', to: paths.home }, { label: 'Quiénes somos' }]} />
           <p className="eyebrow">Sobre HYPSOS · Movimiento</p>
-          <h1 id="about-title" className={styles.heroTitle}>
-            The Ascent
-          </h1>
+          {/* «The» ancha y «Ascent» en gótica: el nombre del movimiento como un rótulo. */}
+          <SplitHeadline as="h1" id="about-title" trigger="mount" className={styles.heroTitle}>
+            <span className="mix-wide">The</span> <span className={styles.heroGothic}>Ascent</span>
+          </SplitHeadline>
           <p className={styles.heroLead}>
             HYPSOS es una marca streetwear independiente construida alrededor de una idea: seguir subiendo. Prendas premium para el día a día, gráficos
             potentes y un sistema visual basado en capítulos que convierte el progreso personal en algo que puedes vestir.

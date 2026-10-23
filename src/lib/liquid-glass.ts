@@ -18,7 +18,7 @@
  * `scale = 2 · refraction` para que `refraction` sea el desplazamiento máximo en px CSS.
  */
 
-export type GlassProfile = 'squircle' | 'circle';
+export type GlassProfile = 'squircle' | 'circle' | 'drop';
 
 export interface DisplacementMapOptions {
   /** Ancho del elemento en px CSS. */
@@ -89,6 +89,28 @@ export function refractionOffset(t: number, profile: GlassProfile = 'squircle', 
   return (profileHeight(x, profile) + base) * Math.tan(theta1 - theta2);
 }
 
+/*
+ * Perfil «gota»: en vez de doblar solo el borde, remapea toda la profundidad del bisel como una
+ * gota de agua (lente plano-convexa gruesa). Un píxel a profundidad u ∈ [0, 1] (0 = borde,
+ * 1 = fin del bisel) ve el fondo de la profundidad f(u), con f(0) = 0, f(1) = 1:
+ * - f'(0) = DROP_RIM  > 1 → el anillo exterior comprime mucho fondo (el borde «tira» de la imagen);
+ * - f'(1) = DROP_CORE < 1 → el centro amplía (1 / DROP_CORE ×), como mirar a través de una gota.
+ * f es un polinomio de Hermite cúbico, monótono para estos valores, así que la imagen no se
+ * invierte ni se repite. El desplazamiento es f(u) − u (siempre hacia dentro).
+ */
+export const DROP_RIM = 3;
+export const DROP_CORE = 0.55;
+
+export function dropRemap(u: number, rim = DROP_RIM, core = DROP_CORE): number {
+  const x = Math.min(1, Math.max(0, u));
+  return (rim + core - 2) * x ** 3 + (3 - 2 * rim - core) * x ** 2 + rim * x;
+}
+
+/** Desplazamiento del perfil gota en unidades de bisel (f(u) − u). */
+export function dropOffset(u: number): number {
+  return dropRemap(u) - Math.min(1, Math.max(0, u));
+}
+
 /** Tabla del desplazamiento normalizado (máximo = 1) a lo largo del bisel. */
 const lutCache = new Map<string, Float32Array>();
 export function refractionLut(profile: GlassProfile = 'squircle', n = DEFAULT_REFRACTIVE_INDEX): Float32Array {
@@ -98,7 +120,7 @@ export function refractionLut(profile: GlassProfile = 'squircle', n = DEFAULT_RE
   const lut = new Float32Array(PROFILE_SAMPLES + 1);
   let max = 0;
   for (let i = 0; i <= PROFILE_SAMPLES; i++) {
-    const v = refractionOffset(i / PROFILE_SAMPLES, profile, n);
+    const v = profile === 'drop' ? dropOffset(i / PROFILE_SAMPLES) : refractionOffset(i / PROFILE_SAMPLES, profile, n);
     lut[i] = v;
     if (v > max) max = v;
   }

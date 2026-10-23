@@ -29,8 +29,30 @@
   white-space: nowrap;
 }
 
+/* «Above» ancha y a medio cuerpo; «ordinary.» comprimida a cuerpo entero (dos anchos, una pieza). */
+.wordA {
+  font-size: 0.6em;
+  font-stretch: var(--stretch-wide);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+}
+
 .wordB {
   justify-self: end;
+}
+
+/* Corona a espray sobre «Above», como una firma en la pared. */
+.crown {
+  position: relative;
+  z-index: 2;
+  grid-column: 4 / span 2;
+  grid-row: 1;
+  align-self: start;
+  width: 100%;
+  height: auto;
+  translate: 0 -48%;
+  rotate: 8deg;
+  pointer-events: none;
 }
 
 .figA,

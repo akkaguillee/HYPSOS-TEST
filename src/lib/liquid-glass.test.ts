@@ -8,6 +8,10 @@ import {
   resolveGeometry,
   roundedRectSdf,
   supportsSvgBackdropFilter,
+  dropRemap,
+  dropOffset,
+  DROP_RIM,
+  DROP_CORE,
 } from './liquid-glass';
 
 function pixel(field: ReturnType<typeof computeDisplacementField>, x: number, y: number) {
@@ -175,5 +179,40 @@ describe('supportsSvgBackdropFilter', () => {
   it('sin backdrop-filter o sin window → no', () => {
     expect(supportsSvgBackdropFilter(fake({ ua: CHROME_UA, brands: ['Chromium'], backdrop: false }))).toBe(false);
     expect(supportsSvgBackdropFilter(null)).toBe(false);
+  });
+});
+
+describe('perfil gota (drop)', () => {
+  it('fija el borde y el final del bisel: f(0) = 0, f(1) = 1', () => {
+    expect(dropRemap(0)).toBeCloseTo(0, 6);
+    expect(dropRemap(1)).toBeCloseTo(1, 6);
+  });
+
+  it('es monótono: la imagen no se invierte ni se repite dentro de la gota', () => {
+    let previous = -Infinity;
+    for (let i = 0; i <= 200; i++) {
+      const value = dropRemap(i / 200);
+      expect(value).toBeGreaterThanOrEqual(previous);
+      previous = value;
+    }
+  });
+
+  it('comprime en el borde y amplía en el centro', () => {
+    const slope = (u: number) => (dropRemap(u + 1e-4) - dropRemap(u)) / 1e-4;
+    expect(slope(0)).toBeGreaterThan(1);
+    expect(slope(0.9999)).toBeLessThan(1);
+    expect(DROP_RIM).toBeGreaterThan(1);
+    expect(DROP_CORE).toBeLessThan(1);
+  });
+
+  it('desplaza siempre hacia dentro y nunca más que el bisel', () => {
+    for (let i = 0; i <= 100; i++) {
+      const offset = dropOffset(i / 100);
+      expect(offset).toBeGreaterThanOrEqual(0);
+      expect(offset).toBeLessThan(1);
+    }
+    const lut = refractionLut('drop');
+    expect(Math.max(...lut)).toBeCloseTo(1, 5);
+    expect(lut[lut.length - 1]).toBeCloseTo(0, 5);
   });
 });

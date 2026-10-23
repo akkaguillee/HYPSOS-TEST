@@ -31,6 +31,7 @@ function FieldShell({ label, error, hint, optional, className, children }: Field
       )}
       {error && (
         <p id={errorId} className={styles.error}>
+          <AlertCircle aria-hidden="true" />
           {error}
         </p>
       )}
@@ -129,6 +130,7 @@ export function Checkbox({
       </label>
       {error && (
         <p id={errorId} className={styles.error}>
+          <AlertCircle aria-hidden="true" />
           {error}
         </p>
       )}
@@ -150,11 +152,11 @@ export function Alert({
   const Icon = tone === 'success' ? CheckCircle2 : tone === 'info' ? Info : AlertCircle;
   return (
     <div
-      className={cn(styles.alert, tone === 'success' && styles.alertSuccess, tone === 'info' && styles.alertInfo, className)}
+      className={cn(styles.alert, tone === 'error' && styles.alertError, tone === 'success' && styles.alertSuccess, tone === 'info' && styles.alertInfo, className)}
       role={tone === 'error' ? 'alert' : 'status'}
     >
       <Icon aria-hidden="true" />
-      <div>
+      <div className={styles.alertBody}>
         {title && <p className={styles.alertTitle}>{title}</p>}
         {children}
       </div>

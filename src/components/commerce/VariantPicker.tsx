@@ -1,7 +1,7 @@
 import { cn } from '@/lib/cn';
 import { getStock, isColorAvailable } from '@shared/catalog';
 import type { Product, StockLookup } from '@shared/types';
-import type { ReactNode, Ref } from 'react';
+import type { CSSProperties, ReactNode, Ref } from 'react';
 import styles from './VariantPicker.module.css';
 
 interface ColorPickerProps {
@@ -19,7 +19,7 @@ export function ColorPicker({ product, value, onChange, stock, stockKnown }: Col
     <fieldset className={styles.group}>
       <legend className={styles.legend}>
         <span>
-          Color: <span className={styles.legendValue}>{current?.name}</span>
+          Color <span className={styles.legendValue}>· {current?.name}</span>
         </span>
       </legend>
       <div className={styles.options}>
@@ -56,20 +56,24 @@ interface SizePickerProps {
   stockKnown: boolean;
   error?: string;
   action?: ReactNode;
+  /** Contenido bajo la rejilla de tallas (p. ej. «¿Agotada tu talla? Avísame»). */
+  footer?: ReactNode;
   groupRef?: Ref<HTMLFieldSetElement>;
   errorId?: string;
 }
 
-export function SizePicker({ product, colorId, value, onChange, stock, stockKnown, error, action, groupRef, errorId }: SizePickerProps) {
+export function SizePicker({ product, colorId, value, onChange, stock, stockKnown, error, action, footer, groupRef, errorId }: SizePickerProps) {
+  // Una fila con todas las tallas (hasta 6) que ocupa exactamente el ancho del botón de compra.
+  const columns = { '--cols': Math.min(product.sizes.length, 6) } as CSSProperties;
   return (
     <fieldset ref={groupRef} className={cn(styles.group, error && styles.invalid)} aria-describedby={error ? errorId : undefined} tabIndex={-1}>
       <legend className={styles.legend}>
         <span>
-          Talla{value && <span className={styles.legendValue}>: {value}</span>}
+          Talla{value && <span className={styles.legendValue}> · {value}</span>}
         </span>
         {action}
       </legend>
-      <div className={styles.sizes}>
+      <div className={styles.sizes} style={columns}>
         {product.sizes.map((size) => {
           const units = getStock(product, colorId, size, stock);
           const soldOut = stockKnown && units <= 0;
@@ -86,11 +90,11 @@ export function SizePicker({ product, colorId, value, onChange, stock, stockKnow
                 aria-label={`Talla ${size}${soldOut ? ', agotada' : low ? `, últimas ${units} unidades` : ''}`}
               />
               <span className={styles.size}>{size}</span>
-              {low && <span className={styles.lowStock} aria-hidden="true" />}
             </label>
           );
         })}
       </div>
+      {footer}
     </fieldset>
   );
 }

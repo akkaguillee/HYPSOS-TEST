@@ -1,3 +1,4 @@
+/* ─── Cabecera de página de contenido (variante por defecto) ─────────── */
 .header {
   padding-top: clamp(var(--space-6), 4vw, var(--space-8));
   padding-bottom: clamp(var(--space-6), 4vw, var(--space-7));
@@ -34,7 +35,312 @@
   color: var(--fg-muted);
 }
 
-.campaign .title {
-  font-size: var(--fs-campaign);
-  line-height: var(--lh-tight);
+/* ─── Listado: compacta, para que el producto quede sobre el pliegue ─── */
+.listing {
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .listing {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-5);
+  }
+}
+
+.listingInner {
+  display: grid;
+  gap: var(--space-3);
+}
+
+@media (min-width: 768px) {
+  .listingInner {
+    gap: var(--space-4);
+  }
+}
+
+.listingRow {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-7);
+}
+
+.listingTitles {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+/* Titular comprimido de listado: el mismo cartel que la portada, a escala de página. */
+.listingTitle {
+  min-width: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  font-weight: 900;
+  font-stretch: var(--stretch-display);
+  line-height: var(--lh-crushed);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.count {
+  flex: none;
+  /* Recuento en stencil, como el número pintado de un muelle de carga. */
+  font-family: var(--font-stencil);
+  font-size: clamp(1.6rem, 2.4vw, 2.6rem);
+  font-weight: 900;
+  line-height: 0.85;
+  color: var(--c-red);
+  font-variant-numeric: tabular-nums;
+}
+
+.listingDescription {
+  display: none;
+  margin-left: auto;
+  max-width: 44ch;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--fg-muted);
+  text-align: right;
+}
+
+@media (min-width: 768px) {
+  .listingDescription {
+    display: block;
+  }
+}
+
+.art {
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .listing {
+    padding-top: var(--space-3);
+    padding-bottom: var(--space-3);
+  }
+
+  .listingInner {
+    gap: var(--space-2);
+  }
+
+  .listingTitle {
+    font-size: var(--fs-h2);
+  }
+}
+
+/* ─── Campaña: banda con foto y titular comprimido ─────────────────────── */
+.campaign {
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .campaign {
+    padding-top: var(--space-5);
+    padding-bottom: var(--space-5);
+  }
+}
+
+.campaignInner {
+  display: grid;
+  gap: var(--space-3);
+}
+
+@media (min-width: 768px) {
+  .campaignInner {
+    gap: var(--space-4);
+  }
+}
+
+.band {
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  align-items: end;
+  height: min(50svh, 400px);
+  min-height: 280px;
+  overflow: hidden;
+  border-radius: var(--radius-4);
+  background: var(--bg);
+  color: var(--fg);
+  isolation: isolate;
+}
+
+@media (min-width: 768px) {
+  .band {
+    height: min(54svh, clamp(360px, 38vw, 560px));
+    border-radius: var(--radius-5);
+  }
+}
+
+.bandMedia {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.bandMedia picture,
+.bandMedia img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Velo para leer el titular sobre la foto (no decora: garantiza el contraste). */
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(9 9 9 / 0) 30%, rgb(9 9 9 / 0.78) 100%);
+}
+
+.bandCopy {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+  padding: var(--space-5) var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .bandCopy {
+    gap: var(--space-4);
+    padding: var(--space-7);
+  }
+}
+
+.bandEyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.bandTitle {
+  /* Nombre de colección en gótica (sistema tipográfico: gótica = capítulos y colecciones). */
+  font-family: var(--font-gothic);
+  font-size: calc(var(--fs-campaign) * 0.92);
+  font-weight: 900;
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+}
+
+.bandFoot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-7);
+  width: 100%;
+}
+
+.bandDescription {
+  max-width: 52ch;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .bandDescription {
+    font-size: var(--fs-md);
+  }
+}
+
+@media (max-width: 767px), (orientation: landscape) and (max-height: 500px) {
+  /* En pantallas pequeñas basta una línea: el titular y el producto mandan. */
+  .bandDescription {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+.bandAside {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.credit {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  line-height: 1.3;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+/* Sobre el rojo, el gris translúcido no llega a AA en texto pequeño: blanco roto (4,5:1). */
+.band[data-theme='red'] .credit {
+  color: var(--fg);
+}
+
+/* Foto vertical: texto sobre el color de la banda y foto a la derecha (desde tableta). */
+@media (min-width: 768px) {
+  .band[data-layout='split'] {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .band[data-layout='split'] .bandMedia {
+    position: relative;
+    inset: auto;
+    z-index: auto;
+    grid-column: 2;
+    grid-row: 1;
+    align-self: stretch;
+    overflow: hidden;
+  }
+
+  .band[data-layout='split'] .scrim {
+    display: none;
+  }
+
+  .band[data-layout='split'] .bandCopy {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  /* Media banda de ancho: el titular se limita para no salirse de su columna. */
+  .band[data-layout='split'] .bandTitle {
+    font-size: min(var(--fs-campaign), 11vw);
+  }
+}
+
+/* Móvil en horizontal: banda baja para que la barra y la primera fila asomen. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .band {
+    height: 46svh;
+    min-height: 160px;
+  }
+
+  .bandCopy {
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .band .bandTitle,
+  .band[data-layout='split'] .bandTitle {
+    font-size: var(--fs-h1);
+  }
+
+  .bandFoot .bandDescription {
+    display: none;
+  }
 }

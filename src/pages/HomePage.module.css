@@ -1,0 +1,8 @@
+/* Las cintas cruzan el corte entre el hero y Chapter 01: suben media altura sobre la foto. */
+.tapes {
+  --tapes-h: clamp(150px, 16vw, 250px);
+  z-index: 3;
+  margin-top: calc(var(--tapes-h) * -0.5);
+  margin-bottom: calc(var(--tapes-h) * -0.3);
+  background: transparent;
+}

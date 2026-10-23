@@ -6,6 +6,11 @@
   border-bottom: 1px solid var(--line);
 }
 
+.heading {
+  margin: 0;
+  font: inherit;
+}
+
 .trigger {
   display: flex;
   align-items: center;
@@ -17,14 +22,28 @@
   text-align: left;
   font-size: var(--fs-sm);
   font-weight: 600;
-  letter-spacing: 0.02em;
+  line-height: 1.4;
+  color: var(--fg);
 }
 
+.trigger:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-2);
+}
+
+/* Icono + / − dentro de una píldora de contorno, como los botones secundarios. */
 .icon {
   position: relative;
   flex: none;
-  width: 12px;
-  height: 12px;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  transition:
+    background-color var(--dur-hover) var(--ease-out),
+    border-color var(--dur-hover) var(--ease-out),
+    color var(--dur-hover) var(--ease-out);
 }
 
 .icon::before,
@@ -32,8 +51,8 @@
   content: '';
   position: absolute;
   top: calc(50% - 0.75px);
-  left: 0;
-  width: 12px;
+  left: calc(50% - 5px);
+  width: 10px;
   height: 1.5px;
   background: currentColor;
   transition: transform var(--dur-hover) var(--ease-out);
@@ -43,8 +62,20 @@
   transform: rotate(90deg);
 }
 
+.trigger[aria-expanded='true'] .icon {
+  border-color: var(--fg);
+  background: var(--fg);
+  color: var(--bg);
+}
+
 .trigger[aria-expanded='true'] .icon::after {
   transform: rotate(0deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .trigger:hover .icon {
+    border-color: var(--fg);
+  }
 }
 
 /* Altura animada con grid 0fr → 1fr (sin medir en JS). */
@@ -58,11 +89,21 @@
   grid-template-rows: 1fr;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .icon,
+  .icon::before,
+  .icon::after {
+    transition: none;
+  }
+}
+
 .panelInner {
   overflow: hidden;
 }
 
 .content {
+  max-width: 64ch;
   padding-bottom: var(--space-5);
   font-size: var(--fs-sm);
   line-height: 1.7;
@@ -75,4 +116,32 @@
 
 .content ul {
   padding-left: 1.1em;
+  list-style: disc;
+}
+
+.content a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* Variante de lectura (FAQ): preguntas más grandes y respuestas a tamaño de cuerpo. */
+.list[data-size='lg'] .trigger {
+  min-height: 72px;
+  padding-block: var(--space-5);
+  font-size: var(--fs-lg);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.list[data-size='lg'] .icon {
+  width: 32px;
+  height: 32px;
+}
+
+.list[data-size='lg'] .content {
+  padding-bottom: var(--space-6);
+  font-size: var(--fs-md);
+  color: var(--fg-soft);
 }

@@ -1,4 +1,3 @@
-import { PageHeader } from '@/components/layout/PageHeader';
 import { OfflineNotice } from '@/components/ui/OfflineNotice';
 import { useServerOffline } from '@/store/storeStatus';
 import { Button } from '@/components/ui/Button';
@@ -10,6 +9,8 @@ import { contactSchema, fieldErrors } from '@shared/schemas';
 import { useRef, useState, type FormEvent } from 'react';
 import { Link } from 'react-router';
 import styles from './Contact.module.css';
+import { ContentLayout } from './ContentLayout';
+import { PageIntro } from './PageIntro';
 
 const subjects = [
   { value: 'pedido', label: 'Un pedido' },
@@ -58,41 +59,49 @@ export function ContactPage() {
     }
   };
 
+  const rail = (
+    <aside className={styles.info} aria-label="Antes de escribir">
+      {store.policies.responseTime && (
+        <div className={styles.infoBlock}>
+          <p className={styles.infoLabel}>Tiempo de respuesta</p>
+          <p>Respondemos en {store.policies.responseTime}.</p>
+        </div>
+      )}
+      {store.contact.email && (
+        <div className={styles.infoBlock}>
+          <p className={styles.infoLabel}>Email</p>
+          <a href={`mailto:${store.contact.email}`} className={styles.infoLink}>
+            {store.contact.email}
+          </a>
+        </div>
+      )}
+      <div className={styles.infoBlock}>
+        <p className={styles.infoLabel}>Antes de escribir</p>
+        <p>
+          Quizá tu respuesta ya esté en las{' '}
+          <Link to={paths.page('faq')} className={styles.infoLink}>
+            preguntas frecuentes
+          </Link>{' '}
+          o en{' '}
+          <Link to={paths.page('envios')} className={styles.infoLink}>
+            envíos y devoluciones
+          </Link>
+          .
+        </p>
+      </div>
+    </aside>
+  );
+
   return (
     <>
-      <PageHeader
-        eyebrow="Ayuda"
+      <PageIntro
         title="Contacto"
-        description="Pedidos, devoluciones, tallas o colaboraciones: escríbenos y te respondemos."
+        lead="Pedidos, devoluciones, tallas o colaboraciones: escríbenos y te respondemos."
         breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Contacto' }]}
       />
-      <div className={`container ${styles.layout}`}>
-        <div className={styles.info}>
-          {store.policies.responseTime && (
-            <div className={styles.infoBlock}>
-              <p className="t-label">Tiempo de respuesta</p>
-              <p>Respondemos en {store.policies.responseTime}.</p>
-            </div>
-          )}
-          {store.contact.email && (
-            <div className={styles.infoBlock}>
-              <p className="t-label">Email</p>
-              <a href={`mailto:${store.contact.email}`} className="link">
-                {store.contact.email}
-              </a>
-            </div>
-          )}
-          <div className={styles.infoBlock}>
-            <p className="t-label">Antes de escribir</p>
-            <p>
-              Quizá tu respuesta ya esté en las <Link to={paths.page('faq')} className="link">preguntas frecuentes</Link> o en{' '}
-              <Link to={paths.page('envios')} className="link">envíos y devoluciones</Link>.
-            </p>
-          </div>
-        </div>
-
+      <ContentLayout rail={rail}>
         {status === 'sent' ? (
-          <Alert tone="success" title="Mensaje recibido">
+          <Alert tone="success" title="Mensaje recibido" className={styles.sent}>
             <p>
               Gracias, {values.name.split(' ')[0]}. Te responderemos {store.policies.responseTime ? `en ${store.policies.responseTime}` : 'lo antes posible'}.
             </p>
@@ -100,7 +109,7 @@ export function ContactPage() {
         ) : (
           <>
             <OfflineNotice>El formulario de contacto necesita el servidor de la tienda, que no está activo en esta versión de la web.</OfflineNotice>
-            <form ref={formRef} className={styles.form} onSubmit={submit} noValidate>
+            <form ref={formRef} className={styles.form} onSubmit={submit} noValidate aria-label="Formulario de contacto">
               <TextField label="Nombre" autoComplete="name" {...bind('name')} />
               <TextField label="Email" type="email" autoComplete="email" inputMode="email" {...bind('email')} />
               <SelectField label="Motivo" options={subjects} placeholder="Selecciona un motivo" {...bind('subject')} />
@@ -127,14 +136,14 @@ export function ContactPage() {
                 </div>
               )}
               <div className={styles.full}>
-                <Button type="submit" size="lg" loading={status === 'sending'} disabled={offline}>
+                <Button type="submit" size="lg" className={styles.submit} loading={status === 'sending'} disabled={offline}>
                   Enviar mensaje
                 </Button>
               </div>
             </form>
           </>
         )}
-      </div>
+      </ContentLayout>
     </>
   );
 }

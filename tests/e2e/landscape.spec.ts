@@ -15,7 +15,8 @@ for (const route of routes) {
 test('horizontal: el hero muestra titular y llamadas a la acción', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toBeInViewport();
-  await expect(page.getByRole('link', { name: 'Descubrir la colección' })).toBeInViewport();
+  await expect(page.getByRole('link', { name: 'Comprar Chapter 01' })).toBeInViewport();
+  await page.getByRole('link', { name: 'Comprar Chapter 01' }).click({ trial: true });
 });
 
 test('horizontal: la ficha permite elegir talla y añadir al carrito', async ({ page }) => {

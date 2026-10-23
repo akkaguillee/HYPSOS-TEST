@@ -11,13 +11,13 @@ test('cuenta: rutas protegidas, registro, cierre de sesión y acceso', async ({ 
 
   await page.getByRole('tab', { name: 'Crear cuenta' }).click();
   await page.getByLabel('Nombre').fill('Ana García');
-  await page.getByLabel('Email', { exact: true }).fill(email);
+  await page.locator('#main').getByLabel('Email', { exact: true }).fill(email);
   await page.getByLabel('Contraseña', { exact: true }).fill('corta');
   await page.getByRole('button', { name: 'Crear cuenta' }).click();
   await expect(page.getByText('La contraseña debe tener al menos 10 caracteres')).toBeVisible();
 
   await page.getByLabel('Contraseña', { exact: true }).fill(strongPassword);
-  await page.getByRole('checkbox', { name: /política de privacidad/ }).check();
+  await page.locator('#main').getByRole('checkbox', { name: /política de privacidad/ }).check();
   await page.getByRole('button', { name: 'Crear cuenta' }).click();
   await expect(page).toHaveURL(/\/cuenta\/pedidos$/);
   await expect(page.getByRole('heading', { name: 'Pedidos' })).toBeVisible();
@@ -26,7 +26,7 @@ test('cuenta: rutas protegidas, registro, cierre de sesión y acceso', async ({ 
   await expect(page).toHaveURL(/\/$/);
 
   await page.goto('/cuenta');
-  await page.getByLabel('Email', { exact: true }).fill(email);
+  await page.locator('#main').getByLabel('Email', { exact: true }).fill(email);
   await page.getByLabel('Contraseña', { exact: true }).fill('Incorrecta2026');
   await page.getByRole('button', { name: 'Entrar' }).click();
   await expect(page.getByRole('alert').filter({ hasText: /incorrect/i })).toBeVisible();

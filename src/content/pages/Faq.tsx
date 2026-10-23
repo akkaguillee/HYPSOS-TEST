@@ -1,4 +1,3 @@
-import { PageHeader } from '@/components/layout/PageHeader';
 import { Reveal } from '@/components/motion/Reveal';
 import { Accordion } from '@/components/ui/Accordion';
 import { ButtonLink } from '@/components/ui/Button';
@@ -6,6 +5,9 @@ import { freeShippingThreshold, returnWindowDays, shippingMethods, store } from 
 import { formatPrice } from '@shared/pricing';
 import { paths } from '@shared/routes';
 import { Link } from 'react-router';
+import styles from './Content.module.css';
+import { ContentLayout, PageToc } from './ContentLayout';
+import { PageIntro } from './PageIntro';
 
 const PENDING = 'Lo publicaremos aquí en cuanto esté confirmado con el operador logístico.';
 
@@ -138,28 +140,38 @@ function groups() {
 }
 
 export function FaqPage() {
+  const list = groups();
   return (
     <>
-      <PageHeader eyebrow="Ayuda" title="Preguntas frecuentes" breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Preguntas frecuentes' }]} />
-      <div
-        className="container"
-        style={{ display: 'grid', gap: 'var(--space-8)', paddingBlock: 'var(--space-7) var(--section-y)', maxWidth: 'calc(880px + var(--gutter) * 2)' }}
-      >
-        {groups().map((group, index) => (
-          <Reveal key={group.id} index={index}>
-            <section aria-labelledby={`faq-${group.id}`} style={{ display: 'grid', gap: 'var(--space-4)' }}>
-              <h2 id={`faq-${group.id}`} className="eyebrow">
-                {group.title}
-              </h2>
-              <Accordion items={group.items} />
-            </section>
-          </Reveal>
-        ))}
-        <div style={{ display: 'grid', gap: 'var(--space-3)', justifyItems: 'start' }}>
-          <p className="t-h3">¿No encuentras tu respuesta?</p>
+      <PageIntro
+        title="Preguntas frecuentes"
+        breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Preguntas frecuentes' }]}
+        lead="Pedidos, envíos, devoluciones, tallas y pagos."
+      />
+      <ContentLayout rail={<PageToc label="Temas" items={list.map((group) => ({ id: `faq-${group.id}`, label: group.title }))} />}>
+        <div className={styles.faqGroups}>
+          {list.map((group, index) => (
+            <Reveal key={group.id} index={index}>
+              <section aria-labelledby={`faq-${group.id}-title`} id={`faq-${group.id}`} className={styles.faqGroup}>
+                <h2 id={`faq-${group.id}-title`} className={styles.groupTitle}>
+                  <span className={styles.groupIndex} aria-hidden="true">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  {group.title}
+                </h2>
+                <Accordion items={group.items} size="lg" />
+              </section>
+            </Reveal>
+          ))}
+        </div>
+        <div className={styles.cta} data-theme="dark">
+          <div>
+            <p className={styles.ctaTitle}>¿No encuentras tu respuesta?</p>
+            <p className={styles.ctaText}>Escríbenos con tu número de pedido, si lo tienes, y lo revisamos.</p>
+          </div>
           <ButtonLink to={paths.page('contacto')}>Escríbenos</ButtonLink>
         </div>
-      </div>
+      </ContentLayout>
     </>
   );
 }

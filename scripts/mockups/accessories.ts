@@ -1,19 +1,17 @@
 /**
- * Accesorios, piezas impresas en 3D y stickers en el mismo lenguaje de dibujo plano técnico.
- * Cada función devuelve la escena (encuadrada al ≈50 % del ancho del tile; stickers ≈60 %) y la
- * zona que se amplía en la vista de detalle (espacio de diseño, proporción 4:5).
+ * Accesorios textiles en dibujo plano técnico: respaldo de render.ts mientras falte su base
+ * fotográfica. Los productos con forma de marca (llavero, figura, monograma, stickers) tienen su
+ * propia foto virtual en objects.ts. Cada función devuelve la escena (encuadrada al ≈50 % del ancho
+ * del tile) y la zona que se amplía en la vista de detalle (espacio de diseño, proporción 4:5).
  */
-import { mascotVector } from '../../src/assets/brand/mascot';
-import { monogramVector } from '../../src/assets/brand/monogram';
 import type { Product } from '../../shared/types';
-import { type Box, type Curve, INK_DARK, INK_LIGHT, type Mark, mirror, Scene, shade, STROKE, vectorAt, VECTORS } from './kit';
+import { type Box, type Curve, INK_DARK, INK_LIGHT, mirror, Scene, shade, STROKE } from './kit';
 
-const RED = '#c8102e';
 const NS = 'vector-effect="non-scaling-stroke"';
 type View = 'front' | 'back';
 type Result = { scene: Scene; detail?: Box };
 
-export function accessory(product: Product, colorId: string, view: View, fabric: string): Result {
+export function accessory(product: Product, view: View, fabric: string): Result {
   const back = view === 'back';
   switch (product.silhouette) {
     case 'cap':
@@ -24,14 +22,6 @@ export function accessory(product: Product, colorId: string, view: View, fabric:
       return tote(fabric, back);
     case 'socks':
       return socks(fabric, back);
-    case 'keychain':
-      return keychain(fabric, back);
-    case 'figure':
-      return figure(colorId, back);
-    case 'object':
-      return deskMonogram(colorId, back);
-    case 'sticker':
-      return sticker(product, back);
     default:
       return { scene: new Scene(fabric, 'accessory') };
   }
@@ -171,134 +161,4 @@ function transformPath(d: string, pose: { r: number; x: number; y: number }) {
     const ny = x * Math.sin(rad) + y * Math.cos(rad) + 480 + pose.y;
     return `${nx.toFixed(1)},${ny.toFixed(1)}`;
   });
-}
-
-// ─── Llavero de zamak esmaltado ─────────────────────────────────────────────
-
-function keychain(fabric: string, back: boolean): Result {
-  const s = new Scene(fabric, 'accessory', { outline: '#2a2a2a', seam: '#2a2a2a' });
-  const steel = '#cfccc6';
-  const x = 200;
-  const y = 380;
-  const w = 430;
-  const d = monogramVector.d;
-  const flip = back ? ` transform="translate(${2 * x + w} 0) scale(-1 1)"` : '';
-  // Canto metálico: contorno, filo de zamak y esmalte (o metal en el reverso).
-  const body =
-    `<path d="${d}" fill="none" stroke="#2a2a2a" stroke-width="13" stroke-linejoin="round" ${NS}/>` +
-    `<path d="${d}" fill="none" stroke="${steel}" stroke-width="9" stroke-linejoin="round" ${NS}/>` +
-    `<path d="${d}" fill="${back ? '#b5b2ab' : fabric}"/>`;
-  s.add(`<g${flip}>${vectorAt('monogram', x, y, w, body)}</g>`);
-  // Anilla de acero y eslabón.
-  s.add(
-    `<path d="M300,203 a97,97 0 1,0 0.01,0 Z M300,213 a87,87 0 1,1 -0.01,0 Z" fill="${steel}" fill-rule="evenodd" stroke="#2a2a2a" stroke-width="${STROKE.outline}" ${NS}/>` +
-      `<path d="M300,206 a94,94 0 0,0 -90,66" fill="none" stroke="#2a2a2a" stroke-width="0.8" ${NS}/>` +
-      `<rect x="314" y="380" width="38" height="16" rx="8" fill="none" stroke="#2a2a2a" stroke-width="8" transform="rotate(40 333 388)" ${NS}/>` +
-      `<rect x="314" y="380" width="38" height="16" rx="8" fill="none" stroke="${steel}" stroke-width="5" transform="rotate(40 333 388)" ${NS}/>`,
-  );
-  s.bounds([200, 203, 430, 486]);
-  return { scene: s, detail: [236, 300, 336, 420] };
-}
-
-// ─── Figura de la mascota (impresión 3D en resina) ──────────────────────────
-
-function figure(colorId: string, back: boolean): Result {
-  const light = colorId === 'blanco';
-  const fill = light ? '#f2f2f0' : '#121212';
-  const s = new Scene(fill, 'accessory');
-  const lineArt = light ? INK_DARK : INK_LIGHT;
-  // Peana redonda numerada.
-  s.part('M190,760 L190,792 C190,830 610,830 610,792 L610,760Z', { fill: shade(fill, light ? -0.1 : 0.08), silhouette: false });
-  s.add(`<ellipse cx="400" cy="760" rx="210" ry="34" fill="${shade(fill, light ? -0.04 : 0.04)}" stroke="${s.outline}" stroke-width="${STROKE.outline}" ${NS}/>`);
-  const outlined = `<path d="${mascotVector.fill}" fill="none" stroke="${s.outline}" stroke-width="4.2" stroke-linejoin="round" ${NS}/><path d="${mascotVector.d}" fill="none" stroke="${s.outline}" stroke-width="4.2" stroke-linejoin="round" ${NS}/>`;
-  const inner = back
-    ? `${outlined}<path d="${mascotVector.fill}" fill="${fill}"/><path d="${mascotVector.d}" fill="${fill}"/>`
-    : `${outlined}<path d="${mascotVector.fill}" fill="${fill}"/><path d="${mascotVector.d}" fill="${lineArt}"/>`;
-  s.add(back ? `<g transform="translate(800 0) scale(-1 1)">${vectorAt('mascot', 150, 346, 500, inner)}</g>` : vectorAt('mascot', 150, 346, 500, inner));
-  s.bounds([150, 346, 500, 484]);
-  return { scene: s, detail: [226, 360, 348, 435] };
-}
-
-// ─── Monograma de escritorio (impresión 3D lacada) ──────────────────────────
-
-function deskMonogram(colorId: string, back: boolean): Result {
-  const light = colorId === 'blanco';
-  const face = light ? '#f2f2f0' : '#121212';
-  const side = light ? '#d6d2ca' : '#2a2826';
-  const s = new Scene(face, 'accessory');
-  const d = monogramVector.d;
-  const flip = back ? ` transform="translate(800 0) scale(-1 1)"` : '';
-  // Base antideslizante.
-  s.part('M176,716 L624,716 L644,736 L156,736Z', { fill: light ? '#e2ded6' : '#1e1d1c', silhouette: false });
-  s.part('M156,736 L644,736 L644,748 L156,748Z', { fill: light ? '#cfcac1' : '#2a2826', silhouette: false });
-  // Canto (extrusión) y cara frontal.
-  const stroke = (color: string, width: number) => `<path d="${d}" fill="none" stroke="${color}" stroke-width="${width}" stroke-linejoin="round" ${NS}/>`;
-  // Profundidad maciza: copias apiladas entre la cara trasera (con contorno) y la frontal.
-  let depth = vectorAt('monogram', 170, 372, 480, `${stroke(s.outline, STROKE.outline * 2)}<path d="${d}" fill="${side}"/>`);
-  for (let k = 9; k >= 1; k--) depth += vectorAt('monogram', 160 + k, 362 + k, 480, `<path d="${d}" fill="${side}"/>`);
-  s.add(`<g${flip}>${depth}${vectorAt('monogram', 160, 362, 480, `${stroke(s.outline, STROKE.outline * 2)}<path d="${d}" fill="${face}"/>`)}</g>`);
-  s.bounds([156, 362, 488, 386]);
-  return { scene: s, detail: [232, 340, 320, 400] };
-}
-
-// ─── Stickers de vinilo troquelado ──────────────────────────────────────────
-
-/** Borde blanco troquelado con contorno fino y una sombra mínima. */
-const diecut = (r: number) => `<filter id="diecut-${r}" x="-25%" y="-25%" width="150%" height="150%">
-  <feMorphology in="SourceAlpha" operator="dilate" radius="${r}" result="grow"/>
-  <feGaussianBlur in="grow" stdDeviation="1.2" result="soft"/>
-  <feComponentTransfer in="soft" result="edge"><feFuncA type="linear" slope="8" intercept="-3"/></feComponentTransfer>
-  <feMorphology in="edge" operator="dilate" radius="1.1" result="ring"/>
-  <feFlood flood-color="#2a2a2a"/><feComposite in2="ring" operator="in" result="line"/>
-  <feFlood flood-color="#ffffff"/><feComposite in2="edge" operator="in" result="border"/>
-  <feGaussianBlur in="ring" stdDeviation="2.5" result="sb"/><feOffset in="sb" dy="3" result="so"/>
-  <feFlood flood-color="#2b2620" flood-opacity="0.16"/><feComposite in2="so" operator="in" result="shadow"/>
-  <feMerge><feMergeNode in="shadow"/><feMergeNode in="line"/><feMergeNode in="border"/><feMergeNode in="SourceGraphic"/></feMerge>
-</filter>`;
-
-function stickerAt(mark: Mark, x: number, y: number, w: number, color: string, rotate: number, border = 14) {
-  const v = VECTORS[mark];
-  const h = (w * v.height) / v.width;
-  const inner = mark === 'mascot' ? `<path d="${mascotVector.fill}" fill="${INK_DARK}"/><path d="${v.d}" fill="${INK_LIGHT}"/>` : `<path d="${v.d}" fill="${color}"/>`;
-  return `<g transform="rotate(${rotate} ${x + w / 2} ${y + h / 2})" filter="url(#diecut-${border})">${vectorAt(mark, x, y, w, inner)}</g>`;
-}
-
-function sticker(product: Product, back: boolean): Result {
-  const s = new Scene('#ffffff', 'sticker', { outline: '#2a2a2a', seam: '#2a2a2a' });
-  s.def(diecut(14));
-  s.def(diecut(12));
-  s.def(diecut(10));
-  let body = '';
-  let box: Box;
-  let detail: Box;
-  if (product.artwork === 'wordmark') {
-    body =
-      stickerAt('wordmark', 150, 170, 440, INK_DARK, -4) +
-      stickerAt('monogram', 470, 380, 190, RED, 8, 12) +
-      stickerAt('star', 120, 380, 330, INK_DARK, -10, 12) +
-      stickerAt('mascot', 300, 520, 250, INK_DARK, 5, 12) +
-      stickerAt('star', 560, 640, 150, RED, 14, 10) +
-      stickerAt('monogram', 110, 690, 170, INK_DARK, -8, 10);
-    box = [100, 140, 600, 720];
-    detail = [124, 120, 336, 420];
-  } else if (product.artwork === 'mascot') {
-    body = stickerAt('mascot', 190, 300, 420, INK_DARK, -4);
-    box = [176, 270, 448, 380];
-    detail = [236, 290, 304, 380];
-  } else {
-    body = stickerAt('star', 120, 330, 560, RED, -8);
-    box = [106, 270, 588, 400];
-    detail = [130, 360, 288, 360];
-  }
-  if (back) {
-    // Sobre su hoja de soporte (corte a medio canto).
-    const [x, y, w, h] = box;
-    const m = 36;
-    s.add(`<rect x="${x - m}" y="${y - m}" width="${w + 2 * m}" height="${h + 2 * m}" rx="16" fill="#fbfaf7" stroke="#2a2a2a" stroke-width="${STROKE.outline}" ${NS}/>`);
-    s.silhouette(`M${x - m},${y - m} L${x + w + m},${y - m} L${x + w + m},${y + h + m} L${x - m},${y + h + m}Z`);
-    box = [x - m, y - m, w + 2 * m, h + 2 * m];
-  }
-  s.add(body);
-  s.bounds(box);
-  return { scene: s, detail };
 }

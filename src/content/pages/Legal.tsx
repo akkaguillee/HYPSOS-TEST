@@ -1,9 +1,11 @@
-import { PageHeader } from '@/components/layout/PageHeader';
 import { Alert } from '@/components/ui/Field';
 import { returnWindowDays, store } from '@shared/config';
 import { contentPages, paths } from '@shared/routes';
-import type { ReactNode } from 'react';
+import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from 'react';
 import { Link } from 'react-router';
+import styles from './Content.module.css';
+import { ContentLayout, PageToc } from './ContentLayout';
+import { PageIntro } from './PageIntro';
 
 /**
  * TEXTOS LEGALES BASE — PENDIENTES DE REVISIÓN POR UN PROFESIONAL.
@@ -159,17 +161,44 @@ const documents: Record<'privacidad' | 'terminos' | 'cookies' | 'aviso-legal', R
   ),
 };
 
+const slug = (text: string) =>
+  text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+/** Añade anclas a los h2 del documento (índice lateral) y envuelve las tablas para el scroll horizontal. */
+function withAnchors(document: ReactNode) {
+  const toc: { id: string; label: string }[] = [];
+  const fragment = document as ReactElement<{ children: ReactNode }>;
+  const children = Children.map(fragment.props.children, (child) => {
+    if (!isValidElement<{ children?: ReactNode }>(child)) return child;
+    if (child.type === 'h2') {
+      const label = String(child.props.children);
+      const id = slug(label);
+      toc.push({ id, label });
+      return cloneElement(child as ReactElement<{ id?: string }>, { id });
+    }
+    if (child.type === 'table') return <div className={styles.tableWrap}>{child}</div>;
+    return child;
+  });
+  return { toc, children };
+}
+
 export function LegalPage({ handle }: { handle: keyof typeof documents }) {
   const page = contentPages[handle];
+  const { toc, children } = withAnchors(documents[handle]);
   return (
     <>
-      <PageHeader title={page.title} eyebrow="Legal" breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: page.title }]} />
-      <div className="container" style={{ display: 'grid', gap: 'var(--space-6)', paddingBlock: 'var(--space-7) var(--section-y)' }}>
-        <Alert tone="info" title="Documento base pendiente de revisión legal" className="prose">
+      <PageIntro title={page.title} breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: page.title }]} />
+      <ContentLayout rail={<PageToc items={toc} />}>
+        <Alert tone="info" title="Documento base pendiente de revisión legal" className={styles.notice}>
           <p>Los datos marcados entre corchetes deben completarse con la información real del titular antes de publicar la tienda.</p>
         </Alert>
-        <div className="prose">{documents[handle]}</div>
-      </div>
+        <div className={styles.article}>{children}</div>
+      </ContentLayout>
     </>
   );
 }

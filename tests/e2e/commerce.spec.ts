@@ -1,15 +1,16 @@
 import { expect, test } from './fixtures';
 
-test('filtros sincronizados con la URL y estado vacío', async ({ page, isMobile }) => {
+test('filtros sincronizados con la URL y estado vacío', async ({ page }) => {
   await page.goto('/collections/all');
-  if (isMobile) await page.getByRole('button', { name: /Filtrar/ }).click();
-  const scope = isMobile ? page.getByRole('dialog', { name: 'Filtrar' }) : page.getByRole('complementary', { name: 'Filtros' });
+  // Los filtros viven en un panel lateral en todos los tamaños.
+  await page.getByRole('button', { name: /Filtrar/ }).click();
+  const scope = page.getByRole('dialog', { name: 'Filtrar' });
   await scope.getByRole('button', { name: 'Talla XXL' }).click();
   await expect(page).toHaveURL(/talla=XXL/);
   await scope.getByRole('button', { name: /^Más de 90 €/ }).click();
   await scope.getByRole('switch', { name: 'Solo disponibles' }).click();
   await expect(page).toHaveURL(/precio=mas-90/);
-  if (isMobile) await page.getByRole('button', { name: /^Ver \d+ productos?$/ }).click();
+  await page.getByRole('button', { name: /^Ver \d+ productos?$/ }).click();
   await expect(page.getByText(/^\d+ resultados?$/)).toBeVisible();
   // Recarga: los filtros persisten en la URL.
   await page.reload();
@@ -54,9 +55,10 @@ test('compra: talla obligatoria, carrito y checkout honesto sin envíos ni pagos
 
   await page.getByRole('button', { name: /^Pagar/ }).click();
   await expect(page.getByText('Introduce tu email')).toBeVisible();
-  await expect(page.getByLabel('Email')).toBeFocused();
+  // El pie también tiene un campo Email (newsletter): se acota al contenido.
+  await expect(page.locator('#main').getByLabel('Email')).toBeFocused();
 
-  await page.getByLabel('Email').fill('cliente@example.com');
+  await page.locator('#main').getByLabel('Email').fill('cliente@example.com');
   await page.getByLabel('Nombre', { exact: true }).fill('Ana');
   await page.getByLabel('Apellidos').fill('García López');
   await page.getByLabel('Dirección', { exact: true }).fill('Calle Mayor 1');
@@ -128,10 +130,10 @@ test('newsletter y contacto guardan en la API', async ({ page }) => {
 
   await page.goto('/pages/contacto');
   await page.getByLabel('Nombre').fill('Ana');
-  await page.getByLabel('Email').fill('ana@example.com');
+  await page.locator('#main').getByLabel('Email').fill('ana@example.com');
   await page.getByLabel('Motivo').selectOption('producto');
   await page.getByLabel('Mensaje').fill('¿Cuándo vuelve la sudadera gris en talla S?');
-  await page.getByRole('checkbox', { name: /política de privacidad/ }).check();
+  await page.locator('#main').getByRole('checkbox', { name: /política de privacidad/ }).check();
   await page.getByRole('button', { name: 'Enviar mensaje' }).click();
   await expect(page.getByText('Mensaje recibido')).toBeVisible();
 });

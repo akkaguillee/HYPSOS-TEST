@@ -1,5 +1,6 @@
 import filterStyles from '@/components/commerce/Filters.module.css';
 import { Button } from '@/components/ui/Button';
+import { LiquidGlass } from '@/components/ui/LiquidGlass';
 import { Modal } from '@/components/ui/Modal';
 import { clearAnalyticsCookies, hasAnalyticsProvider, track } from '@/lib/analytics';
 import { useConsent } from '@/store/consent';
@@ -37,7 +38,16 @@ export function CookieConsent() {
   return (
     <>
       {provider && analytics === null && !panelOpen && (
-        <section className={`glass glass--strong ${styles.banner}`} aria-labelledby="cookie-title" role="region">
+        <LiquidGlass
+          as="section"
+          radius={20}
+          bezel={18}
+          refraction={22}
+          data-theme="dark"
+          className={styles.banner}
+          aria-labelledby="cookie-title"
+          role="region"
+        >
           <h2 id="cookie-title" className={styles.title}>
             Cookies
           </h2>
@@ -60,7 +70,7 @@ export function CookieConsent() {
           >
             Configurar
           </button>
-        </section>
+        </LiquidGlass>
       )}
 
       <Modal open={panelOpen} onClose={closePanel} title="Preferencias de cookies">
@@ -93,7 +103,7 @@ export function CookieConsent() {
               <span className={filterStyles.switch} aria-hidden="true" />
             </button>
           </div>
-          <div className={styles.actions} style={{ marginTop: 'var(--space-5)' }}>
+          <div className={`${styles.actions} ${styles.panelActions}`}>
             <Button variant="outline" onClick={() => choose(false)}>
               Rechazar todo
             </Button>

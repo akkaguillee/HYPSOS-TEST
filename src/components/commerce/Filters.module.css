@@ -1,6 +1,17 @@
+/* Panel de filtros (dentro del cajón): grupos separados por un filo fino. */
 .panel {
   display: grid;
-  gap: var(--space-6);
+}
+
+.group,
+.toggle {
+  padding-block: var(--space-5);
+  border-top: 1px solid var(--line);
+}
+
+.panel > :first-child {
+  padding-top: 0;
+  border-top: 0;
 }
 
 .group {
@@ -8,8 +19,9 @@
   gap: var(--space-3);
   min-width: 0;
   margin: 0;
-  padding: 0;
-  border: 0;
+  padding-inline: 0;
+  border-inline: 0;
+  border-bottom: 0;
 }
 
 legend.groupTitle {
@@ -24,22 +36,43 @@ legend.groupTitle + * {
 }
 
 .groupTitle {
+  font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
 
-.chips {
-  display: flex;
-  flex-wrap: wrap;
+.sizeGroups {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.sizeGroup {
+  display: grid;
   gap: var(--space-2);
 }
 
+.subTitle {
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+}
+
+/* Tallas en celdas iguales: filas regulares aunque mezclen letras y rangos. */
+.chips {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.chips[data-wide] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .chip {
-  min-width: 44px;
-  min-height: 40px;
-  padding: 0 var(--space-3);
+  min-height: 44px;
+  padding: 0 var(--space-1);
+  font-variant-numeric: tabular-nums;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-1);
   font-size: var(--fs-xs);
@@ -137,6 +170,7 @@ legend.groupTitle + * {
 }
 
 .toggle {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -166,12 +200,24 @@ legend.groupTitle + * {
   transition: transform var(--dur-hover) var(--ease-out);
 }
 
+/* Encendido en blanco: el rojo queda para la acción principal. */
 .toggle[aria-checked='true'] .switch {
-  background: var(--c-red);
+  background: var(--fg);
+}
+
+.toggle[aria-checked='true'] .switch::after {
+  background: var(--bg);
 }
 
 .toggle[aria-checked='true'] .switch::after {
   transform: translateX(18px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switch,
+  .switch::after {
+    transition: none;
+  }
 }
 
 .active {
@@ -185,10 +231,11 @@ legend.groupTitle + * {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: 32px;
+  min-height: 36px;
   padding: 0 var(--space-3);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-pill);
-  background: var(--surface);
+  transition: border-color var(--dur-micro) var(--ease-out);
   font-size: var(--fs-xs);
   font-weight: 600;
 }
@@ -198,7 +245,15 @@ legend.groupTitle + * {
   height: 12px;
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .activeChip:hover {
+    border-color: var(--fg);
+  }
+}
+
 .clear {
+  min-height: 36px;
+  padding-inline: var(--space-2);
   font-size: var(--fs-xs);
   font-weight: 600;
   text-decoration: underline;
@@ -210,4 +265,118 @@ legend.groupTitle + * {
   .clear:hover {
     color: var(--fg);
   }
+}
+
+/* ─── Selector de orden ───────────────────────────────────────────────── */
+.sort {
+  position: relative;
+  min-width: 0;
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  min-height: 44px;
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+}
+
+.sortLabel {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.sortValue {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+
+/*
+ * En móvil basta «Ordenar»: el valor elegido se ve al abrir la lista. Se oculta solo a la vista
+ * para que el nombre accesible siga siendo «Ordenar: Destacados».
+ */
+@media (max-width: 599px) {
+  .sortExtra {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+.sortChevron {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  transition: transform var(--dur-ui) var(--ease-out);
+}
+
+.sortButton[aria-expanded='true'] .sortChevron {
+  transform: rotate(180deg);
+}
+
+/* Lista sólida (no cristal: vive dentro de la barra de cristal y no se anidan). */
+.sortList {
+  position: absolute;
+  top: calc(100% + var(--space-3));
+  right: 0;
+  z-index: 1;
+  display: grid;
+  min-width: 248px;
+  margin: 0;
+  padding: var(--space-2);
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-3);
+  background: var(--bg-raised);
+  color: var(--fg);
+  outline: none;
+}
+
+.sortList:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sortChevron {
+    transition: none;
+  }
+}
+
+.sortOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-2);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+
+.sortOption[data-active] {
+  background: var(--surface);
+}
+
+.sortOption svg {
+  width: 16px;
+  height: 16px;
+  opacity: 0;
+}
+
+.sortOption[aria-selected='true'] {
+  font-weight: 600;
+}
+
+.sortOption[aria-selected='true'] svg {
+  opacity: 1;
 }

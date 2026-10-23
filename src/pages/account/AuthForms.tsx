@@ -1,3 +1,4 @@
+import { Sticker } from '@/components/brand/Sticker';
 import { useServerOffline } from '@/store/storeStatus';
 import { Button } from '@/components/ui/Button';
 import { Alert, Checkbox, TextField } from '@/components/ui/Field';
@@ -6,22 +7,22 @@ import { ApiError, apiRequest } from '@/lib/api';
 import { useAuth, type AccountUser } from '@/store/auth';
 import { paths } from '@shared/routes';
 import { fieldErrors, loginSchema, registerSchema } from '@shared/schemas';
-import { Check } from 'lucide-react';
-import { useId, useRef, useState, type FormEvent } from 'react';
+import { useId, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { safeNext } from '@/lib/safe-next';
 import styles from './Account.module.css';
 
 type Mode = 'login' | 'register';
 
-export function AuthForms() {
+export function AuthForms({ notice }: { notice?: ReactNode }) {
   const [params] = useSearchParams();
   const [mode, setMode] = useState<Mode>(params.get('modo') === 'registro' ? 'register' : 'login');
   const baseId = useId();
 
   return (
     <div className={styles.auth}>
-      <div>
+      <div className={styles.authMain}>
+        {notice}
         <div className={styles.tabs} role="tablist" aria-label="Acceso a tu cuenta">
           {(['login', 'register'] as const).map((value) => (
             <button
@@ -42,17 +43,18 @@ export function AuthForms() {
           {mode === 'login' ? <LoginForm /> : <RegisterForm />}
         </div>
       </div>
-      <aside className={styles.benefits} aria-label="Ventajas de la cuenta">
-        <p className="eyebrow">Tu cuenta HYPSOS</p>
-        <ul role="list" style={{ display: 'grid', gap: 'var(--space-3)' }}>
-          {['Historial y estado de tus pedidos', 'Direcciones guardadas para pagar más rápido', 'Favoritos sincronizados en todos tus dispositivos'].map((text) => (
+      <aside className={styles.benefits} data-theme="dark" aria-label="Ventajas de la cuenta">
+        <Sticker mark="mascot" rotate={-8} className={styles.benefitsSticker} />
+        <p className={styles.benefitsTitle}>Tu cuenta HYPSOS</p>
+        <ul role="list" className={styles.benefitsList}>
+          {['Historial y estado de tus pedidos', 'Direcciones guardadas para pagar más rápido', 'Favoritos sincronizados en todos tus dispositivos'].map((text, index) => (
             <li key={text}>
-              <Check aria-hidden="true" />
-              {text}
+              <span className={styles.benefitsIndex}>0{index + 1}</span>
+              <span>{text}</span>
             </li>
           ))}
         </ul>
-        <p className="t-small t-muted">No necesitas cuenta para comprar.</p>
+        <p className={styles.benefitsNote}>No necesitas cuenta para comprar.</p>
       </aside>
     </div>
   );
@@ -120,7 +122,7 @@ function LoginForm() {
       <Button type="submit" size="lg" block loading={sending} disabled={offline}>
         Entrar
       </Button>
-      <Link to={paths.accountRecover} className="link t-small" style={{ justifySelf: 'start' }}>
+      <Link to={paths.accountRecover} className={styles.textLink}>
         ¿Has olvidado tu contraseña?
       </Link>
     </form>

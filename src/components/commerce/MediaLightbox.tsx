@@ -1,4 +1,4 @@
-import { IconButton } from '@/components/ui/Button';
+import { LiquidGlass } from '@/components/ui/LiquidGlass';
 import { useFocusTrap } from '@/hooks/useFocusTrap';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import type { Product, ProductMedia as Media } from '@shared/types';
@@ -17,11 +17,15 @@ interface MediaLightboxProps {
   onClose: () => void;
 }
 
-const MAX_ZOOM = 3;
+/** Zoom máximo: los mockups se exportan a 960 px, más allá solo se vería el reescalado. */
+const MAX_ZOOM = 2.5;
+const CLICK_ZOOM = 2;
+const STEP = 0.75;
 
 /**
- * Galería a pantalla completa con zoom: clic/toque para ampliar en el punto señalado,
- * arrastre para desplazarse, rueda o botones +/− y teclado (flechas, +, −, Escape).
+ * Galería a pantalla completa sobre el fondo de estudio, con zoom: clic/toque para ampliar en el
+ * punto señalado, arrastre para desplazarse, rueda o botones +/− y teclado (flechas, +, −, Escape).
+ * La prenda se muestra siempre entera (marco 4:5 que cabe en el visor); los controles son de cristal.
  */
 export function MediaLightbox({ product, media, colorId, open, index, onIndexChange, onClose }: MediaLightboxProps) {
   const root = useRef<HTMLDivElement>(null);
@@ -66,8 +70,8 @@ export function MediaLightbox({ product, media, colorId, open, index, onIndexCha
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'ArrowRight') go(1);
       else if (event.key === 'ArrowLeft') go(-1);
-      else if (event.key === '+' || event.key === '=') setZoomAt(zoom + 0.75);
-      else if (event.key === '-') setZoomAt(zoom - 0.75);
+      else if (event.key === '+' || event.key === '=') setZoomAt(zoom + STEP);
+      else if (event.key === '-') setZoomAt(zoom - STEP);
       else return;
       event.preventDefault();
     };
@@ -75,10 +79,7 @@ export function MediaLightbox({ product, media, colorId, open, index, onIndexCha
     return () => window.removeEventListener('keydown', onKey);
   });
 
-  const fromControl = (event: ReactPointerEvent) => Boolean((event.target as Element).closest('button'));
-
   const onPointerDown = (event: ReactPointerEvent) => {
-    if (fromControl(event)) return;
     drag.current = { x: offset.x, y: offset.y, startX: event.clientX, startY: event.clientY, moved: false };
     if (zoom > 1) {
       setDragging(true);
@@ -92,11 +93,10 @@ export function MediaLightbox({ product, media, colorId, open, index, onIndexCha
     if (dragging) setOffset(clampOffset(drag.current.x + dx, drag.current.y + dy, zoom));
   };
   const onPointerUp = (event: ReactPointerEvent) => {
-    if (fromControl(event)) return;
     setDragging(false);
     const { moved, startX } = drag.current;
     if (!moved) {
-      setZoomAt(zoom > 1 ? 1 : 2.2, event.clientX, event.clientY);
+      setZoomAt(zoom > 1 ? 1 : CLICK_ZOOM, event.clientX, event.clientY);
     } else if (zoom === 1 && Math.abs(event.clientX - startX) > 60) {
       go(event.clientX < startX ? 1 : -1); // deslizar para cambiar de imagen
     }
@@ -115,23 +115,6 @@ export function MediaLightbox({ product, media, colorId, open, index, onIndexCha
       aria-label={`Galería ampliada de ${product.name}`}
       tabIndex={-1}
     >
-      <div className={styles.bar}>
-        <span className={styles.counter} aria-live="polite">
-          {index + 1} / {media.length}
-        </span>
-        <div className={styles.tools}>
-          <IconButton label="Reducir" onClick={() => setZoomAt(zoom - 0.75)} disabled={zoom <= 1}>
-            <Minus aria-hidden="true" />
-          </IconButton>
-          <IconButton label="Ampliar" onClick={() => setZoomAt(zoom + 0.75)} disabled={zoom >= MAX_ZOOM}>
-            <Plus aria-hidden="true" />
-          </IconButton>
-          <IconButton label="Cerrar galería" onClick={onClose}>
-            <X aria-hidden="true" />
-          </IconButton>
-        </div>
-      </div>
-
       <div
         ref={viewport}
         className={styles.viewport}
@@ -145,39 +128,84 @@ export function MediaLightbox({ product, media, colorId, open, index, onIndexCha
       >
         {open && current && (
           <div className={styles.image} style={{ transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${zoom})` }}>
-            <ProductMedia product={product} media={current} colorId={colorId} sizes="100vw" />
+            <div className={styles.frame}>
+              <ProductMedia product={product} media={current} colorId={colorId} sizes="(min-width: 768px) 70vh, 100vw" />
+            </div>
           </div>
-        )}
-        {media.length > 1 && (
-          <>
-            <IconButton label="Imagen anterior" className={`${styles.nav} ${styles.prev}`} onClick={() => go(-1)}>
-              <ChevronLeft aria-hidden="true" />
-            </IconButton>
-            <IconButton label="Imagen siguiente" className={`${styles.nav} ${styles.next}`} onClick={() => go(1)}>
-              <ChevronRight aria-hidden="true" />
-            </IconButton>
-          </>
         )}
       </div>
 
+      {/* Contador, zoom y cierre en una sola píldora de cristal. */}
+      <LiquidGlass radius="pill" bezel={22} refraction={24} tone="light" className={styles.bar}>
+        <span className={styles.counter} aria-live="polite">
+          {index + 1} / {media.length}
+        </span>
+        <span className={styles.divider} aria-hidden="true" />
+        <button type="button" className={styles.tool} aria-label="Reducir" title="Reducir" onClick={() => setZoomAt(zoom - STEP)} disabled={zoom <= 1}>
+          <Minus aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          className={styles.tool}
+          aria-label="Ampliar"
+          title="Ampliar"
+          onClick={() => setZoomAt(zoom + STEP)}
+          disabled={zoom >= MAX_ZOOM}
+        >
+          <Plus aria-hidden="true" />
+        </button>
+        <button type="button" className={styles.tool} aria-label="Cerrar galería" title="Cerrar galería" onClick={onClose}>
+          <X aria-hidden="true" />
+        </button>
+      </LiquidGlass>
+
       {media.length > 1 && (
-        <div className={styles.thumbs}>
-          {media.map((item, position) => (
-            <button
-              key={position}
-              type="button"
-              className={styles.thumb}
-              aria-current={position === index}
-              aria-label={`Ver imagen ${position + 1}`}
-              onClick={() => {
-                setZoomAt(1);
-                onIndexChange(position);
-              }}
-            >
-              <ProductMedia product={product} media={item} colorId={colorId} decorative sizes="48px" />
-            </button>
-          ))}
-        </div>
+        <>
+          <LiquidGlass
+            as="button"
+            type="button"
+            radius="pill"
+            bezel={24}
+            refraction={28}
+            tone="light"
+            className={`${styles.nav} ${styles.prev}`}
+            aria-label="Imagen anterior"
+            onClick={() => go(-1)}
+          >
+            <ChevronLeft aria-hidden="true" />
+          </LiquidGlass>
+          <LiquidGlass
+            as="button"
+            type="button"
+            radius="pill"
+            bezel={24}
+            refraction={28}
+            tone="light"
+            className={`${styles.nav} ${styles.next}`}
+            aria-label="Imagen siguiente"
+            onClick={() => go(1)}
+          >
+            <ChevronRight aria-hidden="true" />
+          </LiquidGlass>
+
+          <LiquidGlass radius="pill" bezel={18} refraction={22} tone="light" className={styles.thumbs}>
+            {media.map((item, position) => (
+              <button
+                key={position}
+                type="button"
+                className={styles.thumb}
+                aria-current={position === index}
+                aria-label={`Ver imagen ${position + 1}`}
+                onClick={() => {
+                  setZoomAt(1);
+                  onIndexChange(position);
+                }}
+              >
+                <ProductMedia product={product} media={item} colorId={colorId} decorative sizes="48px" />
+              </button>
+            ))}
+          </LiquidGlass>
+        </>
       )}
     </div>
   );

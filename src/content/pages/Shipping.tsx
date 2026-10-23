@@ -1,24 +1,33 @@
-import { PageHeader } from '@/components/layout/PageHeader';
 import { returnWindowDays, shippingMethods, store } from '@shared/config';
 import { formatPrice } from '@shared/pricing';
 import { paths } from '@shared/routes';
 import { Link } from 'react-router';
+import styles from './Content.module.css';
+import { ContentLayout, PageToc } from './ContentLayout';
+import { PageIntro } from './PageIntro';
 
 /** Todo lo que se afirma aquí sale de shared/config.ts: si una política no está confirmada, se indica como pendiente. */
 export function ShippingPage() {
   const ownReturnPolicy = store.policies.returnWindowDays !== null;
   return (
     <>
-      <PageHeader
-        eyebrow="Ayuda"
-        title="Envíos y devoluciones"
-        breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Envíos y devoluciones' }]}
-      />
-      <div className="container" style={{ paddingBlock: 'var(--space-7) var(--section-y)' }}>
-        <div className="prose">
-          <h2>Envíos</h2>
+      <PageIntro title="Envíos y devoluciones" breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Envíos y devoluciones' }]} />
+      <ContentLayout
+        rail={
+          <PageToc
+            items={[
+              { id: 'envios', label: 'Envíos' },
+              { id: 'devoluciones', label: 'Devoluciones y desistimiento' },
+              { id: 'cambios', label: 'Cambios de talla' },
+            ]}
+          />
+        }
+      >
+        <div className={styles.article}>
+          <h2 id="envios">Envíos</h2>
           {shippingMethods.length > 0 ? (
             <>
+              <div className={styles.tableWrap}>
               <table>
                 <thead>
                   <tr>
@@ -40,6 +49,7 @@ export function ShippingPage() {
                   ))}
                 </tbody>
               </table>
+              </div>
               <p>Enviamos a: {store.shippingCountries.map((country) => country.name).join(', ')}. Los plazos empiezan a contar desde la confirmación del pago.</p>
             </>
           ) : (
@@ -49,7 +59,7 @@ export function ShippingPage() {
             </p>
           )}
 
-          <h2>Devoluciones y desistimiento</h2>
+          <h2 id="devoluciones">Devoluciones y desistimiento</h2>
           <p>
             Tienes <strong>{returnWindowDays()} días naturales</strong> desde la entrega para desistir de tu compra sin necesidad de justificarlo
             {ownReturnPolicy ? '.' : ', que es el plazo mínimo que establece la ley para las compras a distancia en la Unión Europea.'}
@@ -66,13 +76,13 @@ export function ShippingPage() {
             condiciones de los productos personalizados o numerados.
           </p>
 
-          <h2>Cambios de talla</h2>
+          <h2 id="cambios">Cambios de talla</h2>
           <p>
             Consulta la <Link to={paths.page('guia-de-tallas')}>guía de tallas</Link> antes de comprar. Para cambiar de talla, devuelve el producto y haz un
             nuevo pedido.
           </p>
         </div>
-      </div>
+      </ContentLayout>
     </>
   );
 }

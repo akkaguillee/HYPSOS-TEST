@@ -4,12 +4,21 @@
   z-index: var(--z-intro);
   display: grid;
   place-items: center;
-  background: var(--c-black);
+  /* El negro lo pinta el lienzo (se borra a espray al final). */
+  background: transparent;
   color: var(--c-white);
   cursor: pointer;
 }
 
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .mark {
+  position: relative;
   display: grid;
   gap: var(--space-4);
   width: min(68vw, 520px);
@@ -18,7 +27,7 @@
 .wordmark {
   width: 100%;
   height: auto;
-  clip-path: inset(0 100% 0 0);
+  visibility: hidden;
 }
 
 .line {
@@ -31,12 +40,12 @@
 .meta {
   display: flex;
   justify-content: space-between;
+  font-family: var(--font-mono);
   font-size: var(--fs-2xs);
   font-weight: 600;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--c-grey);
-  opacity: 0;
 }
 
 .skip {

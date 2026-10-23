@@ -5,7 +5,6 @@ import { useUi } from '@/store/ui';
 import { newArrivals, products, productsByCategory, productsByCollection } from '@shared/catalog';
 import { store } from '@shared/config';
 import { paths } from '@shared/routes';
-import type { CSSProperties } from 'react';
 import { NavLink } from 'react-router';
 import styles from './MobileMenu.module.css';
 
@@ -39,32 +38,34 @@ export function MobileMenu() {
       <div className={styles.body}>
         <nav aria-label="Tienda">
           <ul role="list" className={styles.primary}>
-            {primary.map((item, index) => (
-              <li key={item.to} className={styles.item} style={{ '--i': index } as CSSProperties}>
+            {primary.map((item) => (
+              <li key={item.to}>
                 <NavLink to={item.to} className={styles.bigLink} onClick={close} viewTransition>
                   <span className={styles.label}>{item.label}</span>
-                  <span className={styles.count}>{item.count}</span>
+                  <span className={styles.count}>{String(item.count).padStart(2, '0')}</span>
                 </NavLink>
               </li>
             ))}
           </ul>
         </nav>
 
-        <div>
-          <p className={`eyebrow ${styles.groupTitle}`}>Colecciones</p>
+        <div className={styles.group}>
+          <p className={styles.groupTitle}>Colecciones</p>
           <ul role="list" className={styles.secondary}>
             {shopNav.collections.map((collection) => (
               <li key={collection.handle}>
                 <NavLink to={paths.collection(collection.handle)} onClick={close} viewTransition>
-                  {collection.kicker} — {collection.name} ({productsByCollection(collection.handle).length})
+                  <span className={styles.kicker}>{collection.kicker}</span>
+                  <span>{collection.name}</span>
+                  <span className={styles.count}>{String(productsByCollection(collection.handle).length).padStart(2, '0')}</span>
                 </NavLink>
               </li>
             ))}
           </ul>
         </div>
 
-        <div>
-          <p className={`eyebrow ${styles.groupTitle}`}>HYPSOS</p>
+        <div className={styles.group}>
+          <p className={styles.groupTitle}>HYPSOS</p>
           <ul role="list" className={styles.secondary}>
             <li>
               <NavLink to={paths.page('nosotros')} onClick={close} viewTransition>

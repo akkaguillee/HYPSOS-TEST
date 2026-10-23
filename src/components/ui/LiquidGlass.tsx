@@ -30,6 +30,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
@@ -58,7 +59,10 @@ interface LiquidGlassOwnProps<T extends ElementType> {
   aberration?: number;
   /** Saturación del fondo (1 = sin cambio). */
   saturation?: number;
-  /** Perfil del bisel: squircle (borde más marcado) o arco circular (más ancho y suave). */
+  /**
+   * Perfil del bisel: squircle (borde más marcado), arco circular (más ancho y suave) o gota
+   * (toda la profundidad del bisel actúa como lente: borde que comprime y centro que amplía).
+   */
   profile?: GlassProfile;
   /** Tinte: oscuro rgb(9 9 9 / .35) o claro rgb(242 240 236 / .45). */
   tone?: 'dark' | 'light';
@@ -66,9 +70,18 @@ interface LiquidGlassOwnProps<T extends ElementType> {
   interactive?: boolean;
   /** Fuerza el modo sin refracción (blur + capas especulares). Útil para comparar o depurar. */
   forceFallback?: boolean;
+  /**
+   * Control imperativo de la lente para animarla sin re-render (p. ej. que «tiemble» con la
+   * velocidad del scroll): `setBoost(1)` es la refracción nominal, 1.6 un 60 % más.
+   */
+  lensRef?: Ref<LensControl | null>;
   className?: string;
   style?: CSSProperties;
   children?: ReactNode;
+}
+
+export interface LensControl {
+  setBoost(factor: number): void;
 }
 
 export type LiquidGlassProps<T extends ElementType = 'div'> = LiquidGlassOwnProps<T> &
@@ -126,6 +139,7 @@ export function LiquidGlass<T extends ElementType = 'div'>({
   tone = 'dark',
   interactive = false,
   forceFallback = false,
+  lensRef,
   className,
   style,
   children,
@@ -242,6 +256,21 @@ export function LiquidGlass<T extends ElementType = 'div'>({
     };
   }, [pointerActive]);
 
+  /* Lente animable: reescala los feDisplacementMap (cada uno guarda su escala nominal). */
+  const filterRef = useRef<SVGFilterElement | null>(null);
+  useImperativeHandle(
+    lensRef,
+    () => ({
+      setBoost(factor: number) {
+        filterRef.current?.querySelectorAll<SVGFEDisplacementMapElement>('feDisplacementMap').forEach((node) => {
+          const base = Number(node.dataset.scale);
+          if (Number.isFinite(base)) node.setAttribute('scale', (base * factor).toFixed(2));
+        });
+      },
+    }),
+    [],
+  );
+
   const radiusCss = radius === 'pill' ? '9999px' : `${radius}px`;
   const rootStyle = {
     ...style,
@@ -274,6 +303,7 @@ export function LiquidGlass<T extends ElementType = 'div'>({
         ? createPortal(
             <svg className={styles.defs} aria-hidden="true" focusable="false" width="0" height="0">
               <filter
+                ref={filterRef}
                 id={filterId}
                 filterUnits="userSpaceOnUse"
                 primitiveUnits="userSpaceOnUse"
@@ -288,17 +318,17 @@ export function LiquidGlass<T extends ElementType = 'div'>({
                 <feImage href={mapUrl ?? undefined} x="0" y="0" width={geom.width} height={geom.height} preserveAspectRatio="none" result="map" />
                 {ab > 0 ? (
                   <>
-                    <feDisplacementMap in="frost" in2="map" scale={scale * (1 + ab)} xChannelSelector="R" yChannelSelector="G" result="dispR" />
+                    <feDisplacementMap in="frost" in2="map" scale={scale * (1 + ab)} data-scale={scale * (1 + ab)} xChannelSelector="R" yChannelSelector="G" result="dispR" />
                     <feColorMatrix in="dispR" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="chR" />
-                    <feDisplacementMap in="frost" in2="map" scale={scale} xChannelSelector="R" yChannelSelector="G" result="dispG" />
+                    <feDisplacementMap in="frost" in2="map" scale={scale} data-scale={scale} xChannelSelector="R" yChannelSelector="G" result="dispG" />
                     <feColorMatrix in="dispG" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="chG" />
-                    <feDisplacementMap in="frost" in2="map" scale={scale * (1 - ab)} xChannelSelector="R" yChannelSelector="G" result="dispB" />
+                    <feDisplacementMap in="frost" in2="map" scale={scale * (1 - ab)} data-scale={scale * (1 - ab)} xChannelSelector="R" yChannelSelector="G" result="dispB" />
                     <feColorMatrix in="dispB" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="chB" />
                     <feComposite in="chR" in2="chG" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="chRG" />
                     <feComposite in="chRG" in2="chB" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="refracted" />
                   </>
                 ) : (
-                  <feDisplacementMap in="frost" in2="map" scale={scale} xChannelSelector="R" yChannelSelector="G" result="refracted" />
+                  <feDisplacementMap in="frost" in2="map" scale={scale} data-scale={scale} xChannelSelector="R" yChannelSelector="G" result="refracted" />
                 )}
                 <feColorMatrix in="refracted" type="saturate" values={String(saturation)} />
               </filter>

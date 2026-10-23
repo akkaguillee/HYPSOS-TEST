@@ -1,0 +1,146 @@
+/*
+ * El muro: banda negra, manifiesto comprimido a la izquierda y foto vertical a la derecha con el
+ * tag pintado encima. Un barrido rojo cruza toda la sección por detrás del texto y un rótulo
+ * gigante, cortado por el borde inferior, cierra la portada (oversize y cropped).
+ */
+.section {
+  position: relative;
+  overflow: hidden;
+  overflow: clip;
+  padding-top: clamp(var(--space-9), 9vw, 10rem);
+  background: var(--bg);
+  color: var(--fg);
+  isolation: isolate;
+}
+
+.swoosh {
+  position: absolute;
+  z-index: 0;
+  top: 12%;
+  left: -4%;
+  width: 108%;
+  height: auto;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: clamp(var(--space-7), 6vw, var(--space-9));
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+}
+
+.copy {
+  display: grid;
+  gap: var(--space-5);
+  align-content: start;
+}
+
+/* Manifiesto: comprimida y grande; las palabras se encienden con el scroll. */
+.statement {
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 3.6vw + 0.6rem, 4.6rem);
+  font-weight: 900;
+  font-stretch: var(--stretch-display);
+  line-height: 0.9;
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+/* La frase final, escrita a rotulador y subrayada a espray. */
+.accentWrap {
+  position: relative;
+  max-width: 26ch;
+  padding-bottom: var(--space-6);
+}
+
+.accent {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-marker);
+  font-size: clamp(1.35rem, 1vw + 1rem, 2rem);
+  line-height: 1.2;
+  color: var(--c-white-soft);
+  rotate: -2deg;
+}
+
+.accentMark {
+  position: absolute;
+  left: -2%;
+  bottom: 0;
+  width: 92%;
+  height: auto;
+}
+
+.visual {
+  position: relative;
+  margin: 0;
+}
+
+.media {
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-4);
+}
+
+/* El tag queda sobre el hormigón de la foto, como si estuviera pintado en el muro. */
+.tag {
+  position: absolute;
+  left: 38%;
+  top: 54%;
+  width: 64%;
+  height: auto;
+  rotate: -7deg;
+  pointer-events: none;
+}
+
+.stickerSlot {
+  position: absolute;
+  top: -4%;
+  left: -6%;
+  width: clamp(72px, 9vw, 128px);
+  pointer-events: none;
+}
+
+.sticker {
+  width: 100%;
+}
+
+/* Rótulo gigante, ancho y cortado por el borde inferior de la sección. */
+.giant {
+  position: relative;
+  z-index: 1;
+  margin-top: clamp(var(--space-8), 7vw, var(--space-10));
+  margin-bottom: -0.22em;
+  padding-inline: var(--gutter);
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 15.5vw, 17rem);
+  font-weight: 900;
+  font-stretch: var(--stretch-wide);
+  line-height: 0.78;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(242 240 236 / 0.5);
+  user-select: none;
+}
+
+@media (max-width: 767px) {
+  .tag {
+    left: 34%;
+    width: 62%;
+  }
+
+  .giant {
+    font-size: 17vw;
+  }
+}

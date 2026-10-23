@@ -7,10 +7,17 @@
 
 .media {
   position: relative;
+  /*
+   * Contexto de apilamiento propio por encima del enlace estirado (z-index 1): así la inclinación 3D
+   * (un transform, que crea contexto) no deja favoritos ni añadido rápido debajo del enlace.
+   * La caja no recibe el puntero: los clics sobre la imagen caen en el enlace como siempre.
+   */
+  z-index: 2;
   aspect-ratio: 4 / 5;
   overflow: hidden;
   border-radius: var(--radius-card);
   background: var(--c-studio);
+  pointer-events: none;
 }
 
 .mediaLayer {
@@ -37,13 +44,34 @@
   }
 }
 
-/* Agotado: solo se atenúa la imagen frontal; la trasera no se muestra. */
-.soldOut .mediaLayer:not(.mediaBack) {
-  opacity: 0.5;
+/*
+ * Con WebGL activo el lienzo cubre las <img> y pinta él la transición: el CSS se queda quieto debajo.
+ * - pending: mientras se preparan las texturas (máx. 180 ms) la trasera espera, para que la transición
+ *   nazca en WebGL desde la delantera; si WebGL no llega, se suelta y el fundido sigue igual que siempre.
+ * - active: capas fijas en reposo (sin transiciones) para que al soltar el lienzo no haya saltos.
+ * Van después de las reglas de hover: misma especificidad, gana el orden.
+ */
+.media[data-gl-pending] .mediaBack {
+  opacity: 0;
 }
 
-.soldOut .mediaBack {
-  display: none;
+.media[data-gl-active] .mediaLayer {
+  transform: none;
+  transition: none;
+}
+
+.media[data-gl-active] .mediaBack {
+  opacity: 0;
+}
+
+/*
+ * Agotado: se desatura la cara visible con `filter` (no con opacity, que competía en especificidad con
+ * el fundido y dejaba ver la trasera oculta). La trasera sigue apareciendo al pasar el cursor, también
+ * desaturada, y el lienzo WebGL recibe el mismo filtro para que coincida con las <img>.
+ */
+.soldOut .mediaLayer,
+.soldOut [data-gl-canvas] {
+  filter: grayscale(1) contrast(0.86) brightness(1.06);
 }
 
 /* Etiqueta técnica sobre la imagen: texto en monoespaciada, sin relleno. Rojo solo para «Edición limitada». */
@@ -84,6 +112,7 @@
   top: var(--space-2);
   right: var(--space-2);
   z-index: 3;
+  pointer-events: auto;
   display: grid;
   place-items: center;
   width: 40px;
@@ -157,6 +186,7 @@
   display: none;
   padding: var(--space-3);
   border-radius: var(--radius-3);
+  pointer-events: auto;
   transform: translate3d(0, calc(100% + 12px), 0);
   transition: transform var(--dur-enter) var(--ease-out);
 }
@@ -326,5 +356,4 @@
 .size[data-out] {
   color: var(--fg-muted);
   text-decoration: line-through;
-  opacity: 0.6;
 }

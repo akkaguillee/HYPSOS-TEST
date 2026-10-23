@@ -3,9 +3,11 @@ import { expect, test } from './fixtures';
 test('la portada carga con el hero, las secciones y sin errores', async ({ page, consoleErrors }) => {
   await page.goto('/');
   await expect(page).toHaveTitle(/HYPSOS/);
-  await expect(page.getByRole('heading', { level: 1, name: /Por encima del ruido/i })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /Built for the climb/i })).toBeVisible();
   await expect(page.getByRole('link', { name: 'HYPSOS, ir a la portada' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Novedades' })).toBeAttached();
+  await expect(page.getByRole('heading', { name: /Chapter\s*01/ })).toBeAttached();
+  // Ninguna capa decorativa (espray, puntos, cintas) tapa la acción principal.
+  await page.getByRole('link', { name: 'Comprar Chapter 01' }).click({ trial: true });
   await expect(page.getByRole('contentinfo')).toBeAttached();
   expect(consoleErrors).toEqual([]);
 });
@@ -37,7 +39,8 @@ test('el buscador encuentra productos', async ({ page }) => {
   await expect(page.getByText(/^\d+ resultados?$/)).toBeVisible();
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/search\?q=capucha/);
-  await expect(page.getByRole('heading', { level: 1, name: '“capucha”' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Buscar' })).toBeVisible();
+  await expect(page.locator('#main').getByRole('searchbox')).toHaveValue('capucha');
   await expect(page.locator('#main').getByRole('link', { name: 'Sudadera Capucha Monogram' })).toBeVisible();
 });
 

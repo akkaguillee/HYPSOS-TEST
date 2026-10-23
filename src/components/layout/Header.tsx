@@ -1,8 +1,9 @@
 import { Wordmark } from '@/components/brand/BrandVector';
 import { IconButton, IconLink } from '@/components/ui/Button';
-import { LiquidGlass } from '@/components/ui/LiquidGlass';
+import { LiquidGlass, type LensControl } from '@/components/ui/LiquidGlass';
 import { primaryNav } from '@/content/navigation';
 import { useScrollState } from '@/hooks/useScrollState';
+import { useLiquidWobble } from '@/hooks/useLiquidWobble';
 import { useSurfaceTone } from '@/hooks/useSurfaceTone';
 import { cn } from '@/lib/cn';
 import { cartCount, useCart } from '@/store/cart';
@@ -33,6 +34,8 @@ export function Header() {
   const megaTrigger = useRef<HTMLButtonElement>(null);
   const hoverTimer = useRef<number | undefined>(undefined);
   const bar = useRef<HTMLDivElement>(null);
+  const lens = useRef<LensControl>(null);
+  useLiquidWobble(lens);
   const introPhase = useIntro((state) => state.phase);
   const surface = useSurfaceTone(bar, `${pathname}|${introPhase}`);
   // Con el megamenú abierto, cabecera y panel comparten el cristal oscuro.
@@ -72,11 +75,26 @@ export function Header() {
   };
 
   return (
-    <div className={styles.top} data-condensed={scrolled} data-hidden={hidden}>
+    <div className={styles.top} data-condensed={scrolled} data-hidden={hidden} data-surface-ignore>
       <AnnouncementBar />
       <div className={styles.frame}>
         <header className={styles.header} onMouseLeave={() => megaOpen && scheduleMega(false, 180)}>
-          <LiquidGlass ref={bar} radius="pill" bezel={14} refraction={18} tone={tone} interactive className={styles.bar}>
+          {/* Toda la píldora es una gota de agua (perfil «drop», bisel = media altura): el borde comprime
+              y el centro amplía lo que pasa por detrás, con aberración cromática en el filo. Al hacer
+              scroll la gota se carga con la velocidad y rebota al parar (useLiquidWobble). */}
+          <LiquidGlass
+            ref={bar}
+            lensRef={lens}
+            radius="pill"
+            bezel={64}
+            refraction={13}
+            profile="drop"
+            frost={0}
+            aberration={0.1}
+            tone={tone}
+            interactive
+            className={styles.bar}
+          >
             <div className={styles.left}>
               <IconButton
                 label="Abrir menú"

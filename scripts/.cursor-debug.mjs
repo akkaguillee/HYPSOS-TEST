@@ -1,0 +1,23 @@
+import { chromium } from '@playwright/test';
+const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+await ctx.addInitScript(() => sessionStorage.setItem('hypsos-intro-seen', '1'));
+const page = await ctx.newPage();
+await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' });
+await page.waitForTimeout(4500);
+await page.evaluate(() => {
+  window.__log = [];
+  document.addEventListener('pointerover', (e) => window.__log.push('over ' + e.pointerType + ' ' + e.target.tagName + ' ' + !!e.target.closest('[data-magnetic]')));
+  window.addEventListener('pointermove', (e) => window.__log.length < 40 && window.__log.push('move ' + e.pointerType));
+});
+const cta = page.getByRole('link', { name: 'Comprar Chapter 01' });
+const box = await cta.boundingBox();
+await page.mouse.move(box.x - 40, box.y - 40);
+await page.mouse.move(box.x + box.width * 0.85, box.y + box.height * 0.8, { steps: 12 });
+await page.waitForTimeout(600);
+console.log(await page.evaluate(() => window.__log.filter((l) => l.startsWith('over'))));
+console.log(await page.evaluate(([x, y]) => { const el = document.elementFromPoint(x, y); return el.tagName + '.' + String(el.className).slice(0, 40); }, [box.x + box.width * 0.85, box.y + box.height * 0.8]));
+console.log(await cta.evaluate((el) => [el.style.transform, getComputedStyle(el).transform, getComputedStyle(el).translate]));
+const ring = await page.evaluate(() => { const r = document.querySelector('[class*="ring"][data-mode]'); return [r.dataset.mode, r.style.transform, r.dataset.on]; });
+console.log(ring);
+await browser.close();

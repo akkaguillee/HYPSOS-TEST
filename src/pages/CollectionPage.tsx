@@ -1,12 +1,15 @@
-import { ActiveFilters, Filters } from '@/components/commerce/Filters';
-import { ProductGrid } from '@/components/commerce/ProductGrid';
-import { ProductMedia } from '@/components/commerce/ProductMedia';
+import { Sticker } from '@/components/brand/Sticker';
+import { CollectionCard } from '@/components/commerce/CollectionCard';
+import { ActiveFilters, Filters, SortMenu } from '@/components/commerce/Filters';
+import { EndTile, ProductGrid } from '@/components/commerce/ProductGrid';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { CampaignImage } from '@/components/media/CampaignImage';
 import { Reveal } from '@/components/motion/Reveal';
 import { Button } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Drawer';
 import { Alert } from '@/components/ui/Field';
-import { BrandPanel } from '@/components/brand/BrandPanel';
+import { LiquidGlass } from '@/components/ui/LiquidGlass';
+import { generatedImageNotice } from '@/content/campaign';
 import { track } from '@/lib/analytics';
 import {
   activeFilterCount,
@@ -23,48 +26,68 @@ import {
 import { cn } from '@/lib/cn';
 import { useStock } from '@/store/inventory';
 import { useStoreStatus } from '@/store/storeStatus';
+import { campaignPhotos, type CampaignPhoto } from '@shared/campaign';
 import { collections, getCategory, getCollection, newArrivals, products, productsByCategory, productsByCollection } from '@shared/catalog';
-import { gridColumns } from '@shared/catalog/listing';
+import { listingColumns } from '@shared/catalog/listing';
 import { paths, specialCollections } from '@shared/routes';
 import type { Product } from '@shared/types';
-import { ArrowRight, SlidersHorizontal } from 'lucide-react';
-import { useId, useState } from 'react';
-import { Link, useParams, useSearchParams } from 'react-router';
+import { SlidersHorizontal } from 'lucide-react';
+import { useState } from 'react';
+import { useParams, useSearchParams } from 'react-router';
 import styles from './CollectionPage.module.css';
 import NotFoundPage from './NotFoundPage';
 
+/** Banda de campaña de cada colección editorial (fotos provisionales generadas con IA). */
+interface CampaignBand {
+  photo: CampaignPhoto;
+  layout: 'full' | 'split';
+  tone: 'dark' | 'red';
+  focus?: string;
+  /** Foto de la pieza que remata la rejilla. */
+  endPhoto: CampaignPhoto;
+  endFocus?: string;
+}
+
+const campaignBands: Record<string, CampaignBand> = {
+  'drop-01-ascenso': { photo: campaignPhotos.stairs, layout: 'full', tone: 'dark', focus: '58% 42%', endPhoto: campaignPhotos.crew, endFocus: '50% 40%' },
+  signal: { photo: campaignPhotos.rooftop, layout: 'split', tone: 'red', focus: '50% 28%', endPhoto: campaignPhotos.detail, endFocus: '50% 50%' },
+  base: { photo: campaignPhotos.cap, layout: 'split', tone: 'dark', focus: '50% 25%', endPhoto: campaignPhotos.lookHoodie, endFocus: '50% 30%' },
+};
+
 interface ResolvedCollection {
   title: string;
-  eyebrow: string;
+  /** Línea superior de la banda de campaña. */
+  kicker?: string;
   description: string;
   products: Product[];
-  variant: 'default' | 'campaign';
-  /** Presentación propia de la categoría. */
+  variant: 'listing' | 'campaign';
+  /** Presentación propia de la categoría: piezas curadas sin barra de filtros. */
   layout?: 'lab' | 'stickers';
+  band?: CampaignBand;
 }
 
 function resolveCollection(handle: string): ResolvedCollection | null {
-  if (handle === 'all') return { title: specialCollections.all.name, eyebrow: 'Tienda', description: specialCollections.all.description, products, variant: 'default' };
+  if (handle === 'all') return { title: specialCollections.all.name, description: specialCollections.all.description, products, variant: 'listing' };
   if (handle === 'novedades')
-    return { title: 'Novedades', eyebrow: 'Recién llegado', description: specialCollections.novedades.description, products: newArrivals(), variant: 'default' };
+    return { title: 'Novedades', description: specialCollections.novedades.description, products: newArrivals(), variant: 'listing' };
   const category = getCategory(handle);
   if (category)
     return {
       title: category.name,
-      eyebrow: category.handle === '3d' ? 'Laboratorio' : 'Categoría',
       description: category.description,
       products: productsByCategory(category.handle),
-      variant: 'default',
+      variant: 'listing',
       layout: category.handle === '3d' ? 'lab' : category.handle === 'stickers' ? 'stickers' : undefined,
     };
   const collection = getCollection(handle);
   if (collection)
     return {
       title: collection.name,
-      eyebrow: `${collection.kicker} · ${collection.tagline}`,
-      description: collection.description,
+      kicker: collection.kicker,
+      description: collection.tagline,
       products: productsByCollection(collection.handle),
       variant: 'campaign',
+      band: campaignBands[collection.handle],
     };
   return null;
 }
@@ -77,11 +100,13 @@ export default function CollectionPage() {
   return <CatalogView key={handle} handle={handle} collection={resolved} />;
 }
 
+/** Con pocas piezas la barra de filtros sobra: se ve todo de un vistazo. */
+const TOOLBAR_MIN = 7;
+
 function CatalogView({ handle, collection }: { handle: string; collection: ResolvedCollection }) {
   const [params, setParams] = useSearchParams();
   const { filters, sort, page } = parseCatalogParams(params);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const sortId = useId();
   const { lookup, status: stockStatus } = useStock();
   const serverOnline = useStoreStatus((state) => state.online || !state.loaded);
 
@@ -89,6 +114,8 @@ function CatalogView({ handle, collection }: { handle: string; collection: Resol
   const shown = visible.slice(0, page * PAGE_SIZE);
   const remaining = visible.length - shown.length;
   const activeCount = activeFilterCount(filters);
+  const total = collection.products.length;
+  const showToolbar = !collection.layout && total >= TOOLBAR_MIN;
   const update = (nextFilters: FilterState, nextSort: SortKey = sort) => {
     // Registro anónimo del uso de filtros (solo con consentimiento).
     (['sizes', 'colors', 'prices', 'categories'] as const).forEach((key) =>
@@ -100,58 +127,87 @@ function CatalogView({ handle, collection }: { handle: string; collection: Resol
   const loadMore = () => setParams(toCatalogParams(filters, sort, page + 1), { replace: true, preventScrollReset: true });
 
   const crumbs = [{ label: 'Inicio', to: paths.home }, ...(handle !== 'all' ? [{ label: 'Tienda', to: paths.collection('all') }] : []), { label: collection.title }];
+  const countLabel = total === 1 ? 'producto' : 'productos';
+  const resultText =
+    stockStatus === 'loading' && activeCount > 0
+      ? 'Comprobando disponibilidad…'
+      : activeCount > 0
+        ? `${visible.length} ${visible.length === 1 ? 'resultado' : 'resultados'}`
+        : '';
+
+  const endTile =
+    collection.layout === 'lab' ? (
+      <EndTile variant="lab" kicker="Laboratorio" title="Impreso en 3D." text={collection.description} note="Imágenes: mockups provisionales hasta la sesión de fotos." />
+    ) : (
+      <EndTile
+        kicker="HYPSOS"
+        title="Built for the climb."
+        to={handle === 'all' ? paths.collection('colecciones') : paths.collection('all')}
+        cta={handle === 'all' ? 'Ver colecciones' : 'Ver toda la tienda'}
+        photo={collection.band?.endPhoto}
+        focus={collection.band?.endFocus}
+        note={collection.band ? 'Imagen provisional · IA' : undefined}
+      />
+    );
 
   return (
     <>
-      <PageHeader
-        title={collection.title}
-        eyebrow={collection.eyebrow}
-        description={collection.description}
-        breadcrumbs={crumbs}
-        variant={collection.variant}
-        aside={`${collection.products.length} ${collection.products.length === 1 ? 'producto' : 'productos'}`}
-      >
-        {collection.layout === 'lab' && (
-          <div className={styles.lab}>
-            <BrandPanel tone="graphite" mark="mascot" accent className={styles.labStage} />
-            <p className={styles.labNote}>
-              Piezas impresas en 3D y acabadas a mano. Las imágenes de esta sección son mockups provisionales hasta la sesión de fotos.
-            </p>
-          </div>
-        )}
-      </PageHeader>
+      {collection.variant === 'campaign' && collection.band ? (
+        <PageHeader
+          variant="campaign"
+          title={collection.title}
+          eyebrow={`${collection.kicker} · ${total} ${total === 1 ? 'pieza' : 'piezas'}`}
+          description={collection.description}
+          breadcrumbs={crumbs}
+          tone={collection.band.tone}
+          mediaLayout={collection.band.layout}
+          credit={generatedImageNotice}
+          media={
+            <CampaignImage
+              photo={collection.band.photo}
+              sizes={collection.band.layout === 'split' ? '(min-width: 1536px) 720px, (min-width: 768px) 48vw, 100vw' : '(min-width: 1536px) 1440px, 100vw'}
+              focus={collection.band.focus}
+              priority
+              decorative
+            />
+          }
+        />
+      ) : (
+        <PageHeader
+          variant="listing"
+          title={collection.title}
+          description={collection.layout === 'lab' ? undefined : collection.description}
+          breadcrumbs={crumbs}
+          count={{ value: total, label: countLabel }}
+          art={collection.layout === 'stickers' ? <StickerCluster /> : undefined}
+        />
+      )}
 
-      <div className={styles.toolbar}>
-        <div className={`container ${styles.toolbarInner}`}>
-          <button type="button" className={`${styles.filterButton} ${styles.mobileOnly}`} onClick={() => setFiltersOpen(true)} aria-haspopup="dialog">
-            <SlidersHorizontal aria-hidden="true" />
-            Filtrar
-            {activeCount > 0 && <span className={styles.filterCount}>{activeCount}</span>}
-          </button>
-          <p className={styles.resultCount} aria-live="polite">
-            {stockStatus === 'loading' ? 'Comprobando disponibilidad…' : `${visible.length} ${visible.length === 1 ? 'resultado' : 'resultados'}`}
-          </p>
-          <div className={styles.sort}>
-            <label htmlFor={sortId}>Ordenar</label>
-            <select id={sortId} value={sort} onChange={(event) => update(filters, event.target.value as SortKey)}>
-              {sortOptions.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+      {showToolbar && (
+        <div className={styles.toolbar}>
+          <LiquidGlass tone="light" radius="pill" bezel={12} refraction={14} className={styles.bar}>
+            <button type="button" className={styles.filterButton} onClick={() => setFiltersOpen(true)} aria-haspopup="dialog">
+              <SlidersHorizontal aria-hidden="true" />
+              <span>
+                Filtrar
+                {activeCount > 0 && <span className="t-num"> ({activeCount})</span>}
+              </span>
+            </button>
+            <span className={styles.divider} aria-hidden="true" />
+            <SortMenu options={sortOptions} value={sort} onChange={(next) => update(filters, next)} className={styles.sort} />
+          </LiquidGlass>
         </div>
-      </div>
+      )}
 
-      <div className={`container ${styles.body}`}>
-        <aside className={styles.sidebar} aria-label="Filtros">
-          <Filters products={collection.products} filters={filters} onChange={(next) => update(next)} />
-        </aside>
-
-        <div className={styles.results}>
+      <div className={cn('container', styles.body, !showToolbar && styles.bodyFlush)}>
+        <div className={cn(styles.refine, (activeCount > 0 || resultText) && styles.refineOn)}>
+          <p className={styles.resultLine} aria-live="polite">
+            {resultText}
+          </p>
           <ActiveFilters products={collection.products} filters={filters} onChange={(next) => update(next)} />
-          {stockStatus === 'error' && (
+        </div>
+        {stockStatus === 'error' && (
+          <div className={styles.notice}>
             <Alert tone="info">
               <p>
                 {serverOnline
@@ -159,61 +215,81 @@ function CatalogView({ handle, collection }: { handle: string; collection: Resol
                   : 'La disponibilidad en tiempo real necesita el servidor de la tienda, que no está activo en esta versión de la web.'}
               </p>
             </Alert>
-          )}
-          {visible.length > 0 ? (
-            <>
-              <div className={cn(collection.layout === 'stickers' && styles.stickerGrid)}>
-                <ProductGrid products={shown} columns={gridColumns(handle)} priorityCount={3} headingLevel="h2" />
-              </div>
+          </div>
+        )}
+        {visible.length > 0 ? (
+          <>
+            <ProductGrid
+              products={shown}
+              columns={listingColumns(shown.length)}
+              priorityCount={4}
+              headingLevel="h2"
+              hideNewBadge={handle === 'novedades'}
+              endTile={remaining === 0 ? endTile : undefined}
+              endTileAlways={collection.layout === 'lab'}
+            />
+            {remaining > 0 && (
               <div className={styles.pagination}>
-                <p className="t-small t-muted" aria-live="polite">
+                <p className={styles.paginationText} aria-live="polite">
                   Mostrando {shown.length} de {visible.length}
                 </p>
                 <div className={styles.paginationTrack} aria-hidden="true">
                   <span style={{ transform: `scaleX(${shown.length / visible.length})` }} />
                 </div>
-                {remaining > 0 && (
-                  <Button variant="outline" onClick={loadMore}>
-                    Cargar {Math.min(remaining, PAGE_SIZE)} más
-                  </Button>
-                )}
+                <Button variant="outline" onClick={loadMore}>
+                  Cargar {Math.min(remaining, PAGE_SIZE)} más
+                </Button>
               </div>
-            </>
-          ) : (
-            <div className={styles.empty}>
-              <p className="t-h3">Ningún producto coincide con estos filtros</p>
-              <p className="t-muted t-small">Prueba a quitar alguno o explora toda la tienda.</p>
-              <Button variant="outline" onClick={() => update(emptyFilters)}>
-                Limpiar filtros
-              </Button>
-            </div>
-          )}
-        </div>
+            )}
+          </>
+        ) : (
+          <div className={styles.empty}>
+            <p className={styles.emptyTitle}>Ningún producto coincide con estos filtros</p>
+            <p className="t-muted t-small">Prueba a quitar alguno o explora toda la tienda.</p>
+            <Button variant="outline" onClick={() => update(emptyFilters)}>
+              Limpiar filtros
+            </Button>
+          </div>
+        )}
       </div>
 
-      <Drawer
-        open={filtersOpen}
-        onClose={() => setFiltersOpen(false)}
-        title="Filtrar"
-        side="left"
-        footer={
-          <div style={{ display: 'grid', gap: 'var(--space-2)' }}>
-            <Button block size="lg" onClick={() => setFiltersOpen(false)}>
-              Ver {visible.length} {visible.length === 1 ? 'producto' : 'productos'}
-            </Button>
-            {activeCount > 0 && (
-              <Button block variant="ghost" onClick={() => update(emptyFilters)}>
-                Limpiar filtros
+      {showToolbar && (
+        <Drawer
+          open={filtersOpen}
+          onClose={() => setFiltersOpen(false)}
+          title="Filtrar"
+          side="left"
+          width="400px"
+          footer={
+            <div className={styles.drawerFooter}>
+              <Button block size="lg" onClick={() => setFiltersOpen(false)}>
+                Ver {visible.length} {visible.length === 1 ? 'producto' : 'productos'}
               </Button>
-            )}
+              {activeCount > 0 && (
+                <Button block variant="ghost" onClick={() => update(emptyFilters)}>
+                  Limpiar filtros
+                </Button>
+              )}
+            </div>
+          }
+        >
+          <div className={styles.drawerBody}>
+            <Filters products={collection.products} filters={filters} onChange={(next) => update(next)} />
           </div>
-        }
-      >
-        <div className={styles.drawerBody}>
-          <Filters products={collection.products} filters={filters} onChange={(next) => update(next)} />
-        </div>
-      </Drawer>
+        </Drawer>
+      )}
     </>
+  );
+}
+
+/** Pegatinas troqueladas junto al título de la categoría de stickers (decorativas). */
+function StickerCluster() {
+  return (
+    <span className={styles.stickerCluster}>
+      <Sticker mark="star" color="#090909" rotate={-14} className={styles.clusterStar} />
+      <Sticker mark="mascot" rotate={8} className={styles.clusterMascot} />
+      <Sticker mark="monogram" color="#090909" rotate={-6} className={styles.clusterMonogram} />
+    </span>
   );
 }
 
@@ -222,37 +298,23 @@ function CollectionsIndex() {
   return (
     <>
       <PageHeader
+        variant="listing"
         title={specialCollections.colecciones.name}
-        eyebrow="Archivo"
         description={specialCollections.colecciones.description}
         breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Colecciones' }]}
+        count={{ value: sorted.length, label: sorted.length === 1 ? 'colección' : 'colecciones' }}
       />
-      <div className={`container ${styles.collections}`}>
-        {sorted.map((collection, index) => {
-          const items = productsByCollection(collection.handle);
-          return (
-            <Reveal key={collection.handle} index={index}>
-              <Link to={paths.collection(collection.handle)} className={styles.collectionCard} viewTransition>
-                <div style={{ display: 'grid', gap: 'var(--space-3)' }}>
-                  <p className="eyebrow">{collection.kicker}</p>
-                  <h2 className={styles.collectionName}>{collection.name}</h2>
-                  <p className="t-lead">{collection.tagline}</p>
-                  <div className={styles.collectionThumbs} aria-hidden="true">
-                    {items.slice(0, 4).map((product) => (
-                      <span key={product.id} className={styles.collectionThumb}>
-                        <ProductMedia product={product} media={product.media[0]} decorative sizes="64px" />
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <span className={styles.collectionMeta}>
-                  {items.length} piezas
-                  <ArrowRight aria-hidden="true" />
-                </span>
-              </Link>
-            </Reveal>
-          );
-        })}
+      <div className={cn('container', styles.collections)}>
+        {sorted.map((collection, index) => (
+          <Reveal key={collection.handle} index={0} className={styles.collectionBlock}>
+            <CollectionCard
+              collection={collection}
+              headingLevel="h2"
+              reverse={index % 2 === 1}
+              priority={index === 0}
+            />
+          </Reveal>
+        ))}
       </div>
     </>
   );

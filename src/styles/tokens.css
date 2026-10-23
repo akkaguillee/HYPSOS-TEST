@@ -72,6 +72,16 @@
   /* ─── Tipografía (Manual: condensada para titulares, neutra para cuerpo, mono técnica) ─ */
   --font-display: 'Archivo Variable', 'Archivo', 'Arial Narrow', system-ui, sans-serif;
   --font-body: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /*
+   * Familias de acento, cada una con un único papel (ver typography.css):
+   * gótica = nombres de capítulo y colección · tag = pintadas decorativas · stencil = cifras y
+   * códigos grandes · marker = notas a mano. Archivo cubre los dos extremos: comprimida (62 %) y
+   * ancha (125 %).
+   */
+  --font-gothic: 'Grenze Gotisch', 'UnifrakturCook', Georgia, serif;
+  --font-tag: 'Sedgwick Ave Display', 'Permanent Marker', cursive;
+  --font-stencil: 'Big Shoulders Stencil Display', 'Archivo Variable', Impact, sans-serif;
+  --font-marker: 'Permanent Marker', 'Comic Sans MS', cursive;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
   /* Titulares comprimidos tipo cartel: el texto como objeto. */
@@ -99,6 +109,7 @@
   /* Ancho de Archivo (eje 62-125 %): condensada en titulares. */
   --stretch-display: 62%;
   --stretch-heading: 68%;
+  --stretch-wide: 125%;
 
   /* ─── Movimiento ──────────────────────────────────────────────────── */
   --dur-micro: 160ms;

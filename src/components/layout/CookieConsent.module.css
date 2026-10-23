@@ -1,4 +1,7 @@
+/* Aviso flotante de cristal (LiquidGlass oscuro), separado de los bordes como la cabecera. */
 .banner {
+  /* Tinte denso: el aviso se lee sobre páginas claras y fotografías. */
+  --lg-tint: rgb(9 9 9 / 0.9);
   position: fixed;
   left: max(var(--space-3), env(safe-area-inset-left));
   right: max(var(--space-3), env(safe-area-inset-right));
@@ -6,27 +9,19 @@
   z-index: var(--z-toast);
   display: grid;
   gap: var(--space-4);
-  max-width: 560px;
+  max-width: 520px;
   max-height: calc(100svh - var(--space-6));
   overflow-y: auto;
   padding: var(--space-5);
-  border-radius: var(--radius-3);
-  animation: rise var(--dur-enter) var(--ease-out);
-}
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 16px, 0);
-  }
+  border-radius: var(--radius-4);
+  color: var(--fg);
 }
 
 .title {
-  font-family: var(--font-display);
-  font-size: var(--fs-sm);
-  font-weight: 750;
-  font-stretch: var(--stretch-heading);
-  letter-spacing: 0.06em;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
 
@@ -48,12 +43,28 @@
   gap: var(--space-2);
 }
 
+.panelActions {
+  margin-top: var(--space-5);
+}
+
 .manage {
   justify-self: start;
-  font-size: var(--fs-xs);
+  min-height: 40px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
   text-decoration: underline;
   text-underline-offset: 3px;
   color: var(--fg-muted);
+  transition: color var(--dur-hover) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .manage:hover {
+    color: var(--fg);
+  }
 }
 
 .row {
@@ -73,13 +84,15 @@
 
 .row p {
   font-size: var(--fs-xs);
+  line-height: 1.5;
   color: var(--fg-muted);
 }
 
 .always {
   flex: none;
+  font-family: var(--font-mono);
   font-size: var(--fs-2xs);
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--fg-muted);

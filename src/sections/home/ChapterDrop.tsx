@@ -1,5 +1,7 @@
 import { ProductGrid } from '@/components/commerce/ProductGrid';
 import { Sticker } from '@/components/brand/Sticker';
+import { SprayMark } from '@/components/graffiti/SprayMark';
+import { Scramble } from '@/components/motion/Scramble';
 import { SplitHeadline } from '@/components/motion/SplitHeadline';
 import { ButtonLink } from '@/components/ui/Button';
 import { getCollection, productsByCollection } from '@shared/catalog';
@@ -18,11 +20,13 @@ export function ChapterDrop() {
         <header className={styles.head}>
           <div className={styles.titleWrap}>
             <p className="eyebrow">
-              {collection?.name} · {items.length} piezas
+              <Scramble>{`${collection?.name ?? ''} · ${items.length} piezas`}</Scramble>
             </p>
+            {/* «Chapter» en gótica y el número en stencil, rodeado a espray. */}
             <SplitHeadline id="chapter-title" className={styles.title}>
-              Chapter 01
+              <span className={styles.word}>Chapter</span> <span className={styles.num}>01</span>
             </SplitHeadline>
+            <SprayMark variant="circle" drips className={styles.circle} delay={0.5} />
             <Sticker mark="monogram" color="#090909" rotate={8} className={styles.sticker} />
           </div>
           <div className={styles.aside}>

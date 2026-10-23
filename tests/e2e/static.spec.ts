@@ -9,7 +9,7 @@ import { expect, test } from './fixtures';
 test('la portada carga (no se queda en la pantalla de carga)', async ({ page, consoleErrors }) => {
   await page.goto('/');
   await expect(page.locator('.boot')).toHaveCount(0);
-  await expect(page.getByRole('heading', { level: 1, name: /Por encima del ruido/i })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /Built for the climb/i })).toBeVisible();
   expect(consoleErrors.filter((error) => !error.includes('404'))).toEqual([]);
 });
 

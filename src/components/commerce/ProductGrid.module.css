@@ -1,13 +1,17 @@
+/*
+ * Rejilla única de listados: 2 columnas en móvil, 3 en tableta y 3 o 4 en escritorio, con la
+ * pieza final (.end) que ocupa las celdas libres de la última fila en cada tamaño.
+ */
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-7) var(--space-3);
+  gap: var(--space-6) var(--space-3);
 }
 
 @media (min-width: 768px) {
   .grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-8) var(--space-5);
+    gap: var(--space-7) var(--space-4);
   }
 }
 
@@ -15,6 +19,221 @@
   .grid[data-columns='4'] {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+}
+
+.end {
+  display: none;
+  min-width: 0;
+}
+
+.end[data-sm] {
+  display: grid;
+  grid-column: span var(--span-sm);
+}
+
+@media (min-width: 768px) {
+  .end[data-md] {
+    display: grid;
+    grid-column: span var(--span-md);
+  }
+
+  .end:not([data-md]) {
+    display: none;
+  }
+}
+
+@media (min-width: 1280px) {
+  .end[data-lg] {
+    display: grid;
+    grid-column: span var(--span-lg);
+  }
+
+  .end:not([data-lg]) {
+    display: none;
+  }
+}
+
+/* ─── Remate de la rejilla ─────────────────────────────────────────── */
+.endTile {
+  position: relative;
+  isolation: isolate;
+  container-type: inline-size;
+  display: grid;
+  grid-template-rows: auto minmax(var(--space-4), 1fr) auto auto auto;
+  justify-items: start;
+  min-height: 260px;
+  padding: var(--space-4);
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+@media (min-width: 768px) {
+  .endTile {
+    padding: var(--space-5);
+  }
+}
+
+.endKicker {
+  grid-row: 1;
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.endTitle {
+  grid-row: 3;
+  max-width: 11ch;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 15cqi, 6.5rem);
+  font-weight: 900;
+  font-stretch: var(--stretch-display);
+  line-height: var(--lh-crushed);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+}
+
+.endLink {
+  grid-row: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 40px;
+  margin-top: var(--space-4);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    background-color var(--dur-hover) var(--ease-out),
+    color var(--dur-hover) var(--ease-out),
+    border-color var(--dur-hover) var(--ease-out);
+}
+
+.endLink svg {
+  flex: none;
+  width: 14px;
+  height: 14px;
+}
+
+/* Pieza estrecha (una celda en móvil): la llamada queda en una flecha; el texto sigue siendo el nombre del enlace. */
+@container (max-width: 240px) {
+  .endLink {
+    justify-content: center;
+    width: 40px;
+    padding: 0;
+  }
+
+  .endLinkText {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+.endTile:focus-visible {
+  outline: 2px solid var(--c-black);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .endTile:hover .endLink {
+    background: var(--fg);
+    border-color: var(--fg);
+    color: var(--bg);
+  }
+}
+
+.endCredit {
+  grid-row: 1;
+  justify-self: end;
+  max-width: 60%;
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  line-height: 1.3;
+  letter-spacing: var(--tracking-label);
+  text-align: right;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.endMedia {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.endMedia picture,
+.endMedia img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Velo para leer el lema sobre la foto (no decora: garantiza el contraste). */
+.endMedia::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(9 9 9 / 0.5) 0%, rgb(9 9 9 / 0.1) 35%, rgb(9 9 9 / 0.82) 100%);
+}
+
+.endSticker {
+  grid-row: 1;
+  justify-self: end;
+  width: clamp(44px, 26cqi, 120px);
+  height: auto;
+}
+
+/* Las dos piezas del laboratorio comparten fila con el escenario: título y texto a la izquierda. */
+.endTile[data-variant='lab'] {
+  grid-template-rows: auto minmax(var(--space-4), 1fr) auto auto auto;
+  min-height: 300px;
+  background: var(--surface);
+}
+
+.endTile[data-variant='lab'] .endTitle {
+  max-width: 7ch;
+}
+
+.endText {
+  grid-row: 4;
+  display: block;
+  max-width: min(36ch, 58cqi);
+  margin-top: var(--space-3);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--fg-soft);
+}
+
+.endTile[data-variant='lab'] .endCredit {
+  grid-row: 5;
+  justify-self: start;
+  max-width: 58cqi;
+  margin-top: var(--space-4);
+  text-align: left;
+}
+
+.labSticker {
+  position: absolute;
+  top: 50%;
+  right: var(--space-5);
+  z-index: -1;
+  width: min(40cqi, 260px);
+  height: auto;
+  translate: 0 -50%;
 }
 
 .rail {

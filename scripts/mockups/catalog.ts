@@ -79,7 +79,7 @@ export function mockupSVG({ product, colorId, view }: MockupJob): string {
     else if (product.silhouette === 'shorts') pants(scene, baseView, spec, 'shorts');
     return scene.toSVG(view === 'detail' ? spec.detail : undefined);
   }
-  const { scene, detail } = accessory(product, colorId, view === 'back' ? 'back' : 'front', fabric);
+  const { scene, detail } = accessory(product, view === 'back' ? 'back' : 'front', fabric);
   return scene.toSVG(view === 'detail' ? detail : undefined);
 }
 

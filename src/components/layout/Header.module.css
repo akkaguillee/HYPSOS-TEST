@@ -9,7 +9,10 @@
   right: 0;
   z-index: var(--z-header);
   transition: transform var(--dur-panel) var(--ease-out);
-  view-transition-name: site-header;
+  /*
+   * Sin view-transition-name: en Chromium lo convertiría en raíz de fondo y el cristal solo vería
+   * el interior de la cabecera, no la página (adiós a la refracción).
+   */
 }
 
 /* Al hacer scroll se recoge la barra de avisos; al bajar se oculta todo. */
@@ -41,6 +44,8 @@
 }
 
 .bar {
+  /* Tinte más ligero que el de los paneles: la gota tiene que dejar ver (deformado) lo de detrás. */
+  --lg-tint: rgb(9 9 9 / 0.24);
   --header-fg: var(--c-white);
   --header-fg-muted: rgb(255 255 255 / 0.74);
   display: grid;
@@ -52,6 +57,7 @@
 }
 
 .bar[data-tone='light'] {
+  --lg-tint: rgb(242 240 236 / 0.3);
   --header-fg: var(--c-black);
   --header-fg-muted: rgb(8 8 8 / 0.7);
 }

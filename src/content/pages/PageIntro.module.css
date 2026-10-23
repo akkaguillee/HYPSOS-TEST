@@ -1,0 +1,46 @@
+.intro {
+  padding-top: clamp(var(--space-5), 3vw, var(--space-7));
+  padding-bottom: clamp(var(--space-5), 2.4vw, var(--space-6));
+}
+
+.inner {
+  display: grid;
+  gap: var(--space-4);
+}
+
+/* Titular y dato técnico comparten línea base (también en móvil). */
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: last baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-6);
+  min-width: 0;
+}
+
+/* Titular de servicio: comprimido como los de la portada, pero compacto. */
+.title {
+  min-width: 0;
+  font-size: clamp(2.5rem, 2.6vw + 1.5rem, 4.25rem);
+  font-weight: 900;
+  font-stretch: var(--stretch-display);
+  line-height: var(--lh-tight);
+  overflow-wrap: anywhere;
+}
+
+.aside {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.lead {
+  max-width: 56ch;
+  font-size: var(--fs-lg);
+  line-height: 1.5;
+  color: var(--fg-muted);
+}

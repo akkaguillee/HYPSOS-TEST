@@ -1,5 +1,7 @@
 import { CampaignImage } from '@/components/media/CampaignImage';
+import { SprayMark } from '@/components/graffiti/SprayMark';
 import { ImageReveal } from '@/components/motion/ImageReveal';
+import { Scramble } from '@/components/motion/Scramble';
 import { ButtonLink } from '@/components/ui/Button';
 import { editorial } from '@/content/campaign';
 import { useReducedMotion } from '@/hooks/useMediaQuery';
@@ -22,7 +24,7 @@ export function Editorial() {
       if (reduced || !root.current) return;
       const q = gsap.utils.selector(root);
       const scroll = { trigger: root.current, start: 'top bottom', end: 'bottom top', scrub: 0.6 };
-      gsap.fromTo(q(`.${styles.wordA}`), { xPercent: -6 }, { xPercent: 4, ease: 'none', scrollTrigger: scroll });
+      gsap.fromTo(q(`.${styles.wordA}`), { xPercent: -2 }, { xPercent: 5, ease: 'none', scrollTrigger: scroll });
       gsap.fromTo(q(`.${styles.wordB}`), { xPercent: 6 }, { xPercent: -4, ease: 'none', scrollTrigger: scroll });
       gsap.fromTo(q(`.${styles.figA}`), { yPercent: 8 }, { yPercent: -8, ease: 'none', scrollTrigger: scroll });
       gsap.fromTo(q(`.${styles.figB}`), { yPercent: -4 }, { yPercent: 10, ease: 'none', scrollTrigger: scroll });
@@ -33,14 +35,17 @@ export function Editorial() {
   return (
     <section ref={root} id="editorial" className={`section ${styles.section}`} data-theme="light" aria-labelledby="editorial-title">
       <div className="container">
-        <p className="eyebrow">{editorial.kicker}</p>
+        <p className="eyebrow">
+          <Scramble>{editorial.kicker}</Scramble>
+        </p>
         <div className={styles.stage}>
+          <SprayMark variant="crown" className={styles.crown} />
           <h2 id="editorial-title" className={styles.title}>
             <span className={styles.wordA}>Above</span>
             <span className={styles.wordB}>ordinary.</span>
           </h2>
           <figure className={styles.figA}>
-            <ImageReveal className={styles.frame} from="bottom">
+            <ImageReveal className={styles.frame} from="left">
               <CampaignImage photo={campaignPhotos.lookTee} sizes="(min-width: 1024px) 30vw, 60vw" focus="50% 30%" />
             </ImageReveal>
             <figcaption className={styles.caption}>Look 01 · Camiseta oversize + cargo</figcaption>

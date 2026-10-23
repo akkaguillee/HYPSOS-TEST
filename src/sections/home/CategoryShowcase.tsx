@@ -1,6 +1,7 @@
 import { CampaignImage } from '@/components/media/CampaignImage';
 import { LiquidGlass } from '@/components/ui/LiquidGlass';
 import { ImageReveal } from '@/components/motion/ImageReveal';
+import { Scramble } from '@/components/motion/Scramble';
 import { SplitHeadline } from '@/components/motion/SplitHeadline';
 import { campaignPhotos, type CampaignPhoto } from '@shared/campaign';
 import { paths } from '@shared/routes';
@@ -28,10 +29,12 @@ export function CategoryShowcase() {
     <section className="section" data-theme="dark" aria-labelledby="categories-title">
       <div className="container">
         <div className="section-head">
-          <SplitHeadline id="categories-title" className="t-h2">
-            Viste la subida
+          <SplitHeadline id="categories-title" className={styles.title}>
+            <span className="mix-crushed">Viste la</span> <span className="mix-wide">subida</span>
           </SplitHeadline>
-          <p className="eyebrow">Categorías</p>
+          <p className="eyebrow">
+            <Scramble>Categorías</Scramble>
+          </p>
         </div>
         <ul role="list" className={styles.grid}>
           {tiles.map((tile, index) => (
@@ -40,6 +43,9 @@ export function CategoryShowcase() {
                 <ImageReveal className={styles.media} parallax={index === 0 ? 8 : 0}>
                   <CampaignImage photo={tile.photo} sizes="(min-width: 1024px) 30vw, 50vw" decorative focus={tile.focus} />
                 </ImageReveal>
+                <span className={styles.index} aria-hidden="true">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
                 <span className={styles.label}>
                   <span className={styles.name}>{tile.label}</span>
                   <LiquidGlass as="span" radius="pill" bezel={12} refraction={14} className={styles.go} aria-hidden="true">

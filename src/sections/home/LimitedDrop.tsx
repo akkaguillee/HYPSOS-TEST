@@ -1,4 +1,6 @@
 import { Sticker } from '@/components/brand/Sticker';
+import { GraffitiTag } from '@/components/graffiti/GraffitiTag';
+import { Scramble } from '@/components/motion/Scramble';
 import { CampaignImage } from '@/components/media/CampaignImage';
 import { ImageReveal } from '@/components/motion/ImageReveal';
 import { SplitHeadline } from '@/components/motion/SplitHeadline';
@@ -12,9 +14,11 @@ export function LimitedDrop() {
     <section className={`section ${styles.section}`} data-theme="red" aria-labelledby="limited-title">
       <div className={`container ${styles.grid}`}>
         <div className={styles.copy}>
-          <p className="eyebrow">{limited.kicker}</p>
+          <p className="eyebrow">
+            <Scramble>{limited.kicker}</Scramble>
+          </p>
           <SplitHeadline id="limited-title" className={styles.title}>
-            {limited.title}
+            <span className="mix-wide">{limited.titleLines[0]}</span> <span className="mix-crushed">{limited.titleLines[1]}</span>
           </SplitHeadline>
           <p className={styles.text}>{limited.text}</p>
           <ButtonLink to={limited.cta.to} size="lg">
@@ -25,6 +29,9 @@ export function LimitedDrop() {
           <ImageReveal className={styles.media} from="bottom" parallax={8}>
             <CampaignImage photo={limited.photo} sizes="(min-width: 1024px) 34vw, 80vw" focus="40% 40%" />
           </ImageReveal>
+          <GraffitiTag className={styles.tag} color="var(--c-black)" delay={0.6}>
+            {limited.tag}
+          </GraffitiTag>
           <Sticker mark="star" color="#d71920" rotate={-8} className={styles.sticker} />
         </div>
       </div>

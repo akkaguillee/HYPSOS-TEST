@@ -18,15 +18,37 @@
   justify-items: start;
 }
 
-/* Titular-objeto: condensado y comprimido, a gran tamaño. */
+/* Titular-objeto: «Chapter» en gótica y «01» en stencil, oversize. */
 .title {
-  font-family: var(--font-display);
-  font-size: var(--fs-display);
+  display: flex;
+  align-items: baseline;
+  gap: 0.12em;
+  font-size: clamp(3.4rem, 9vw, 9.5rem);
+  line-height: 0.85;
+}
+
+.word {
+  font-family: var(--font-gothic);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
-  line-height: var(--lh-crushed);
-  letter-spacing: var(--tracking-display);
-  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+
+.num {
+  font-family: var(--font-stencil);
+  font-size: 1.22em;
+  font-weight: 900;
+  line-height: 0.8;
+}
+
+/* Círculo a rotulador alrededor del número. */
+.circle {
+  position: absolute;
+  bottom: -0.32em;
+  left: 3.05em;
+  width: 2.1em;
+  height: auto;
+  font-size: clamp(3.4rem, 9vw, 9.5rem);
+  pointer-events: none;
 }
 
 .sticker {
@@ -39,8 +61,8 @@
 @media (min-width: 1024px) {
   .sticker {
     right: auto;
-    left: calc(var(--fs-display) * 4.6);
-    top: calc(var(--fs-display) * -0.1);
+    left: calc(clamp(3.4rem, 9vw, 9.5rem) * 5.4);
+    top: calc(clamp(3.4rem, 9vw, 9.5rem) * -0.15);
   }
 }
 

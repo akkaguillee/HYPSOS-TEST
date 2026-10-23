@@ -1,5 +1,8 @@
+import { Sticker } from '@/components/brand/Sticker';
 import { Wordmark } from '@/components/brand/BrandVector';
+import { Button } from '@/components/ui/Button';
 import { isRouteErrorResponse, useRouteError } from 'react-router';
+import styles from './NotFoundPage.module.css';
 
 /**
  * Error de ruta (p. ej. un fragmento de código que no carga tras un despliegue).
@@ -11,36 +14,24 @@ export function RouteError() {
   if (import.meta.env.DEV) console.error(error);
 
   return (
-    <main
-      style={{
-        minHeight: '100svh',
-        display: 'grid',
-        placeItems: 'center',
-        padding: 'var(--gutter)',
-        background: 'var(--c-black)',
-        color: 'var(--c-white)',
-        textAlign: 'center',
-      }}
-    >
-      <div style={{ display: 'grid', gap: 'var(--space-5)', justifyItems: 'center', maxWidth: 520 }}>
-        <Wordmark title="HYPSOS" style={{ width: 160 }} />
-        <h1 className="t-h2">{isRouteErrorResponse(error) && error.status === 404 ? 'Página no encontrada' : 'Algo ha fallado'}</h1>
-        <p className="t-muted">
+    <main className={styles.errorPage} data-theme="dark">
+      <div className={styles.errorInner}>
+        <Wordmark title="HYPSOS" className={styles.errorWordmark} />
+        <Sticker mark="mascot" rotate={-10} className={styles.errorSticker} />
+        <h1 className={styles.title}>{isRouteErrorResponse(error) && error.status === 404 ? 'Página no encontrada' : 'Algo ha fallado'}</h1>
+        <p className={styles.lead}>
           {isChunkError
             ? 'Hemos publicado una nueva versión de la web. Recarga la página para continuar.'
             : 'Ha ocurrido un error inesperado. Recarga la página o vuelve al inicio.'}
         </p>
-        <div style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button
-            type="button"
-            onClick={() => window.location.reload()}
-            style={{ minHeight: 48, padding: '0 24px', background: 'var(--c-white)', color: 'var(--c-black)', fontWeight: 650, fontSize: 12, letterSpacing: '0.14em', textTransform: 'uppercase' }}
-          >
+        <div className={styles.actions}>
+          <Button size="lg" onClick={() => window.location.reload()}>
             Recargar
-          </button>
-          <a href="/" style={{ minHeight: 48, padding: '0 24px', display: 'inline-grid', placeItems: 'center', border: '1px solid var(--line-strong)', fontWeight: 650, fontSize: 12, letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+          </Button>
+          {/* Navegación completa (no del router): el estado de la app puede estar roto. */}
+          <Button size="lg" variant="outline" onClick={() => window.location.assign('/')}>
             Inicio
-          </a>
+          </Button>
         </div>
       </div>
     </main>

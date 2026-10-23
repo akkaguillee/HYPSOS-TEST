@@ -12,22 +12,24 @@ interface AccordionProps {
   /** Ids abiertos al inicio. */
   defaultOpen?: string[];
   headingLevel?: 'h2' | 'h3';
+  /** `lg`: preguntas de lectura (FAQ). `md`: detalles compactos (ficha de producto). */
+  size?: 'md' | 'lg';
 }
 
-export function Accordion({ items, defaultOpen = [], headingLevel: Heading = 'h3' }: AccordionProps) {
+export function Accordion({ items, defaultOpen = [], headingLevel: Heading = 'h3', size = 'md' }: AccordionProps) {
   const [open, setOpen] = useState<string[]>(defaultOpen);
   const baseId = useId();
   const toggle = (id: string) => setOpen((current) => (current.includes(id) ? current.filter((value) => value !== id) : [...current, id]));
 
   return (
-    <div className={styles.list}>
+    <div className={styles.list} data-size={size}>
       {items.map((item) => {
         const isOpen = open.includes(item.id);
         const triggerId = `${baseId}-${item.id}-trigger`;
         const panelId = `${baseId}-${item.id}-panel`;
         return (
           <div key={item.id} className={styles.item}>
-            <Heading style={{ margin: 0 }}>
+            <Heading className={styles.heading}>
               <button
                 type="button"
                 id={triggerId}

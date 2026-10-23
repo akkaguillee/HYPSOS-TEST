@@ -1,4 +1,4 @@
-import { Mascot } from '@/components/brand/BrandVector';
+import { Sticker } from '@/components/brand/Sticker';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Drawer';
 import { Price } from '@/components/ui/Price';
@@ -6,7 +6,7 @@ import { cartCount, cartSubtotal, resolveCartLines, useCart } from '@/store/cart
 import { useInventory, useStock } from '@/store/inventory';
 import { paths } from '@shared/routes';
 import { useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import styles from './Cart.module.css';
 import { CartLineItem } from './CartLineItem';
 import { FreeShippingProgress } from './FreeShippingProgress';
@@ -35,9 +35,9 @@ export function CartDrawer() {
       footer={
         lines.length > 0 && (
           <div className={styles.summary}>
-            <div className={`${styles.summaryRow} ${styles.summaryTotal}`}>
-              <span>Subtotal</span>
-              <Price amount={subtotal} />
+            <div className={styles.summaryRow}>
+              <span className={styles.summaryLabel}>Subtotal</span>
+              <Price amount={subtotal} className={styles.summaryValue} />
             </div>
             <p className={styles.summaryNote}>IVA incluido. Los gastos de envío se calculan en el checkout.</p>
             <div className={styles.actions}>
@@ -52,9 +52,9 @@ export function CartDrawer() {
               >
                 Finalizar compra
               </Button>
-              <ButtonLink to={paths.cart} variant="outline" block onClick={close}>
+              <Link to={paths.cart} className={styles.secondaryLink} onClick={close} viewTransition>
                 Ver carrito
-              </ButtonLink>
+              </Link>
             </div>
           </div>
         )
@@ -62,9 +62,9 @@ export function CartDrawer() {
     >
       {lines.length === 0 ? (
         <div className={styles.empty}>
-          <Mascot className={styles.emptyMascot} />
+          <Sticker mark="mascot" rotate={-8} className={styles.emptySticker} />
           <p className={styles.emptyTitle}>Tu carrito está vacío</p>
-          <p className="t-small t-muted">Los drops vuelan. Echa un vistazo a lo último antes de que se agote.</p>
+          <p className={styles.emptyText}>Los drops vuelan. Echa un vistazo a lo último antes de que se agote.</p>
           <ButtonLink to={paths.collection('novedades')} onClick={close}>
             Ver novedades
           </ButtonLink>
