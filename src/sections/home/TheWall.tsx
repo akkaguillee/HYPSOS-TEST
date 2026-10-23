@@ -1,4 +1,5 @@
 import { Sticker } from '@/components/brand/Sticker';
+import { BarbedWire } from '@/components/graffiti/BarbedWire';
 import { GraffitiTag } from '@/components/graffiti/GraffitiTag';
 import { SprayMark } from '@/components/graffiti/SprayMark';
 import { CampaignImage } from '@/components/media/CampaignImage';
@@ -70,6 +71,7 @@ export function TheWall() {
           </span>
         </figure>
       </div>
+      <BarbedWire className={styles.wire} color="var(--c-red)" />
       <p className={styles.giant} aria-hidden="true">
         {manifesto.movement}
       </p>

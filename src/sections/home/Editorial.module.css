@@ -29,12 +29,25 @@
   white-space: nowrap;
 }
 
-/* «Above» ancha y a medio cuerpo; «ordinary.» comprimida a cuerpo entero (dos anchos, una pieza). */
+/*
+ * «Above» en script de tatuaje, roja y con florituras, cruzando por encima de las fotos como la
+ * caligrafía de una camiseta; «ordinary.» comprimida a cuerpo entero.
+ */
 .wordA {
-  font-size: 0.6em;
-  font-stretch: var(--stretch-wide);
-  line-height: 0.92;
-  letter-spacing: -0.045em;
+  position: relative;
+  z-index: 2;
+  justify-self: start;
+  margin-bottom: -0.2em;
+  font-family: var(--font-script);
+  font-size: 0.82em;
+  font-weight: 400;
+  font-stretch: normal;
+  line-height: 0.7;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--c-red);
+  translate: 0.18em 0.1em;
+  pointer-events: none;
 }
 
 .wordB {

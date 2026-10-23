@@ -21,7 +21,7 @@ export const tapes = {
     { text: '01', style: 'stencil' },
   ],
   bottom: [
-    { text: 'Keep climbing', style: 'crushed' },
+    { text: 'Keep climbing', style: 'script' },
     { text: 'Ascent', style: 'gothic' },
     { text: 'Above ordinary', style: 'wide' },
     { text: 'HYP / 01', style: 'stencil' },

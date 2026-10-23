@@ -114,11 +114,21 @@
   width: 100%;
 }
 
+/* Alambre de espino rojo tendido sobre el rótulo final. */
+.wire {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: clamp(var(--space-8), 7vw, var(--space-10));
+}
+
 /* Rótulo gigante, ancho y cortado por el borde inferior de la sección. */
 .giant {
   position: relative;
   z-index: 1;
-  margin-top: clamp(var(--space-8), 7vw, var(--space-10));
+  margin-top: var(--space-4);
   margin-bottom: -0.22em;
   padding-inline: var(--gutter);
   font-family: var(--font-display);

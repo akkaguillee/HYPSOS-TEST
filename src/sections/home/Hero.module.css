@@ -186,15 +186,19 @@
   letter-spacing: -0.035em;
 }
 
-/* Pintada roja del capítulo, cruzando el final de la línea comprimida. */
+/*
+ * Pintada roja del capítulo en el centro de la frase: centrada en el ancho del titular y montada
+ * sobre el corte entre «Built for» y «the climb.» (como un tag hecho encima del cartel).
+ * El texto del tag ocupa ~45 % superior de su caja (el resto es aire para las gotas).
+ */
 .tag {
   position: absolute;
-  top: -0.5em;
-  left: 3.2em;
-  width: 2.3em;
+  top: calc(0.74em - 2.2em * 0.6 * 0.45);
+  left: calc(1.9em - 1.1em);
+  width: 2.2em;
   height: auto;
   font-size: var(--hero-type);
-  rotate: -9deg;
+  rotate: -7deg;
   pointer-events: none;
 }
 
@@ -301,12 +305,6 @@
     width: 0.42em;
   }
 
-  /* El tag sube encima de «FOR» para no salirse de la pantalla. */
-  .tag {
-    top: -0.92em;
-    left: 1.85em;
-    width: 1.9em;
-  }
 
   .lead {
     font-size: var(--fs-md);

@@ -4,7 +4,7 @@
  * fondo de estudio que las prendas. La silueta es siempre la marca oficial, sin redibujar: solo se
  * escala, se gira, se extruye (copias desplazadas) y se ilumina.
  *
- * - Llavero: esmalte satinado de tacto suave sobre zamak gris (no cromado), anilla de acero mate.
+ * - Llavero: PVC de tacto suave (goma mate, cantos redondeados, ≈4 mm), anilla de acero mate.
  * - Figura y monograma: resina mate / lacado satinado con sombreado suave.
  * - Stickers: vinilo troquelado con borde blanco, canto fino, brillo leve y una esquina levantada.
  *
@@ -77,13 +77,15 @@ function shadowFilter(id: string, o: { blur: number; dx: number; dy: number; opa
 // ─── Llavero ────────────────────────────────────────────────────────────────
 
 function keychain(colorId: string, side: Side): { svg: string; detail: Box } {
-  const enamel = colorId === 'rojo' ? '#a51729' : '#1c1c1d';
+  // PVC teñido en masa: la cara y el canto son del mismo color; el canto, en sombra.
+  const rubber = colorId === 'rojo' ? '#b0192d' : '#202021';
+  const sideTone = colorId === 'rojo' ? '#6e0f1b' : '#0e0e0f';
   const back = side === 'back';
   // La vista trasera es la misma composición reflejada respecto al centro del lienzo.
   const w = 540;
   const h = w * markAspect('monogram');
-  const x = back ? W - 300 - w : 300;
-  const y = 520;
+  const x = back ? W - 290 - w : 290;
+  const y = 430;
   // El brazo fino izquierdo del monograma acaba en (x, y + 0,52·h): la argolla lo rodea cerca de la punta.
   const s = back ? -1 : 1;
   const tipX = back ? x + w - 0.06 * w : x + 0.06 * w;
@@ -92,13 +94,11 @@ function keychain(colorId: string, side: Side): { svg: string; detail: Box } {
   const ringX = tipX - s * r * 0.72;
   const ringY = tipY - r * 0.7;
   const H = (fill: string, dx = 0, dy = 0) => `<g transform="translate(${dx} ${dy})">${markAt('monogram', x, y, w, path('monogram', fill), back)}</g>`;
-  // Canto de zamak (≈3 mm): copias hacia abajo a la derecha, más oscuras cuanto más al fondo.
+  // Canto de goma (≈4 mm): copias hacia abajo, del fondo (más oscuro) a la cara.
   let edge = '';
-  for (let k = 6; k >= 1; k--) edge += H(mix('#6f6b65', '#3f3d39', k / 6), 0.7 * k, 1.1 * k);
-  // Cara: zamak satinado y esmalte de color sólido, con 3 px de canto metálico visible alrededor.
-  const face = back
-    ? `<g filter="url(#metalLit)">${H('url(#zamak)')}</g>`
-    : `<g filter="url(#metalLit)">${H('#a39f98')}</g><g filter="url(#enamelLit)"><g filter="url(#inset)">${H(enamel)}</g></g>`;
+  for (let k = 9; k >= 1; k--) edge += H(mix(rubber, sideTone, 0.35 + (0.65 * k) / 9), 0.6 * s * k, k);
+  // Cara: goma mate con el canto muy redondeado (mapa de alturas amplio), brillo apenas satinado y micro-grano.
+  const face = `<g filter="url(#rubberLit)">${H(rubber)}</g><g filter="url(#rubberTexture)">${H('#808080')}</g>`;
   const steel = (d: string, width: number) => `<path d="${d}" fill="none" stroke="url(#steel)" stroke-width="${width}" stroke-linecap="round"/>`;
   // Argolla: mitad trasera bajo la pieza, mitad delantera encima.
   const jr = 21;
@@ -113,17 +113,19 @@ function keychain(colorId: string, side: Side): { svg: string; detail: Box } {
     `<path d="M${ringX + s * r * 0.97},${ringY + 10} A${r - 3},${r * 0.94 - 3} 0 1,${back ? 0 : 1} ${ringX + s * r * 0.5},${ringY - r * 0.8}" fill="none" stroke="url(#steel)" stroke-width="6.5" transform="translate(${2 * s} 3)"/>` +
     `</g>`;
   const shadow = `<g filter="url(#ground)">${H('#000')}<ellipse cx="${ringX}" cy="${ringY}" rx="${r}" ry="${r * 0.94}" fill="none" stroke="#000" stroke-width="9"/></g>`;
-  const defs = `${litFilter('metalLit', { soft: 1.4, height: 2.5, gloss: 0.3, exponent: 18, ambient: 0.42 })}
-${litFilter('enamelLit', { soft: 4, height: 4, gloss: 0.18, exponent: 26, ambient: 0.5 })}
+  const defs = `${litFilter('rubberLit', { soft: 6, height: 6, gloss: colorId === 'rojo' ? 0.07 : 0.09, exponent: 5, ambient: 0.5 })}
 ${litFilter('steelLit', { soft: 1.6, height: 3, gloss: 0.35, exponent: 16, ambient: 0.5 })}
-${shadowFilter('ground', { blur: 9, dx: 7, dy: 12, opacity: 0.3, contact: 0.42 })}
-<filter id="inset" x="-5%" y="-5%" width="110%" height="110%"><feMorphology operator="erode" radius="3.2"/></filter>
-<linearGradient id="zamak" x1="0" y1="0" x2="1" y2="0.6"><stop offset="0" stop-color="#a29e97"/><stop offset="0.4" stop-color="#85817b"/><stop offset="0.75" stop-color="#97938c"/><stop offset="1" stop-color="#7c7872"/></linearGradient>
+${shadowFilter('ground', { blur: 10, dx: 8, dy: 14, opacity: 0.3, contact: 0.45 })}
+<filter id="rubberTexture" x="0" y="0" width="100%" height="100%">
+  <feTurbulence type="fractalNoise" baseFrequency="1.6" numOctaves="1" seed="11" result="n"/>
+  <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.07 0" result="speck"/>
+  <feComposite in="speck" in2="SourceAlpha" operator="in"/>
+</filter>
 <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#cfccc6"/><stop offset="0.45" stop-color="#9a968f"/><stop offset="0.7" stop-color="#b6b2ab"/><stop offset="1" stop-color="#76726b"/></linearGradient>`;
   const svg =
     `<defs>${STUDIO}${defs}</defs>${studio()}` +
     `<g transform="rotate(${back ? 12 : -12} 480 640) skewX(${back ? 4 : -4})">${shadow}${jumpBack}${edge}${face}${jumpFront}${ring}</g>${grain()}`;
-  return { svg, detail: back ? [240, 380, 520, 650] : [200, 380, 520, 650] };
+  return { svg, detail: back ? [250, 330, 520, 650] : [190, 330, 520, 650] };
 }
 
 // ─── Figura de la mascota ───────────────────────────────────────────────────

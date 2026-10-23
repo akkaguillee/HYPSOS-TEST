@@ -104,6 +104,8 @@ La dirección visual sigue el **Manual de Marca HYPSOS** («negro + rojo, con co
   - **Sedgwick Ave Display** (tag de graffiti): pintadas decorativas, siempre `aria-hidden` y con el texto real en otro sitio.
   - **Big Shoulders Stencil Display** (stencil): cifras, índices y recuentos.
   - **Permanent Marker** (rotulador): notas cortas escritas a mano.
+  - **Monsieur La Doulaise** (script caligráfica de tatuaje, con florituras): una palabra cruzando una pieza («Above» en el lookbook, «Keep climbing» en las cintas), como las caligrafías sobre el pecho de las referencias de la marca.
+- **Referencias de la marca (tablero de Pinterest del cliente):** script de tatuaje y gótica tipo Old English, alfabetos de tag, gráficos Y2K (alambre de espino), pegatinas troqueladas, llaveros de goma y prendas boxy/cropped. Se traducen a tipografía, trazos y ornamentos; los gráficos de producto siguen siendo solo las marcas oficiales.
 - **Forma:** botones en píldora, imágenes de producto a 14 px, tarjetas a 20–32 px. Sin sombras en tarjetas.
 - **Espaciado:** base 4 px, márgenes laterales de 16 a 48 px, ritmo vertical fluido.
 - **Motion:** duraciones `--dur-ui` (200 ms), `--dur-panel` (380 ms); en JavaScript, curvas propias de GSAP (`hyp.press`, `hyp.slap`, `hyp.drip`, `hyp.stroke`) en `src/lib/motion.ts`.
@@ -116,13 +118,14 @@ La dirección visual sigue el **Manual de Marca HYPSOS** («negro + rojo, con co
 - Con `prefers-reduced-transparency` el material pasa a sólido; con `prefers-reduced-motion` el brillo no sigue al puntero.
 - Reglas: un cristal no va dentro de otro ni dentro de un ancestro con `opacity`, `filter`, `mask`, `clip-path` o **`view-transition-name`** (este último lo convierte en raíz del fondo y el cristal deja de ver la página).
 
-**Portada** (por bandas, oversize y con graffiti): campaña en un túnel con graffiti, titular de dos anchos «BUILT FOR / THE CLIMB.», el capítulo «Ascent» pintado a espray, subrayado que gotea, pegatinas de HYPO y la estrella y puntos sobre las prendas → dos cintas de precinto cruzadas sobre el corte → Chapter 01 (gótica + stencil rodeado a espray, rejilla de producto) → categorías con índices stencil → lookbook «Above ordinary.» con corona a espray → detalle firma con la trabilla señalada a rotulador → cápsula Signal (tag negro sobre la banda roja) → **el muro**: manifiesto que se enciende con el scroll, foto pintando con espray, «keep climbing» pintado sobre el muro y rótulo gigante cortado. Marquesina superior con las frases del Manual y el aviso de demo.
+**Portada** (por bandas, oversize y con graffiti): campaña en un túnel con graffiti, titular de dos anchos «BUILT FOR / THE CLIMB.» con el capítulo «Ascent» pintado a espray en el centro de la frase, subrayado que gotea, pegatinas de HYPO y la estrella y puntos sobre las prendas → dos cintas de precinto cruzadas sobre el corte → Chapter 01 (gótica + stencil rodeado a espray, rejilla de producto) → categorías con índices stencil → lookbook «Above ordinary.» con corona a espray → detalle firma con la trabilla señalada a rotulador → cápsula Signal (tag negro sobre la banda roja) → **el muro**: manifiesto que se enciende con el scroll, foto pintando con espray, «keep climbing» pintado sobre el muro y rótulo gigante cortado. Marquesina superior con las frases del Manual y el aviso de demo.
 
 **Sistema de movimiento** (JavaScript: GSAP con DrawSVG, ScrambleText, SplitText y CustomEase; canvas y SVG). Nada de fundidos, desenfoques ni deslizamientos de entrada; cada gesto imita un proceso físico:
 
 - **Prensado** (`pressIn`): las letras de los titulares nacen aplastadas contra la línea base y se estampan con rebote.
 - **Espray** (`src/lib/spray.ts`): las imágenes se pintan con una boquilla virtual en pasadas en zigzag (núcleo, bruma y gotas que perforan el color). La intro termina borrando la pantalla negra a espray.
 - **Trazo y goteo** (`SprayMark`, `GraffitiTag`): círculos, subrayados, coronas y tags se dibujan a la velocidad de un brazo y después escurren con gravedad; textura de espray con un filtro SVG compartido (`#hyp-spray`).
+- **Alambre de espino** (`BarbedWire`): los dos hilos se tienden de izquierda a derecha y cada púa salta cuando el hilo pasa por ella.
 - **Golpe** (`slap`): las pegatinas se estampan con un pequeño temblor del soporte.
 - **Decodificación** (`Scramble`): las etiquetas técnicas giran como un panel de salidas.
 - **Scroll**: cintas que aceleran, se inclinan e invierten según la velocidad; barrido rojo que se pinta con el scroll; manifiesto que se enciende palabra a palabra; paralaje moderado.

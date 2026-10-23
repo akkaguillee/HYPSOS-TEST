@@ -204,3 +204,11 @@
   text-shadow: 0 2px 18px rgb(0 0 0 / 0.35);
   pointer-events: none;
 }
+
+/* Alambre de espino entre el titular y la rejilla (gráfico Y2K de las referencias). */
+.wire {
+  display: block;
+  width: calc(100% + var(--gutter) * 2);
+  height: auto;
+  margin: var(--space-2) calc(var(--gutter) * -1) var(--space-5);
+}

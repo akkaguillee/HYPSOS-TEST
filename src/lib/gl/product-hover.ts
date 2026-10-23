@@ -515,14 +515,19 @@ class Session {
   private lastEmit = 0;
   private appliedTransform = '';
   private preparing = false;
-  private readonly quick: Record<'mx' | 'my' | 'rx' | 'ry', (value: number) => void>;
+  private quick: Record<'mx' | 'my' | 'rx' | 'ry', (value: number) => void>;
 
   constructor(
     readonly host: HTMLElement,
     readonly mode: HoverMode,
   ) {
     this.config = MODES[mode];
-    this.quick = {
+    this.quick = this.createQuickTo();
+  }
+
+  /** Seguimiento suavizado del puntero y de la inclinación (se recrea tras `killTweensOf`). */
+  private createQuickTo(): Record<'mx' | 'my' | 'rx' | 'ry', (value: number) => void> {
+    return {
       mx: gsap.quickTo(this.state, 'mx', { duration: 0.5, ease: 'power3.out' }),
       my: gsap.quickTo(this.state, 'my', { duration: 0.5, ease: 'power3.out' }),
       rx: gsap.quickTo(this.state, 'rx', { duration: 0.8, ease: 'power3.out' }),
@@ -754,6 +759,7 @@ class Session {
     this.inside = false;
     if (renderer?.owner === this) renderer.detach(this, true);
     Object.assign(this.state, { progress: 0, plain: 0, lens: 0, press: 0, zoom: 1, sheen: 0, rx: 0, ry: 0, lift: 1 });
+    this.quick = this.createQuickTo();
     this.ripples = [];
     this.applyTransform();
     releaseCssSwap(this.host);
@@ -859,10 +865,16 @@ if (import.meta.env.DEV) {
   });
 }
 
+// Pestaña oculta: no se pinta nada. Lo que estaba saliendo termina en reposo al instante; el hover en
+// curso se conserva (al volver, el siguiente movimiento del puntero lo continúa o lo cierra).
 document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) return;
-  for (const session of [...live]) session.reset();
-  sleep();
+  if (document.hidden) {
+    for (const session of [...live]) if (!session.hovered) session.reset();
+    sleep();
+    return;
+  }
+  const first = live.values().next().value;
+  if (first) wake(first);
 });
 
 // ─── Enganche a un contenedor ────────────────────────────────────────────

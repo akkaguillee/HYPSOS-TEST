@@ -1,3 +1,4 @@
+import { BarbedWire } from '@/components/graffiti/BarbedWire';
 import { CampaignImage } from '@/components/media/CampaignImage';
 import { LiquidGlass } from '@/components/ui/LiquidGlass';
 import { ImageReveal } from '@/components/motion/ImageReveal';
@@ -36,6 +37,7 @@ export function CategoryShowcase() {
             <Scramble>Categorías</Scramble>
           </p>
         </div>
+        <BarbedWire className={styles.wire} color="rgb(242 240 236 / 0.55)" />
         <ul role="list" className={styles.grid}>
           {tiles.map((tile, index) => (
             <li key={tile.handle} className={styles.tile} data-index={index}>
