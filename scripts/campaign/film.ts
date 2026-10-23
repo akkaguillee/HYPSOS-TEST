@@ -42,9 +42,10 @@ const LOOKS: Record<string, Partial<Look>> = {
   'spray-wall': { halation: 0.45 },
   'chapter01-stairs': { flatten: 0.15 },
   'portrait-cap': { grain: 1.15, flatten: 0.14, desat: 0.16 },
-  // Estudio con fondo blanco: sin halación y sin virado cálido que ensucie la ropa negra.
-  'look-tee-cargo': { grain: 0.9, halation: 0 },
-  'look-hoodie-sweatpant': { grain: 0.9, halation: 0 },
+  // Estudio con fondo blanco: sin halación, y casi sin aplanar (el fondo claro levantaría la ropa
+  // negra hasta dejarla gris marengo).
+  'look-tee-cargo': { grain: 0.9, halation: 0, flatten: 0.04 },
+  'look-hoodie-sweatpant': { grain: 0.9, halation: 0, flatten: 0.04 },
 };
 
 /** Bodegones de producto: se publican tal cual (el revelado es para las fotos con modelos). */
@@ -168,9 +169,10 @@ export async function develop(name: string): Promise<Buffer> {
       g0 = g0 * (1 - k) + (soft[i * 3 + 1] / 255) * k;
       b0 = b0 * (1 - k) + (soft[i * 3 + 2] / 255) * k;
 
-      // Contraste local más bajo.
+      // Contraste local más bajo, que no alcanza a los negros profundos (la ropa negra sigue negra).
       const l = 0.2126 * r0 + 0.7152 * g0 + 0.0722 * b0 + 1e-5;
-      const lt = Lbig[i] + (l - Lbig[i]) * (1 - look.flatten);
+      const flatten = look.flatten * Math.min(1, l / 0.25);
+      const lt = Lbig[i] + (l - Lbig[i]) * (1 - flatten);
       const ratio = lt / l;
       let rr = r0 * ratio;
       let gg = g0 * ratio;
