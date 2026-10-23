@@ -139,6 +139,8 @@ Los textos de campaña (marquesina, hero, lookbook, detalle firma, cápsula, man
 
 Las fotos de campaña de `public/assets/campaign/` (túnel con graffiti, muro pintado a espray, escalera, azotea, looks en estudio, gorra, cargo, detalle de la trabilla, accesorios) **están generadas con IA** (Figma AI) como material provisional hasta la sesión de fotos. Las prendas que aparecen son lisas (sin los gráficos de HYPSOS) y **no representan ningún producto concreto**; por eso enlazan a categorías y no a fichas. La web lo indica junto a las fotos principales («Imágenes de campaña generadas con IA · provisionales»).
 
+**Revelado analógico** (`pnpm campaign:film`, `scripts/campaign/film.ts`): las fotos con modelos no se publican tal cual salen de la IA. Desde los originales guardados en `scripts/campaign/originals/` se les aplica lo que haría una cámara de verdad: menos nitidez y contraste local artificiales, curva de película con negros algo mates, color más contenido, halo rojizo en las luces fuertes, viñeteado, esquinas más blandas, aberración cromática leve y grano fino. Así pierden el aspecto plástico típico de la IA. Los bodegones de producto no pasan por este revelado.
+
 Para sustituirlas basta con dejar las fotos reales con el mismo nombre (`<nombre>-<ancho>.avif|webp`, anchos 640/960/original) o cambiar `shared/campaign.ts`. La foto o el vídeo oficial del hero va en `heroMedia`.
 
 ---
