@@ -173,7 +173,7 @@ El catálogo está en `shared/catalog/`. Cada producto tiene:
 - **Faltan bases**: solo hay camiseta negra y blanca (frente y espalda) y sudadera negra (frente). Mientras falten, se derivan (camiseta grafito y sudaderas gris, grafito y blanca teñidas desde la negra; espalda de sudadera reconstruida desde el frente; sudadera con cordones = sin cordones) y el resto de productos textiles (manga larga, pantalones, short, gorra, gorro, bolsa, calcetines) sigue con el **dibujo técnico plano** de antes. Basta con añadir la base que falta y volver a ejecutar `pnpm mockups`; la consola lista qué se ha sustituido.
 - **Llavero, figura, monograma de escritorio y stickers** no tienen base: son una foto virtual hecha con filtros SVG en Chromium (`objects.ts`), con la silueta oficial sin redibujar.
 - Las marcas son siempre las oficiales (`src/assets/brand/`): solo se escalan, giran, recolorean y deforman con la tela.
-- WebP de 480 y 960 px (4:5): 216 imágenes, unos 3,2 MB en el repositorio y unos 7 KB por imagen en móvil.
+- WebP de 480 y 960 px (4:5): 108 vistas en 216 archivos, unos 3,2 MB en el repositorio y unos 7 KB por imagen en móvil.
 - El texto alternativo dice «Mockup digital de…» y la ficha indica «Producto de demostración».
 
 Para usar fotografías reales, sustituye en el producto `media: mockupViews` por:
