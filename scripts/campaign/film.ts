@@ -36,14 +36,15 @@ interface Look {
 }
 
 const LOOKS: Record<string, Partial<Look>> = {
-  'underpass-crew': { halation: 0.55, grain: 1.15 },
+  'underpass-crew': { halation: 0.5, grain: 1.1 },
   'crew-sunset': { halation: 0.6, flatten: 0.16 },
   'summit-rooftop': { halation: 0.7 },
   'spray-wall': { halation: 0.45 },
   'chapter01-stairs': { flatten: 0.15 },
   'portrait-cap': { grain: 1.15, flatten: 0.14, desat: 0.16 },
-  'look-tee-cargo': { grain: 0.9 },
-  'look-hoodie-sweatpant': { grain: 0.9 },
+  // Estudio con fondo blanco: sin halación y sin virado cálido que ensucie la ropa negra.
+  'look-tee-cargo': { grain: 0.9, halation: 0 },
+  'look-hoodie-sweatpant': { grain: 0.9, halation: 0 },
 };
 
 /** Bodegones de producto: se publican tal cual (el revelado es para las fotos con modelos). */
@@ -121,9 +122,10 @@ export async function develop(name: string): Promise<Buffer> {
 
   // 2. Menos contraste local (aspecto HDR): la luminancia se acerca a su versión muy desenfocada.
   const Lbig = await blurChannel(L, w, h, Math.max(w, h) / 45);
-  // Halación: luces por encima de 0,78 desenfocadas en grande.
+  // Halación: solo fuentes de luz puntuales (mucho más claras que su entorno), no las zonas claras
+  // amplias como un fondo blanco de estudio: si no, el halo tiñe toda la escena y la ropa negra.
   const hot = new Float32Array(n);
-  for (let i = 0; i < n; i++) hot[i] = Math.max(0, (L[i] - 0.74) / 0.26) ** 1.5;
+  for (let i = 0; i < n; i++) hot[i] = Math.max(0, (L[i] - Math.max(0.84, Lbig[i] + 0.22)) / 0.16) ** 1.5;
   const halo = await blurChannel(hot, w, h, Math.max(w, h) / 110);
   const haloWide = await blurChannel(hot, w, h, Math.max(w, h) / 40);
   // Esquinas más blandas: versión desenfocada para mezclar según la distancia al centro.
@@ -194,9 +196,9 @@ export async function develop(name: string): Promise<Buffer> {
 
       // Halación (en lineal, suma de luz rojiza alrededor de las luces).
       const hv = (halo[i] * 0.7 + haloWide[i] * 0.3) * look.halation;
-      let lr = toLinear(clamp01(rr)) + hv * 0.42;
-      let lg = toLinear(clamp01(gg)) + hv * 0.1;
-      let lb = toLinear(clamp01(bb)) + hv * 0.03;
+      let lr = toLinear(clamp01(rr)) + hv * 0.34;
+      let lg = toLinear(clamp01(gg)) + hv * 0.13;
+      let lb = toLinear(clamp01(bb)) + hv * 0.06;
 
       // Viñeteado.
       const v = 1 - 0.22 * Math.pow(r, 2.4);
