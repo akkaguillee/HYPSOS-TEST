@@ -129,7 +129,7 @@
  * para piezas con intención (titulares prensados, imágenes a espray, trazos, pegatinas).
  */
 
-/* Marco de <ImageReveal>: recorta la imagen, que lo llena por completo; el lienzo del revelado la tapa. */
+/* Marco de <ImageReveal>: recorta la imagen, que lo llena por completo. */
 .image-reveal {
   position: relative;
   overflow: hidden;
@@ -140,11 +140,6 @@
   inset: 0;
   width: 100%;
   height: 100%;
-}
-
-.image-reveal > .reveal-canvas {
-  z-index: 1;
-  pointer-events: none;
 }
 
 .image-reveal img {

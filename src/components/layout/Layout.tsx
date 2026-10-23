@@ -2,6 +2,7 @@ import { CartDrawer } from '@/components/commerce/CartDrawer';
 import { SprayDefs } from '@/components/graffiti/SprayDefs';
 import { CursorFollower } from '@/components/motion/CursorFollower';
 import { IntroLoader } from '@/components/motion/IntroLoader';
+import { PageTransition } from '@/components/motion/PageTransition';
 import { useDocumentMeta } from '@/hooks/useDocumentMeta';
 import { track } from '@/lib/analytics';
 import { ScrollTrigger } from '@/lib/motion';
@@ -76,6 +77,7 @@ export function Layout() {
       </div>
       <SprayDefs />
       <CursorFollower />
+      <PageTransition />
       <ScrollRestoration getKey={(entry) => entry.pathname} />
     </>
   );

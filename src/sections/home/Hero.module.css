@@ -16,7 +16,7 @@
 /* ─── Foto ──────────────────────────────────────────────────────────── */
 .media {
   position: absolute;
-  /* Contexto de apilamiento propio: lienzo del revelado y puntos quedan bajo el texto y las acciones. */
+  /* Contexto de apilamiento propio: la foto y sus puntos quedan bajo el texto y las acciones. */
   z-index: 0;
   inset: 0;
   overflow: hidden;
@@ -32,16 +32,6 @@
 }
 
 /* El margen para el paralaje lo pone GSAP en la <img> (la <picture> es display: contents). */
-
-/* Lienzo del revelado en mosaico (tapa la foto hasta que se revela). */
-.reveal {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
 
 /* Velo inferior para leer el titular sobre la foto (no decora: garantiza contraste). */
 .scrim {

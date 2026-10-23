@@ -1,42 +1,8 @@
 /*
- * Transiciones entre páginas (View Transitions API, mejora progresiva).
- * Obturador: la página nueva se abre desde una línea central mientras la anterior se hunde y se
- * apaga detrás, el mismo gesto que cierra la intro. Sin fundidos ni deslizamientos.
+ * Las transiciones entre páginas las hace <PageTransition> en JavaScript (iris con GSAP). Si algún
+ * enlace usa la View Transitions API, el cambio es instantáneo: sin fundidos del navegador.
  */
-
-::view-transition-image-pair(root) {
-  isolation: auto;
-}
-
-::view-transition-old(root) {
-  animation: 460ms cubic-bezier(0.7, 0, 0.2, 1) both page-sink;
-}
-
+::view-transition-old(root),
 ::view-transition-new(root) {
-  animation: 520ms cubic-bezier(0.76, 0, 0.18, 1) both page-shutter;
-  mix-blend-mode: normal;
-}
-
-@keyframes page-sink {
-  to {
-    transform: scale(0.94);
-    filter: brightness(0.35);
-  }
-}
-
-@keyframes page-shutter {
-  from {
-    clip-path: inset(50% 0 50% 0);
-  }
-
-  to {
-    clip-path: inset(0 0 0 0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none;
-  }
+  animation: none;
 }

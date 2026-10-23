@@ -5,10 +5,10 @@ import { useEffect, useRef } from 'react';
 import styles from './IntroLoader.module.css';
 
 /**
- * Intro de marca (~2,2 s): el logotipo se estampa (escala uniforme con golpe, sin deformarlo), la
- * línea roja se traza y «Chapter 01 / Ascent» se decodifica. Después toda la pantalla negra se
- * colapsa sobre la línea roja —como un televisor que se apaga— y la línea se recoge hacia el
- * centro hasta desaparecer, descubriendo la portada, que ya está montada debajo.
+ * Intro de marca (~2,4 s): el logotipo se estampa (escala uniforme con golpe, sin deformarlo), la
+ * línea roja se traza y «Chapter 01 / Ascent» se decodifica. Después se abre un iris desde el centro
+ * —el mismo gesto que las transiciones entre páginas—: el agujero se come el logotipo, que se
+ * agranda al paso, y descubre la portada, que ya está montada debajo.
  * Se puede acelerar con clic o tecla y tiene un límite de seguridad.
  */
 export function IntroLoader() {
@@ -31,14 +31,9 @@ export function IntroLoader() {
         .to(chapter, { duration: 0.6, scrambleText: { text: 'Chapter 01', chars: '01/\\_▮▯█', speed: 0.7 } }, 0.55)
         .to(movement, { duration: 0.6, scrambleText: { text: 'Ascent', chars: '01/\\_▮▯█', speed: 0.7 } }, 0.65)
         .set(q(`.${styles.skip}`), { visibility: 'hidden' }, 1.3)
-        // La marca se cierra como un obturador y la pantalla se colapsa en una línea roja.
-        .to(q(`.${styles.mark}`), { clipPath: 'inset(50% 0% 50% 0%)', duration: 0.3, ease: 'power3.in' }, 1.3)
-        .call(reveal, [], 1.45)
-        // fromTo con los cuatro valores explícitos: el navegador abrevia `inset(0%)` y GSAP solo
-        // interpolaría el primero.
-        .fromTo(root.current, { clipPath: 'inset(0% 0% 0% 0%)' }, { clipPath: 'inset(49.8% 0% 49.8% 0%)', duration: 0.5, ease: 'expo.inOut', immediateRender: false }, 1.45)
-        .to(root.current, { backgroundColor: '#d71920', duration: 0.14, ease: 'none' }, 1.82)
-        .fromTo(root.current, { clipPath: 'inset(49.8% 0% 49.8% 0%)' }, { clipPath: 'inset(49.8% 50% 49.8% 50%)', duration: 0.42, ease: 'expo.in', immediateRender: false }, 1.95);
+        .call(reveal, [], 1.35)
+        .to(root.current, { '--hole': `${Math.hypot(window.innerWidth, window.innerHeight) / 2 + 40}px`, duration: 1.0, ease: 'expo.inOut' }, 1.35)
+        .to(q(`.${styles.mark}`), { scale: 1.3, duration: 1.0, ease: 'expo.inOut' }, 1.35);
     },
     { scope: root, dependencies: [playing], revertOnUpdate: true },
   );

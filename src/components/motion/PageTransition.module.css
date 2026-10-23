@@ -1,0 +1,28 @@
+/*
+ * Capa de la transición entre páginas. Negra con la estrella roja en el centro. La apertura es un
+ * agujero radial (máscara) cuyo radio anima GSAP con la variable --hole.
+ */
+.overlay {
+  --hole: 0px;
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-intro);
+  display: grid;
+  place-items: center;
+  background: var(--c-black);
+  visibility: hidden;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole), #000 calc(var(--hole) + 1px));
+  mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole), #000 calc(var(--hole) + 1px));
+}
+
+.star {
+  width: clamp(72px, 9vw, 120px);
+  color: var(--c-red);
+}
+
+.star svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}

@@ -7,7 +7,6 @@ import { LiquidGlass } from '@/components/ui/LiquidGlass';
 import { generatedImageNotice, hero } from '@/content/campaign';
 import { useReducedMotion } from '@/hooks/useMediaQuery';
 import { EASE, gsap, pressIn, slap, SplitText, useGSAP } from '@/lib/motion';
-import { createPixelReveal } from '@/lib/pixel-reveal';
 import { useIntro } from '@/store/intro';
 import { HERO_SIZES } from '@shared/campaign';
 import { paths } from '@shared/routes';
@@ -49,13 +48,12 @@ function createCues() {
  * comprimida y «the climb.» ancha— con el capítulo pintado a espray encima, un subrayado que gotea
  * y dos pegatinas estampadas.
  *
- * Secuencia (una vez): la foto aparece en mosaico y se enfoca (o la descubre la intro), la
- * etiqueta se decodifica, las letras se prensan, se pinta el tag, se traza el subrayado, gotea y se
+ * Secuencia (una vez): la foto se abre desde el centro como una apertura (o la descubre el iris de
+ * la intro), la etiqueta se decodifica, las letras se prensan, se pinta el tag, se traza el subrayado, gotea y se
  * pegan las pegatinas con un golpe. Después: paralaje y pegatinas que siguen al puntero.
  */
 export function Hero() {
   const root = useRef<HTMLElement>(null);
-  const revealCanvas = useRef<HTMLCanvasElement>(null);
   const reduced = useReducedMotion();
   const ready = useIntro((state) => state.phase !== 'intro');
   // Si la intro está en marcha al montar, ella descubre la foto (no se pinta dos veces).
@@ -81,17 +79,21 @@ export function Hero() {
       gsap.set(split.chars, { scaleY: 0 });
       gsap.set(ctas, { scaleY: 0, transformOrigin: '50% 100%' });
 
+      const frame = q(`.${styles.media}`)[0] as HTMLElement | undefined;
       // Margen para el paralaje sin descubrir los bordes.
       if (image) gsap.set(image, { scale: 1.08, transformOrigin: '50% 40%' });
-      // La foto se revela en mosaico y se enfoca (pixel-resolve) si no la descubre la intro.
-      const img = image instanceof HTMLImageElement ? image : null;
-      const reveal = !introCovers.current && revealCanvas.current && img ? createPixelReveal(revealCanvas.current, img, { color: '#090909', duration: 1.2, seed: 21 }) : null;
-      reveal?.cover();
+      // Sin intro: la foto se abre como una apertura desde el centro (con la intro, la descubre el iris).
+      const aperture = !introCovers.current && frame;
+      // Valores explícitos en ambos extremos (fromTo): el navegador abrevia el inset leído y GSAP
+      // no podría interpolarlo número a número.
+      const closed = 'inset(26% 32% 26% 32% round 40px)';
+      if (aperture) gsap.set(frame, { clipPath: closed });
       if (!ready) return () => split.revert();
 
-      const start = reveal ? 0.45 : 0.05;
+      const start = aperture ? 0.75 : 0.05;
       const tl = gsap.timeline({ defaults: { ease: EASE.out } });
-      if (reveal) tl.call(() => void reveal.play(), [], 0);
+      if (aperture) tl.fromTo(frame, { clipPath: closed }, { clipPath: 'inset(0% 0% 0% 0% round 0px)', duration: 1.5, ease: 'expo.inOut', clearProps: 'clipPath' }, 0);
+      if (image) tl.fromTo(image, { scale: aperture ? 1.5 : 1.2 }, { scale: 1.08, duration: aperture ? 1.9 : 1.6, ease: 'expo.inOut' }, 0);
       if (chapter) tl.to(chapter, { duration: 0.8, ease: 'none', scrambleText: { text: hero.chapter, chars: '01/\\_▮▯█', speed: 0.7 } }, start);
       tl.add(pressIn(split.chars, { stagger: { each: 0.03, from: 'start' } }), start + 0.1);
       tl.call(() => cues.fire('tag'), [], start + 0.75);
@@ -107,7 +109,6 @@ export function Hero() {
 
       const cleanup = () => {
         split.revert();
-        reveal?.destroy();
       };
       if (!contextSafe || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return cleanup;
       const movers = stickers.map((sticker, index) => ({
@@ -148,7 +149,6 @@ export function Hero() {
           <CampaignImage photo={photo} sizes={HERO_SIZES} className={styles.image} priority focus="50% 42%" />
         )}
         <span className={styles.scrim} aria-hidden="true" />
-        {!reduced && <canvas ref={revealCanvas} className={styles.reveal} aria-hidden="true" />}
         {!media && (
           // Capa con la misma proporción y encuadre que la foto: los puntos quedan sobre las prendas.
           <div className={styles.hotspots}>

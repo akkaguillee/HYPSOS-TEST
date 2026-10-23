@@ -118,14 +118,14 @@ La dirección visual sigue el **Manual de Marca HYPSOS** («negro + rojo, con co
 **Sistema de movimiento** (JavaScript: GSAP con DrawSVG, ScrambleText, SplitText y CustomEase; canvas y SVG). Nada de fundidos, desenfoques ni deslizamientos de entrada; cada gesto imita un proceso físico:
 
 - **Prensado** (`pressIn`): las letras de los titulares nacen aplastadas contra la línea base y se estampan con rebote.
-- **Pixel-resolve** (`src/lib/pixel-reveal.ts`): las imágenes aparecen por baldosas en diagonal, ya pixeladas, y se enfocan a saltos (48 → 24 → 12 → 6 → 3 px → nítida), como una carga progresiva. La intro termina colapsando la pantalla negra en la línea roja, que se recoge hacia el centro.
+- **Apertura** (`ImageReveal`): las fotos asoman por una ventana redondeada en el centro del marco que se abre hasta llenarlo, mientras la imagen se aleja desde un primer plano y se endereza (como una cámara que abre plano). El hero hace lo mismo a pantalla completa.
+- **Iris entre páginas** (`PageTransition`): al pulsar un enlace interno, un círculo negro se expande desde el punto del clic con la estrella de la marca girando; la ruta cambia cubierta y la página nueva se abre desde el centro con un leve asentamiento. La intro termina con el mismo iris. Sin fundidos del navegador (las View Transitions quedan instantáneas).
 - **Trazo y goteo** (`SprayMark`, `GraffitiTag`): círculos, subrayados, coronas y tags (en gótica) se dibujan a la velocidad de un brazo y después escurren con gravedad; textura de espray con un filtro SVG compartido (`#hyp-spray`).
 - **Alambre de espino** (`BarbedWire`): los dos hilos se tienden de izquierda a derecha y cada púa salta cuando el hilo pasa por ella.
 - **Golpe** (`slap`): las pegatinas se estampan con un pequeño temblor del soporte.
 - **Decodificación** (`Scramble`): las etiquetas técnicas giran como un panel de salidas.
 - **Scroll**: cintas que aceleran, se inclinan e invierten según la velocidad; barrido rojo que se pinta con el scroll; manifiesto que se enciende palabra a palabra; paralaje moderado.
 - **Puntero**: anillo con inercia (crece con etiqueta sobre imágenes de producto) y botones magnéticos con rebote elástico; luz del cristal que sigue al puntero.
-- **Páginas**: transición de obturador (View Transitions): la nueva se abre desde una línea central y la anterior se hunde.
 
 Accesibilidad y plataforma:
 
@@ -166,7 +166,8 @@ El catálogo está en `shared/catalog/`. Cada producto tiene:
 
 - **Bases** en `scripts/mockups/bases/<tipo>-<color>-<cara>.webp` (960×1280), exportadas del archivo de Figma del proyecto. `pnpm mockups:bases` descarga las que falten desde los enlaces de `scripts/mockups/sources.ts` (necesita salida a `www.figma.com`; los enlaces caducan a los 7 días) y después `pnpm mockups` recompone todo. Las zonas de estampación de cada base están en `placements.ts`; el compositor en `photo.ts`.
 - **Faltan bases**: solo hay camiseta negra y blanca (frente y espalda) y sudadera negra (frente). Mientras falten, se derivan (camiseta grafito y sudaderas gris, grafito y blanca teñidas desde la negra; espalda de sudadera reconstruida desde el frente; sudadera con cordones = sin cordones) y el resto de productos textiles (manga larga, pantalones, short, gorra, gorro, bolsa, calcetines) sigue con el **dibujo técnico plano** de antes. Basta con añadir la base que falta y volver a ejecutar `pnpm mockups`; la consola lista qué se ha sustituido.
-- **Llavero, figura, monograma de escritorio y stickers** no tienen base: son una foto virtual hecha con filtros SVG en Chromium (`objects.ts`), con la silueta oficial sin redibujar.
+- **Llavero y stickers** no tienen base: son una foto virtual hecha con filtros SVG en Chromium (`objects.ts`), con la silueta oficial sin redibujar.
+- **Blind boxes (categoría 3D):** render físico con three.js en Chromium (`blindbox.ts`): caja de cartón de cantos redondeados con la gráfica del packaging compuesta con las marcas oficiales, material de cartón laminado, luz de estudio y sombras suaves.
 - Las marcas son siempre las oficiales (`src/assets/brand/`): solo se escalan, giran, recolorean y deforman con la tela.
 - WebP de 480 y 960 px (4:5): 108 vistas en 216 archivos, unos 3,2 MB en el repositorio y unos 7 KB por imagen en móvil.
 - El texto alternativo dice «Mockup digital de…» y la ficha indica «Producto de demostración».
@@ -258,11 +259,11 @@ Para la tienda completa con el dominio en Netlify, despliega la API en un host N
 
 ## Calidad (verificado en este entorno)
 
-- **`pnpm test`:** 150 tests en 15 archivos. Cubren:
+- **`pnpm test`:** 145 tests en 14 archivos. Cubren:
   - API: checkout, idempotencia, carrera por la última unidad, webhook repetido, CSRF, rate limiting y cuentas;
   - precios, stock, carrito, filtros e integridad del catálogo;
   - HTML/SEO y componentes;
-  - óptica del cristal (Snell, perfil gota monótono), revelado pixel-resolve (recorte cover, orden de baldosas) y piezas puras del hover WebGL (matemática, caché, capacidades).
+  - óptica del cristal (Snell, perfil gota monótono) y piezas puras del hover WebGL (matemática, caché, capacidades).
 - **`pnpm test:e2e`:** 72 escenarios (69 se ejecutan y 3 se omiten por aplicar solo a escritorio o a móvil) sobre el build de producción. Cubren:
   - navegación, todas las rutas, 404 reales y SEO;
   - filtros en la URL, paginación, variantes agotadas y «Avísame», zoom de galería;
