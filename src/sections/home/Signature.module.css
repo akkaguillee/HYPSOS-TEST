@@ -56,7 +56,8 @@
 }
 
 .code {
-  font-family: var(--font-stencil);
+  font-family: var(--font-display);
+  font-stretch: var(--stretch-display);
   font-size: clamp(2rem, 2.6vw, 2.8rem);
   font-weight: 900;
   line-height: 0.85;

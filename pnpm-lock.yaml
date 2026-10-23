@@ -17,19 +17,7 @@ importers:
       '@fontsource-variable/jetbrains-mono':
         specifier: 5.2.8
         version: 5.2.8
-      '@fontsource/big-shoulders-stencil-display':
-        specifier: ^5.3.0
-        version: 5.3.0
       '@fontsource/grenze-gotisch':
-        specifier: ^5.3.0
-        version: 5.3.0
-      '@fontsource/monsieur-la-doulaise':
-        specifier: ^5.3.0
-        version: 5.3.0
-      '@fontsource/permanent-marker':
-        specifier: ^5.3.0
-        version: 5.3.0
-      '@fontsource/sedgwick-ave-display':
         specifier: ^5.3.0
         version: 5.3.0
       '@gsap/react':
@@ -596,20 +584,8 @@ packages:
   '@fontsource-variable/jetbrains-mono@5.2.8':
     resolution: {integrity: sha512-WBA9elru6Jdp5df2mES55wuOO0WIrn3kpXnI4+W2ek5u3ZgLS9XS4gmIlcQhiZOWEKl95meYdvK7xI+ETLCq/Q==}
 
-  '@fontsource/big-shoulders-stencil-display@5.3.0':
-    resolution: {integrity: sha512-xZfOmq5/66j90rw2SipYr1skJUDrDBCcCZZY8aNU3oDpvqzHjcA1KADdl/4AMZNs7aPc61KbV5P696ggmF81Tw==}
-
   '@fontsource/grenze-gotisch@5.3.0':
     resolution: {integrity: sha512-hIgb3TJWnwjiaf8FWMYfPe5PvHHnSv+VYUJI40Fj0KhjWhBhBl4LTsGrkr4MSjo6mG+znR2tBz5L++4wkEgI1A==}
-
-  '@fontsource/monsieur-la-doulaise@5.3.0':
-    resolution: {integrity: sha512-BiXcax07rSQX8vtg/GFzjen/nn+3YJqS7YyVNIIz9aFYqjMsxEDxqZmKThnSO6aprmbxYxEFAVgZvR1P8mIG1A==}
-
-  '@fontsource/permanent-marker@5.3.0':
-    resolution: {integrity: sha512-ZO/NtYW4SCc/iY8N3dmjWyDITcXJ/vhWZFgnwRcvzwCKKnScMrM/a2/6VHlsjCVuIgmPzNrCFbedEYhv+/jJBg==}
-
-  '@fontsource/sedgwick-ave-display@5.3.0':
-    resolution: {integrity: sha512-dMK26R4CmjHERtZlgwwZP/qQ68lGmF0WhM2AOxMo6E0WUR05CftL1pvFQzHRwVNeg4NParh2i/2B/Nia/+vPzg==}
 
   '@gsap/react@2.1.2':
     resolution: {integrity: sha512-JqliybO1837UcgH2hVOM4VO+38APk3ECNrsuSM4MuXp+rbf+/2IG2K1YJiqfTcXQHH7XlA0m3ykniFYstfq0Iw==}
@@ -2315,15 +2291,7 @@ snapshots:
 
   '@fontsource-variable/jetbrains-mono@5.2.8': {}
 
-  '@fontsource/big-shoulders-stencil-display@5.3.0': {}
-
   '@fontsource/grenze-gotisch@5.3.0': {}
-
-  '@fontsource/monsieur-la-doulaise@5.3.0': {}
-
-  '@fontsource/permanent-marker@5.3.0': {}
-
-  '@fontsource/sedgwick-ave-display@5.3.0': {}
 
   '@gsap/react@2.1.2(gsap@3.15.0)(react@19.3.1)':
     dependencies:

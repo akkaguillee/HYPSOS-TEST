@@ -22,7 +22,7 @@ export function ChapterDrop() {
             <p className="eyebrow">
               <Scramble>{`${collection?.name ?? ''} · ${items.length} piezas`}</Scramble>
             </p>
-            {/* «Chapter» en gótica y el número en stencil, rodeado a espray. */}
+            {/* «Chapter» en gótica y el número comprimido, rodeado a espray. */}
             <SplitHeadline id="chapter-title" className={styles.title}>
               <span className={styles.word}>Chapter</span> <span className={styles.num}>01</span>
             </SplitHeadline>

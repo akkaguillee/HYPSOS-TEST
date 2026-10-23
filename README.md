@@ -99,13 +99,8 @@ La dirección visual sigue el **Manual de Marca HYPSOS** («negro + rojo, con co
 
 - **Paleta del Manual:** HYPSOS Black `#090909` (campo dominante), HYPSOS Red `#D71920` (señal: acción principal, «Edición limitada», indicador activo; una vez por vista), Deep Red `#7A0F1D`, Off White `#F2F0EC` y Concrete Grey `#747474`. Temas por zona: `data-theme="light" | "dark" | "red"` (la banda roja, como mucho una por página).
 - **Tipografía base (las 3 familias del Manual):** Archivo variable en sus dos extremos —comprimida al 62 % para titulares tipo cartel y **ancha al 125 %** para palabras que tienen que ocupar el ancho—, Inter para el texto y JetBrains Mono para capítulos, códigos, etiquetas y botones.
-- **Familias de acento (añadidas a petición, fuera de las 3 del Manual; todas OFL vía Fontsource, solo latín y un peso):** cada una con un único papel, definido en `src/styles/typography.css` (`.t-gothic`, `.t-tag`, `.t-stencil`, `.t-marker`, y `.mix-*` para titulares de dos anchos):
-  - **Grenze Gotisch** (gótica): nombres de capítulo y colección («Chapter», «Ascent», «Signal»).
-  - **Sedgwick Ave Display** (tag de graffiti): pintadas decorativas, siempre `aria-hidden` y con el texto real en otro sitio.
-  - **Big Shoulders Stencil Display** (stencil): cifras, índices y recuentos.
-  - **Permanent Marker** (rotulador): notas cortas escritas a mano.
-  - **Monsieur La Doulaise** (script caligráfica de tatuaje, con florituras): una palabra cruzando una pieza («Above» en el lookbook, «Keep climbing» en las cintas), como las caligrafías sobre el pecho de las referencias de la marca.
-- **Referencias de la marca (tablero de Pinterest del cliente):** script de tatuaje y gótica tipo Old English, alfabetos de tag, gráficos Y2K (alambre de espino), pegatinas troqueladas, llaveros de goma y prendas boxy/cropped. Se traducen a tipografía, trazos y ornamentos; los gráficos de producto siguen siendo solo las marcas oficiales.
+- **Una sola familia de acento (4 en total):** **Grenze Gotisch** (gótica tipo Old English, OFL vía Fontsource, solo latín y un peso) para nombres de capítulo y colección («Chapter», «Ascent», «Signal») y para las pintadas a espray, como el Old English de las pintadas chicanas. El contraste sale de mezclar Archivo comprimida y ancha en un mismo titular (`.mix-*`, `.t-wide`, `.t-gothic` en `src/styles/typography.css`), no de sumar familias.
+- **Referencias de la marca (tablero de Pinterest del cliente):** gótica tipo Old English, pintadas, gráficos Y2K (alambre de espino), pegatinas troqueladas, llaveros de goma y prendas boxy/cropped/baggy. Se traducen a tipografía, trazos y ornamentos; los gráficos de producto siguen siendo solo las marcas oficiales.
 - **Forma:** botones en píldora, imágenes de producto a 14 px, tarjetas a 20–32 px. Sin sombras en tarjetas.
 - **Espaciado:** base 4 px, márgenes laterales de 16 a 48 px, ritmo vertical fluido.
 - **Motion:** duraciones `--dur-ui` (200 ms), `--dur-panel` (380 ms); en JavaScript, curvas propias de GSAP (`hyp.press`, `hyp.slap`, `hyp.drip`, `hyp.stroke`) en `src/lib/motion.ts`.
@@ -118,13 +113,13 @@ La dirección visual sigue el **Manual de Marca HYPSOS** («negro + rojo, con co
 - Con `prefers-reduced-transparency` el material pasa a sólido; con `prefers-reduced-motion` el brillo no sigue al puntero.
 - Reglas: un cristal no va dentro de otro ni dentro de un ancestro con `opacity`, `filter`, `mask`, `clip-path` o **`view-transition-name`** (este último lo convierte en raíz del fondo y el cristal deja de ver la página).
 
-**Portada** (por bandas, oversize y con graffiti): campaña en un túnel con graffiti, titular de dos anchos «BUILT FOR / THE CLIMB.» con el capítulo «Ascent» pintado a espray en el centro de la frase, subrayado que gotea, pegatinas de HYPO y la estrella y puntos sobre las prendas → dos cintas de precinto cruzadas sobre el corte → Chapter 01 (gótica + stencil rodeado a espray, rejilla de producto) → categorías con índices stencil → lookbook «Above ordinary.» con corona a espray → detalle firma con la trabilla señalada a rotulador → cápsula Signal (tag negro sobre la banda roja) → **el muro**: manifiesto que se enciende con el scroll, foto pintando con espray, «keep climbing» pintado sobre el muro y rótulo gigante cortado. Marquesina superior con las frases del Manual y el aviso de demo.
+**Portada** (por bandas, oversize y con graffiti): campaña en un túnel con graffiti, titular de dos anchos «BUILT FOR / THE CLIMB.» con el capítulo «Ascent» pintado a espray en gótica en el centro de la frase, subrayado que gotea, pegatinas de HYPO y la estrella y puntos sobre las prendas → dos cintas de precinto cruzadas sobre el corte → Chapter 01 (gótica + cifra comprimida rodeada a espray, rejilla de producto) → categorías con índices numerados → lookbook «Above ordinary.» con «Above» en gótica roja y corona a espray → detalle firma con la trabilla señalada a rotulador → cápsula Signal (tag negro sobre la banda roja) → **el muro**: manifiesto que se enciende con el scroll, foto pintando con espray, «keep climbing» pintado sobre el muro y rótulo gigante cortado. Marquesina superior con las frases del Manual y el aviso de demo.
 
 **Sistema de movimiento** (JavaScript: GSAP con DrawSVG, ScrambleText, SplitText y CustomEase; canvas y SVG). Nada de fundidos, desenfoques ni deslizamientos de entrada; cada gesto imita un proceso físico:
 
 - **Prensado** (`pressIn`): las letras de los titulares nacen aplastadas contra la línea base y se estampan con rebote.
-- **Espray** (`src/lib/spray.ts`): las imágenes se pintan con una boquilla virtual en pasadas en zigzag (núcleo, bruma y gotas que perforan el color). La intro termina borrando la pantalla negra a espray.
-- **Trazo y goteo** (`SprayMark`, `GraffitiTag`): círculos, subrayados, coronas y tags se dibujan a la velocidad de un brazo y después escurren con gravedad; textura de espray con un filtro SVG compartido (`#hyp-spray`).
+- **Pixel-resolve** (`src/lib/pixel-reveal.ts`): las imágenes aparecen por baldosas en diagonal, ya pixeladas, y se enfocan a saltos (48 → 24 → 12 → 6 → 3 px → nítida), como una carga progresiva. La intro termina colapsando la pantalla negra en la línea roja, que se recoge hacia el centro.
+- **Trazo y goteo** (`SprayMark`, `GraffitiTag`): círculos, subrayados, coronas y tags (en gótica) se dibujan a la velocidad de un brazo y después escurren con gravedad; textura de espray con un filtro SVG compartido (`#hyp-spray`).
 - **Alambre de espino** (`BarbedWire`): los dos hilos se tienden de izquierda a derecha y cada púa salta cuando el hilo pasa por ella.
 - **Golpe** (`slap`): las pegatinas se estampan con un pequeño temblor del soporte.
 - **Decodificación** (`Scramble`): las etiquetas técnicas giran como un panel de salidas.
@@ -169,7 +164,7 @@ El catálogo está en `shared/catalog/`. Cada producto tiene:
 
 **Fotos de producto provisionales (no son fotografía real):** las prendas son **fotos de prenda lisa generadas con IA** (maniquí invisible sobre el fondo de estudio `#ECE9E3`, con la trabilla roja) y las marcas oficiales se **componen encima** para que parezcan serigrafiadas o bordadas: la tinta sigue los pliegues (mapa de desplazamiento), recibe la luz de la tela y deja ver su textura; el bordado lleva relieve, puntada y una sombra de 1 px. Ninguna prenda se ha fabricado ni fotografiado: sirven para construir la tienda y se sustituyen por fotos reales antes de vender. Las genera `pnpm mockups` (`scripts/mockups/`, `--only <ids>`, `--preview <carpeta>`):
 
-- **Bases** en `scripts/mockups/bases/<tipo>-<color>-<cara>.webp` (960×1280), exportadas del archivo de Figma del proyecto. Las zonas de estampación de cada base están en `placements.ts`; el compositor en `photo.ts`.
+- **Bases** en `scripts/mockups/bases/<tipo>-<color>-<cara>.webp` (960×1280), exportadas del archivo de Figma del proyecto. `pnpm mockups:bases` descarga las que falten desde los enlaces de `scripts/mockups/sources.ts` (necesita salida a `www.figma.com`; los enlaces caducan a los 7 días) y después `pnpm mockups` recompone todo. Las zonas de estampación de cada base están en `placements.ts`; el compositor en `photo.ts`.
 - **Faltan bases**: solo hay camiseta negra y blanca (frente y espalda) y sudadera negra (frente). Mientras falten, se derivan (camiseta grafito y sudaderas gris, grafito y blanca teñidas desde la negra; espalda de sudadera reconstruida desde el frente; sudadera con cordones = sin cordones) y el resto de productos textiles (manga larga, pantalones, short, gorra, gorro, bolsa, calcetines) sigue con el **dibujo técnico plano** de antes. Basta con añadir la base que falta y volver a ejecutar `pnpm mockups`; la consola lista qué se ha sustituido.
 - **Llavero, figura, monograma de escritorio y stickers** no tienen base: son una foto virtual hecha con filtros SVG en Chromium (`objects.ts`), con la silueta oficial sin redibujar.
 - Las marcas son siempre las oficiales (`src/assets/brand/`): solo se escalan, giran, recolorean y deforman con la tela.
@@ -263,11 +258,11 @@ Para la tienda completa con el dominio en Netlify, despliega la API en un host N
 
 ## Calidad (verificado en este entorno)
 
-- **`pnpm test`:** 148 tests en 15 archivos. Cubren:
+- **`pnpm test`:** 150 tests en 15 archivos. Cubren:
   - API: checkout, idempotencia, carrera por la última unidad, webhook repetido, CSRF, rate limiting y cuentas;
   - precios, stock, carrito, filtros e integridad del catálogo;
   - HTML/SEO y componentes;
-  - óptica del cristal (Snell, perfil gota monótono), recorrido del espray y piezas puras del hover WebGL (matemática, caché, capacidades).
+  - óptica del cristal (Snell, perfil gota monótono), revelado pixel-resolve (recorte cover, orden de baldosas) y piezas puras del hover WebGL (matemática, caché, capacidades).
 - **`pnpm test:e2e`:** 72 escenarios (69 se ejecutan y 3 se omiten por aplicar solo a escritorio o a móvil) sobre el build de producción. Cubren:
   - navegación, todas las rutas, 404 reales y SEO;
   - filtros en la URL, paginación, variantes agotadas y «Avísame», zoom de galería;
@@ -306,5 +301,5 @@ Los E2E de este entorno usan el Chromium del sistema: `PLAYWRIGHT_CHROMIUM_PATH=
 7. **Atención al cliente:** email, plazo de respuesta y redes sociales (`shared/config.ts`).
 8. **Rendimiento en redes lentas:** prerenderizar el HTML de las rutas principales (o SSR) y cargar GSAP bajo demanda para bajar el LCP de 2,5 s en 4G lenta.
 9. **Textos de marca:** el eslogan, el manifiesto, los valores y la biografía salen del Manual; las descripciones de colecciones y productos siguen siendo borradores a validar.
-10. **Bases de mockup que faltan:** las fotos base (prendas lisas generadas con IA) de manga larga, jogger, cargo, short, gorra, gorro, bolsa y calcetines ya están generadas en el archivo de Figma del proyecto, pero no se pudieron descargar: la integración de Figma alcanzó el límite de llamadas del plan Starter. Basta con exportarlas desde Figma (la lista de nodos está en la cabecera de `scripts/mockups/placements.ts`) a `scripts/mockups/bases/<tipo>-<color>-<cara>.webp` y ejecutar `pnpm mockups`.
+10. **Bases de mockup que faltan:** las fotos base (prendas lisas generadas con IA, en corte oversize/baggy) de manga larga, jogger, cargo, short, gorra, gorro, bolsa y calcetines ya están generadas en el archivo de Figma del proyecto, pero no se pueden descargar desde este entorno: la red no permite `www.figma.com` y la captura vía Figma está limitada por el plan Starter. Con `www.figma.com` permitido: `pnpm mockups:bases && pnpm mockups`. Sin red: exportar los nodos (lista en `scripts/mockups/sources.ts`) a `scripts/mockups/bases/<tipo>-<color>-<cara>.webp` y ejecutar `pnpm mockups`.
 11. **Catálogo según el Manual:** el Manual recomienda un primer drop corto (ASCENT TEE 01, CORE TEE 01, SUMMIT HOODIE 01, HYPOCAP 01, HYPOSTICKER SET 01). El catálogo de demostración aún tiene 20 piezas de ejemplo.

@@ -72,19 +72,8 @@
   /* ─── Tipografía (Manual: condensada para titulares, neutra para cuerpo, mono técnica) ─ */
   --font-display: 'Archivo Variable', 'Archivo', 'Arial Narrow', system-ui, sans-serif;
   --font-body: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  /*
-   * Familias de acento, cada una con un único papel (ver typography.css):
-   * gótica = nombres de capítulo y colección · tag = pintadas decorativas · stencil = cifras y
-   * códigos grandes · marker = notas a mano · script = una palabra con florituras cruzando una
-   * pieza, como las caligrafías de tatuaje sobre el pecho de una camiseta. Archivo cubre los dos extremos: comprimida (62 %) y
-   * ancha (125 %).
-   */
+  /* Acento: gótica tipo Old English para nombres de capítulo y colección y para las pintadas. */
   --font-gothic: 'Grenze Gotisch', 'UnifrakturCook', Georgia, serif;
-  --font-tag: 'Sedgwick Ave Display', 'Permanent Marker', cursive;
-  --font-stencil: 'Big Shoulders Stencil Display', 'Archivo Variable', Impact, sans-serif;
-  --font-marker: 'Permanent Marker', 'Comic Sans MS', cursive;
-  /* Script caligráfica de tatuaje, con florituras (palabras sueltas cruzando una pieza). */
-  --font-script: 'Monsieur La Doulaise', 'Snell Roundhand', cursive;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
   /* Titulares comprimidos tipo cartel: el texto como objeto. */

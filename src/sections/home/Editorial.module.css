@@ -30,19 +30,19 @@
 }
 
 /*
- * «Above» en script de tatuaje, roja y con florituras, cruzando por encima de las fotos como la
- * caligrafía de una camiseta; «ordinary.» comprimida a cuerpo entero.
+ * «Above» en gótica roja cruzando por encima de las fotos, como el Old English de una camiseta;
+ * «ordinary.» comprimida a cuerpo entero.
  */
 .wordA {
   position: relative;
   z-index: 2;
   justify-self: start;
   margin-bottom: -0.2em;
-  font-family: var(--font-script);
-  font-size: 0.82em;
-  font-weight: 400;
+  font-family: var(--font-gothic);
+  font-size: 0.62em;
+  font-weight: 900;
   font-stretch: normal;
-  line-height: 0.7;
+  line-height: 0.8;
   letter-spacing: 0;
   text-transform: none;
   color: var(--c-red);

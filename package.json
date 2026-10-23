@@ -23,17 +23,14 @@
     "test:e2e": "pnpm build && tsx scripts/build-static.ts && playwright test",
     "assets:brand": "node scripts/process-brand-assets.mjs",
     "mockups": "tsx scripts/mockups/render.ts",
+    "mockups:bases": "tsx scripts/mockups/fetch-bases.ts",
     "admin": "tsx scripts/admin.ts"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5.3.0",
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource-variable/jetbrains-mono": "5.2.8",
-    "@fontsource/big-shoulders-stencil-display": "^5.3.0",
     "@fontsource/grenze-gotisch": "^5.3.0",
-    "@fontsource/monsieur-la-doulaise": "^5.3.0",
-    "@fontsource/permanent-marker": "^5.3.0",
-    "@fontsource/sedgwick-ave-display": "^5.3.0",
     "@gsap/react": "^2.1.2",
     "@hono/node-server": "^2.1.5",
     "gsap": "^3.15.0",

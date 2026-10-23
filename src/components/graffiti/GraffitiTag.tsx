@@ -26,7 +26,7 @@ interface Box {
 }
 
 /**
- * Tag pintado a espray con la tipografía de graffiti (Sedgwick Ave Display). El texto se descubre
+ * Tag pintado a espray en gótica tipo Old English (como las pintadas chicanas). El texto se descubre
  * con una máscara que la boquilla «barre» de izquierda a derecha (DrawSVG sobre un trazo ancho) y
  * la textura de espray la pone el filtro `#hyp-spray`. Después escurren unas gotas.
  */
@@ -46,7 +46,7 @@ export function GraffitiTag({ children, color = 'var(--c-red)', drips = true, tr
       if (b.width > 0) setBox({ x: b.x, y: b.y, w: b.width, h: b.height });
     };
     measure();
-    void document.fonts?.load(`400 ${FONT_SIZE}px "Sedgwick Ave Display"`).then(measure);
+    void document.fonts?.load(`900 ${FONT_SIZE}px "Grenze Gotisch"`).then(measure);
     return () => {
       alive = false;
     };
@@ -96,7 +96,7 @@ export function GraffitiTag({ children, color = 'var(--c-red)', drips = true, tr
       </defs>
       <g filter="url(#hyp-spray)">
         <g mask={`url(#${maskId})`}>
-          <text ref={text} x={0} y={BASELINE} style={{ fill: color, fontFamily: 'var(--font-tag)', fontSize: FONT_SIZE }}>
+          <text ref={text} x={0} y={BASELINE} style={{ fill: color, fontFamily: 'var(--font-gothic)', fontWeight: 900, fontSize: FONT_SIZE }}>
             {children}
           </text>
         </g>

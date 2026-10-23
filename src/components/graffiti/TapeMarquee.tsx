@@ -7,8 +7,8 @@ import styles from './TapeMarquee.module.css';
 
 export interface TapeItem {
   text: string;
-  /** Estilo tipográfico de la pieza: la cinta mezcla comprimida, ancha, gótica y stencil. */
-  style: 'crushed' | 'wide' | 'gothic' | 'stencil' | 'script';
+  /** Estilo tipográfico de la pieza: la cinta mezcla comprimida, ancha y gótica. */
+  style: 'crushed' | 'wide' | 'gothic';
 }
 
 interface TapeMarqueeProps {

@@ -69,8 +69,9 @@
 }
 
 /*
- * Mezcla tipográfica streetwear. Se combinan en una misma pieza: comprimida + ancha en un titular,
- * gótica para el nombre del capítulo, tag pintado detrás, stencil para la cifra y marker anotando.
+ * Cuatro familias en total: Archivo (titulares, en sus dos extremos de anchura), Inter (texto),
+ * JetBrains Mono (etiquetas) y una gótica de acento. El contraste sale de mezclar comprimida y
+ * ancha en un mismo titular y de la gótica, no de sumar familias.
  */
 
 /* Ancha: Archivo al 125 % y negra. Para palabras sueltas que tienen que «ocupar» el ancho. */
@@ -89,41 +90,6 @@
   font-weight: 900;
   line-height: 0.9;
   letter-spacing: -0.01em;
-  text-transform: none;
-}
-
-/* Tag de graffiti: decorativo, palabras cortas pintadas sobre foto o color. */
-.t-tag {
-  font-family: var(--font-tag);
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-/* Stencil: cifras, índices de sección y códigos grandes (estética de carga y obra). */
-.t-stencil {
-  font-family: var(--font-stencil);
-  font-weight: 900;
-  line-height: 0.85;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-}
-
-/* Marker: notas escritas a mano sobre la maqueta. Cortas. */
-.t-marker {
-  font-family: var(--font-marker);
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: 0.01em;
-}
-
-/* Script de tatuaje: una palabra corta, grande, cruzando la composición. Nunca en mayúsculas. */
-.t-script {
-  font-family: var(--font-script);
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0;
   text-transform: none;
 }
 

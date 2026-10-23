@@ -15,10 +15,11 @@
  *   17:2 tee-grafito-front · 18:2 tee-grafito-back · 11:2 hoodie-negro-front · 19:2 hoodie-negro-back
  *   26:2 hoodie-gris-front · 27:2 hoodie-gris-back · 30:2 hoodie-grafito-back · 32:2 hoodie-blanco-back
  *   28:2 hoodiecord-negro-front · 29:2 hoodiecord-grafito-front · 31:2 hoodiecord-blanco-front
- *   20:2 ls-negro-front · 21:2 ls-negro-back · 22:2 ls-blanco-front · 23:2 ls-blanco-back
- *   24:2 ls-gris-front · 25:2 ls-gris-back · 33:2 jogger-negro-front · 34:2 jogger-negro-back
- *   35:2 jogger-grafito-front · 36:2 jogger-grafito-back · 37:2 cargo-negro-front · 38:2 cargo-negro-back
- *   39:2 shorts-negro-front · 40:2 shorts-rojo-front · 41:2 shorts-negro-back · 42:2 shorts-rojo-back
+ *   Oversize / baggy (sustituyen a 20:2–25:2 y 33:2–42:2):
+ *   55:2 ls-negro-front · 56:2 ls-negro-back · 57:2 ls-blanco-front · 58:2 ls-blanco-back
+ *   59:2 ls-gris-front · 60:2 ls-gris-back · 61:2 jogger-negro-front · 62:2 jogger-negro-back
+ *   63:2 jogger-grafito-front · 64:2 jogger-grafito-back · 53:2 cargo-negro-front · 54:2 cargo-negro-back
+ *   65:2 shorts-negro-front · 66:2 shorts-negro-back · 67:2 shorts-rojo-front · 68:2 shorts-rojo-back
  *   43:2 cap-negro-front · 44:2 cap-negro-back · 45:2 cap-blanco-front · 46:2 cap-blanco-back
  *   47:2 beanie-negro-front · 48:2 beanie-rojo-front · 49:2 tote-negro-front · 50:2 tote-blanco-front
  *   51:2 socks-negro-front · 52:2 socks-blanco-front
@@ -67,9 +68,10 @@ const GEOMETRY: Record<string, Geometry> = {
   'hoodiecord-front': { chest: { x: 480, y: 440, ref: 600, top: true, curve: 1.3 }, leftChest: { x: 618, y: 450, ref: 600, curve: 1.3 } }, // miniatura
   'ls-front': { chest: { x: 480, y: 300, ref: 575, top: true, curve: 1.3 }, leftChest: { x: 608, y: 330, ref: 575, curve: 1.3 } }, // miniatura
   'ls-back': { back: { x: 480, y: 280, ref: 580, top: true, curve: 1.5 } }, // miniatura
-  'jogger-front': { thigh: { x: 640, y: 300, ref: 225 } }, // miniatura
-  'cargo-front': { pocket: { x: 262, y: 418, ref: 240 } }, // miniatura
-  'shorts-front': { leg: { x: 735, y: 880, ref: 380 } }, // miniatura
+  // Pantalones baggy (bases 53:2–68:2): perneras anchas de ~300 px.
+  'jogger-front': { thigh: { x: 610, y: 340, ref: 300 } }, // miniatura
+  'cargo-front': { pocket: { x: 250, y: 470, ref: 220 } }, // miniatura
+  'shorts-front': { leg: { x: 690, y: 890, ref: 380 } }, // miniatura
   'cap-front': { crown: { x: 445, y: 560, ref: 420, rotate: -4, curve: 0.55 } }, // miniatura
   'beanie-front': { tab: { x: 825, y: 645, ref: 700 } }, // miniatura
   'tote-front': { bag: { x: 484, y: 820, ref: 610 } }, // miniatura

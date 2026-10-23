@@ -11,20 +11,18 @@ import { paths } from '@shared/routes';
 /** Banda superior en movimiento: frases del Manual (se repiten en bucle). */
 export const announcements: string[] = ['Built for the climb.', 'Chapter 01 / Ascent', 'Reach higher.', 'Keep climbing.'];
 
-/** Cintas cruzadas bajo el hero: frases del Manual en cuatro voces tipográficas. */
+/** Cintas cruzadas bajo el hero: frases del Manual en tres voces (comprimida, ancha y gótica). */
 export const tapes = {
   label: 'Built for the climb. Chapter 01 / Ascent. Reach higher. Keep climbing. Above ordinary.',
   top: [
     { text: 'Built for the climb', style: 'wide' },
     { text: 'Chapter 01', style: 'gothic' },
     { text: 'Reach higher', style: 'crushed' },
-    { text: '01', style: 'stencil' },
   ],
   bottom: [
-    { text: 'Keep climbing', style: 'script' },
+    { text: 'Keep climbing', style: 'crushed' },
     { text: 'Ascent', style: 'gothic' },
     { text: 'Above ordinary', style: 'wide' },
-    { text: 'HYP / 01', style: 'stencil' },
   ],
 } as const;
 

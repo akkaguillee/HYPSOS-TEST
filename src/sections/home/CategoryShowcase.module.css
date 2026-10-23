@@ -190,13 +190,14 @@
   text-transform: uppercase;
 }
 
-/* Índice en stencil sobre cada foto, como un número de muelle de carga. */
+/* Índice comprimido sobre cada foto, como un número de muelle de carga. */
 .index {
   position: absolute;
   z-index: 2;
   top: var(--space-4);
   left: var(--space-4);
-  font-family: var(--font-stencil);
+  font-family: var(--font-display);
+  font-stretch: var(--stretch-display);
   font-size: clamp(2.2rem, 3.4vw, 3.6rem);
   font-weight: 900;
   line-height: 0.8;

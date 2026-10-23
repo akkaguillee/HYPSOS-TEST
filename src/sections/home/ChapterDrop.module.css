@@ -18,7 +18,7 @@
   justify-items: start;
 }
 
-/* Titular-objeto: «Chapter» en gótica y «01» en stencil, oversize. */
+/* Titular-objeto: «Chapter» en gótica y «01» comprimida, oversize. */
 .title {
   display: flex;
   align-items: baseline;
@@ -34,7 +34,8 @@
 }
 
 .num {
-  font-family: var(--font-stencil);
+  font-family: var(--font-display);
+  font-stretch: var(--stretch-display);
   font-size: 1.22em;
   font-weight: 900;
   line-height: 0.8;
