@@ -70,6 +70,8 @@ const GEOMETRY: Record<string, Geometry> = {
   'ls-back': { back: { x: 480, y: 280, ref: 580, top: true, curve: 1.5 } }, // miniatura
   // Pantalones baggy (bases 53:2–68:2): perneras anchas de ~300 px.
   'jogger-front': { thigh: { x: 610, y: 340, ref: 300 } }, // miniatura
+  // Cargo baggy (53:2): bolsillo lateral izquierdo de 233 a 310 px, tapeta hasta 435.
+  'cargo-negro-front': { pocket: { x: 271, y: 512, ref: 220 } },
   'cargo-front': { pocket: { x: 250, y: 470, ref: 220 } }, // miniatura
   'shorts-front': { leg: { x: 690, y: 890, ref: 380 } }, // miniatura
   'cap-front': { crown: { x: 445, y: 560, ref: 420, rotate: -4, curve: 0.55 } }, // miniatura
@@ -209,6 +211,11 @@ export function resolveBase(product: Product, plan: Plan, colorId: string, side:
         note: 'espalda reconstruida desde hoodie-negro-front' + (colorId === 'negro' ? '' : ` y teñida`),
       };
     }
+  }
+  // Sin foto de espalda: el frente reflejado y sin gráficos (mejor que mezclar foto y dibujo).
+  if (side === 'back') {
+    const front = resolveBase(product, plan, colorId, 'front');
+    if (front) return { ...front, side: 'back', mirror: !front.mirror, blank: true, note: [front.note, 'sin base de espalda: frente reflejado'].filter(Boolean).join('; ') };
   }
   return undefined;
 }
