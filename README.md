@@ -263,20 +263,22 @@ Para la tienda completa con el dominio en Netlify, despliega la API en un host N
 
 ## Calidad (verificado en este entorno)
 
-- **`pnpm test`:** 81 tests. Cubren:
+- **`pnpm test`:** 148 tests en 15 archivos. Cubren:
   - API: checkout, idempotencia, carrera por la última unidad, webhook repetido, CSRF, rate limiting y cuentas;
   - precios, stock, carrito, filtros e integridad del catálogo;
-  - HTML/SEO y componentes.
-- **`pnpm test:e2e`:** 65 escenarios (62 se ejecutan y 3 se omiten por aplicar solo a escritorio o a móvil) sobre el build de producción. Cubren:
+  - HTML/SEO y componentes;
+  - óptica del cristal (Snell, perfil gota monótono), recorrido del espray y piezas puras del hover WebGL (matemática, caché, capacidades).
+- **`pnpm test:e2e`:** 72 escenarios (69 se ejecutan y 3 se omiten por aplicar solo a escritorio o a móvil) sobre el build de producción. Cubren:
   - navegación, todas las rutas, 404 reales y SEO;
   - filtros en la URL, paginación, variantes agotadas y «Avísame», zoom de galería;
   - compra hasta el aviso honesto de checkout no configurado;
   - cuentas, recuperación de contraseña, favoritos, buscador con teclado, newsletter y contacto;
   - ausencia de scripts de terceros sin consentimiento y movimiento reducido;
+  - que ninguna capa decorativa (espray, puntos, cintas) tape la acción principal del hero;
   - **axe (WCAG 2.1 AA) sin infracciones graves**;
   - una batería específica en **móvil horizontal**.
 - **Auditoría responsive** (`scripts/responsive-audit.mjs`): 11 rutas × 12 tamaños (320, 375, 390, 430, 768, 1024, 1280, 1440, 1920, y 667×375, 844×390 y 932×430 en horizontal) sin scroll horizontal ni elementos fuera de pantalla.
-- **Core Web Vitals medidos en laboratorio:** build de producción, Chromium emulando un Pixel 7, CPU 4× más lenta, mediana de 3 cargas de `/`, `/collections/all` y una ficha:
+- **Core Web Vitals medidos en laboratorio (antes del último rediseño; hay que volver a medir):** build de producción, Chromium emulando un Pixel 7, CPU 4× más lenta, mediana de 3 cargas de `/`, `/collections/all` y una ficha:
 
   | Red | LCP | CLS | INP (abrir menú) |
   | --- | --- | --- | --- |
@@ -287,7 +289,7 @@ Para la tienda completa con el dominio en Netlify, despliega la API en un host N
   - las entradas animadas del contenido sobre el pliegue no lo ocultan;
   - el HTML precarga la imagen principal.
 
-  El límite restante es que la web se renderiza en el cliente y necesita ~200 KB gzip de JS (React 102 KB, código 52 KB, GSAP 48 KB) antes de pintar. Ver pendientes. No son datos de campo: hay que confirmarlos con usuarios reales (CrUX o la analítica).
+  El límite restante es que la web se renderiza en el cliente y necesita JS antes de pintar. Tras el rediseño con el sistema de movimiento son ~226 KB gzip (React 102 KB, código 67 KB, GSAP con DrawSVG/ScrambleText/CustomEase 57 KB); el hover WebGL (11 KB) se carga aparte y solo al pasar el ratón. Estas cifras de LCP son anteriores a ese aumento y hay que repetir la medición. Ver pendientes. No son datos de campo: hay que confirmarlos con usuarios reales (CrUX o la analítica).
 
 Los E2E de este entorno usan el Chromium del sistema: `PLAYWRIGHT_CHROMIUM_PATH=/ruta/a/chromium pnpm test:e2e`. En una máquina normal basta con `npx playwright install chromium`. **No se ha probado en dispositivos físicos**: el tacto, el notch y el teclado virtual deben revisarse en un móvil real.
 
@@ -304,4 +306,5 @@ Los E2E de este entorno usan el Chromium del sistema: `PLAYWRIGHT_CHROMIUM_PATH=
 7. **Atención al cliente:** email, plazo de respuesta y redes sociales (`shared/config.ts`).
 8. **Rendimiento en redes lentas:** prerenderizar el HTML de las rutas principales (o SSR) y cargar GSAP bajo demanda para bajar el LCP de 2,5 s en 4G lenta.
 9. **Textos de marca:** el eslogan, el manifiesto, los valores y la biografía salen del Manual; las descripciones de colecciones y productos siguen siendo borradores a validar.
-10. **Catálogo según el Manual:** el Manual recomienda un primer drop corto (ASCENT TEE 01, CORE TEE 01, SUMMIT HOODIE 01, HYPOCAP 01, HYPOSTICKER SET 01). El catálogo de demostración aún tiene 20 piezas de ejemplo.
+10. **Bases de mockup que faltan:** las fotos base (prendas lisas generadas con IA) de manga larga, jogger, cargo, short, gorra, gorro, bolsa y calcetines ya están generadas en el archivo de Figma del proyecto, pero no se pudieron descargar: la integración de Figma alcanzó el límite de llamadas del plan Starter. Basta con exportarlas desde Figma (la lista de nodos está en la cabecera de `scripts/mockups/placements.ts`) a `scripts/mockups/bases/<tipo>-<color>-<cara>.webp` y ejecutar `pnpm mockups`.
+11. **Catálogo según el Manual:** el Manual recomienda un primer drop corto (ASCENT TEE 01, CORE TEE 01, SUMMIT HOODIE 01, HYPOCAP 01, HYPOSTICKER SET 01). El catálogo de demostración aún tiene 20 piezas de ejemplo.
