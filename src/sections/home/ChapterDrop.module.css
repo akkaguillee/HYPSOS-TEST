@@ -1,79 +1,25 @@
+/* Cabecera centrada tipo cartel (Shelby) sobre la rejilla de producto. */
 .head {
   display: grid;
-  gap: var(--space-5) var(--space-8);
-  margin-bottom: clamp(var(--space-6), 4vw, var(--space-9));
-}
-
-@media (min-width: 1024px) {
-  .head {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 30rem);
-    align-items: end;
-  }
-}
-
-.titleWrap {
-  position: relative;
-  display: grid;
-  gap: var(--space-3);
-  justify-items: start;
-}
-
-/* Titular-objeto: «Chapter» en gótica y «01» comprimida, oversize. */
-.title {
-  display: flex;
-  align-items: baseline;
-  gap: 0.12em;
-  font-size: clamp(3.4rem, 9vw, 9.5rem);
-  line-height: 0.85;
-}
-
-.word {
-  font-family: var(--font-gothic);
-  font-weight: 900;
-  letter-spacing: -0.01em;
-}
-
-.num {
-  font-family: var(--font-display);
-  font-stretch: var(--stretch-display);
-  font-size: 1.22em;
-  font-weight: 900;
-  line-height: 0.8;
-}
-
-/* Círculo a rotulador alrededor del número. */
-.circle {
-  position: absolute;
-  bottom: -0.32em;
-  left: 3.05em;
-  width: 2.1em;
-  height: auto;
-  font-size: clamp(3.4rem, 9vw, 9.5rem);
-  pointer-events: none;
-}
-
-.sticker {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: clamp(56px, 7vw, 110px);
-}
-
-@media (min-width: 1024px) {
-  .sticker {
-    right: auto;
-    left: calc(clamp(3.4rem, 9vw, 9.5rem) * 5.4);
-    top: calc(clamp(3.4rem, 9vw, 9.5rem) * -0.15);
-  }
-}
-
-.aside {
-  display: grid;
+  justify-items: center;
   gap: var(--space-4);
-  justify-items: start;
+  margin-bottom: clamp(var(--space-7), 5vw, var(--space-9));
+  text-align: center;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  font-weight: 700;
+  line-height: var(--lh-crushed);
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
 }
 
 .lead {
-  max-width: 42ch;
+  max-width: 48ch;
+  font-size: var(--fs-lg);
+  line-height: 1.5;
   color: var(--fg-muted);
+  text-wrap: balance;
 }

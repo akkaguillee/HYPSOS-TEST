@@ -51,7 +51,7 @@
   padding: 0 var(--space-5);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-pill);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -117,7 +117,6 @@
   font-family: var(--font-display);
   font-size: clamp(1.75rem, 1.4vw + 1.25rem, 2.5rem);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-tight);
   text-transform: uppercase;
 }
@@ -163,7 +162,7 @@
 }
 
 .cardLabel {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -175,7 +174,6 @@
   font-family: var(--font-display);
   font-size: clamp(2.75rem, 3vw + 1.5rem, 4rem);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-crushed);
   font-variant-numeric: tabular-nums;
 }
@@ -215,7 +213,7 @@
 }
 
 .orderNumber {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-weight: 600;
   letter-spacing: 0.02em;
 }
@@ -226,7 +224,7 @@
 
 .orderTotal {
   margin-left: auto;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-weight: 600;
 }
 
@@ -246,7 +244,7 @@
   padding: var(--space-1) var(--space-3);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-pill);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -309,7 +307,7 @@
   padding: 0 var(--space-4);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-pill);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -345,7 +343,7 @@
 }
 
 .formTitle {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -445,7 +443,7 @@
 .tab {
   min-height: 44px;
   border-radius: var(--radius-pill);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -497,7 +495,6 @@
   font-family: var(--font-display);
   font-size: clamp(2.25rem, 2.6vw + 1.25rem, 3.5rem);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-tight);
   text-transform: uppercase;
 }
@@ -517,14 +514,14 @@
 }
 
 .benefitsIndex {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   color: var(--fg-muted);
 }
 
 .benefitsNote {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);

@@ -1,4 +1,4 @@
-import { Sticker } from '@/components/brand/Sticker';
+import { Mascot, Monogram, Star } from '@/components/brand/BrandVector';
 import { CollectionCard } from '@/components/commerce/CollectionCard';
 import { ActiveFilters, Filters, SortMenu } from '@/components/commerce/Filters';
 import { EndTile, ProductGrid } from '@/components/commerce/ProductGrid';
@@ -51,7 +51,7 @@ interface CampaignBand {
 const campaignBands: Record<string, CampaignBand> = {
   'drop-01-ascenso': { photo: campaignPhotos.stairs, layout: 'full', tone: 'dark', focus: '58% 42%', endPhoto: campaignPhotos.crew, endFocus: '50% 40%' },
   signal: { photo: campaignPhotos.rooftop, layout: 'split', tone: 'red', focus: '50% 28%', endPhoto: campaignPhotos.detail, endFocus: '50% 50%' },
-  base: { photo: campaignPhotos.cap, layout: 'split', tone: 'dark', focus: '50% 25%', endPhoto: campaignPhotos.lookHoodie, endFocus: '50% 30%' },
+  base: { photo: campaignPhotos.cap, layout: 'split', tone: 'dark', focus: '50% 25%', endPhoto: campaignPhotos.lookTee, endFocus: '50% 30%' },
 };
 
 interface ResolvedCollection {
@@ -286,9 +286,9 @@ function CatalogView({ handle, collection }: { handle: string; collection: Resol
 function StickerCluster() {
   return (
     <span className={styles.stickerCluster}>
-      <Sticker mark="star" color="#090909" rotate={-14} className={styles.clusterStar} />
-      <Sticker mark="mascot" rotate={8} className={styles.clusterMascot} />
-      <Sticker mark="monogram" color="#090909" rotate={-6} className={styles.clusterMonogram} />
+      <Star className={styles.clusterStar} />
+      <Mascot className={styles.clusterMascot} />
+      <Monogram className={styles.clusterMonogram} />
     </span>
   );
 }

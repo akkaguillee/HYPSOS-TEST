@@ -45,7 +45,7 @@
 
 .bar {
   /* Tinte más ligero que el de los paneles: la gota tiene que dejar ver (deformado) lo de detrás. */
-  --lg-tint: rgb(9 9 9 / 0.24);
+  --lg-tint: rgb(20 1 2 / 0.24);
   --header-fg: var(--c-white);
   --header-fg-muted: rgb(255 255 255 / 0.74);
   display: grid;
@@ -57,9 +57,9 @@
 }
 
 .bar[data-tone='light'] {
-  --lg-tint: rgb(242 240 236 / 0.3);
-  --header-fg: var(--c-black);
-  --header-fg-muted: rgb(8 8 8 / 0.7);
+  --lg-tint: rgb(255 255 255 / 0.3);
+  --header-fg: var(--c-coffee);
+  --header-fg-muted: rgb(20 1 2 / 0.72);
 }
 
 .left,
@@ -118,9 +118,10 @@
   height: 40px;
   padding: 0 var(--space-3);
   border-radius: var(--radius-pill);
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-family: var(--font-label);
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--header-fg-muted);
   transition:
@@ -140,7 +141,7 @@
   }
 }
 
-/* Sección activa: un punto rojo bajo el texto, el único acento de la barra. */
+/* Sección activa: un punto de estado bajo el texto (verde sobre oscuro, rojo sobre claro). */
 .navLink::after {
   content: '';
   position: absolute;
@@ -149,7 +150,7 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: var(--c-red);
+  background: var(--c-lime);
   opacity: 0;
   transform: scale(0.5);
   transition:
@@ -160,6 +161,10 @@
 .navLink.active::after {
   opacity: 1;
   transform: scale(1);
+}
+
+.bar[data-tone='light'] .navLink::after {
+  background: var(--c-red);
 }
 
 .chevron {

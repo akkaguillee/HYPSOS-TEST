@@ -81,7 +81,6 @@
   font-family: var(--font-display);
   font-size: var(--fs-h1);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-crushed);
   letter-spacing: var(--tracking-display);
   text-transform: uppercase;
@@ -92,7 +91,6 @@
   flex: none;
   /* Recuento comprimido en rojo, como un número pintado. */
   font-family: var(--font-display);
-  font-stretch: var(--stretch-display);
   font-size: clamp(1.6rem, 2.4vw, 2.6rem);
   font-weight: 900;
   line-height: 0.85;
@@ -203,7 +201,7 @@
 .scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgb(9 9 9 / 0) 30%, rgb(9 9 9 / 0.78) 100%);
+  background: linear-gradient(180deg, rgb(20 1 2 / 0) 30%, rgb(20 1 2 / 0.78) 100%);
 }
 
 .bandCopy {
@@ -221,7 +219,7 @@
 }
 
 .bandEyebrow {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   line-height: 1.2;
@@ -230,12 +228,20 @@
 }
 
 .bandTitle {
-  /* Nombre de colección en gótica (sistema tipográfico: gótica = capítulos y colecciones). */
-  font-family: var(--font-gothic);
+  /* Nombre de colección como acento (Aerosoldier con licencia; si no, Bastaman). */
+  font-family: var(--font-display);
   font-size: calc(var(--fs-campaign) * 0.92);
-  font-weight: 900;
+  font-weight: 700;
   line-height: 0.86;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+:root[data-accent-font='ready'] .bandTitle {
+  font-family: var(--font-accent);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .bandFoot {
@@ -273,14 +279,14 @@
   display: grid;
   gap: var(--space-2);
   justify-items: start;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
 
 .credit {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   line-height: 1.3;
   letter-spacing: var(--tracking-label);

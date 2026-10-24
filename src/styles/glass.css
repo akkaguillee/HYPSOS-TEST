@@ -30,7 +30,7 @@
   --glass-surface: var(--glass-light-bg);
   border-color: var(--glass-light-border);
   box-shadow: var(--glass-light-highlight), var(--glass-shadow);
-  color: var(--c-black);
+  color: var(--c-coffee);
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {

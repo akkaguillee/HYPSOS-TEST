@@ -1,4 +1,4 @@
-import { Sticker } from '@/components/brand/Sticker';
+import { Mascot } from '@/components/brand/BrandVector';
 import { useServerOffline } from '@/store/storeStatus';
 import { Button } from '@/components/ui/Button';
 import { Alert, Checkbox, TextField } from '@/components/ui/Field';
@@ -44,7 +44,7 @@ export function AuthForms({ notice }: { notice?: ReactNode }) {
         </div>
       </div>
       <aside className={styles.benefits} data-theme="dark" aria-label="Ventajas de la cuenta">
-        <Sticker mark="mascot" rotate={-8} className={styles.benefitsSticker} />
+        <Mascot className={styles.benefitsSticker} />
         <p className={styles.benefitsTitle}>Tu cuenta HYPSOS</p>
         <ul role="list" className={styles.benefitsList}>
           {['Historial y estado de tus pedidos', 'Direcciones guardadas para pagar más rápido', 'Favoritos sincronizados en todos tus dispositivos'].map((text, index) => (

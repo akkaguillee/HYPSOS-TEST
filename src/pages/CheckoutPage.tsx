@@ -1,5 +1,5 @@
 import { ProductMedia } from '@/components/commerce/ProductMedia';
-import { Sticker } from '@/components/brand/Sticker';
+import { Mascot } from '@/components/brand/BrandVector';
 import { PageIntro } from '@/content/pages/PageIntro';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { Alert, Checkbox, SelectField, TextField } from '@/components/ui/Field';
@@ -196,7 +196,7 @@ export default function CheckoutPage() {
       <>
         <PageIntro title="Finalizar compra" breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Checkout' }]} />
         <div className={`container ${styles.empty}`}>
-          <Sticker mark="mascot" rotate={-8} className={styles.emptySticker} />
+          <Mascot className={styles.emptySticker} />
           <p className={styles.emptyTitle}>Tu carrito está vacío</p>
           <ButtonLink to={paths.collection('all')}>Ir a la tienda</ButtonLink>
         </div>

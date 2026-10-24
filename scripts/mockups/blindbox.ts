@@ -38,13 +38,14 @@ interface Palette {
 
 function palette(product: Product, colorId: string): Palette {
   const code = product.code;
+  // Paleta de marca: Coffee Bean #140102, Racing Red #e90c17, White #ffffff (el cartón blanco es blanco impreso).
   if (product.id === 'p-blindbox-signal') {
-    return { bg: '#c3102c', ink: '#f6f2ec', accent: '#0e0e0e', sub: 'rgba(14,14,14,0.62)', border: '#f6f2ec', hero: 'star', serie: 'SIGNAL', code };
+    return { bg: '#e90c17', ink: '#ffffff', accent: '#140102', sub: 'rgba(20,1,2,0.62)', border: '#ffffff', hero: 'star', serie: 'SIGNAL', code };
   }
   if (colorId === 'blanco') {
-    return { bg: '#ebe7df', ink: '#111111', accent: '#c8102e', sub: 'rgba(17,17,17,0.55)', border: null, hero: 'question', serie: 'SERIE 01', code };
+    return { bg: '#f4f1f0', ink: '#140102', accent: '#e90c17', sub: 'rgba(20,1,2,0.55)', border: null, hero: 'question', serie: 'SERIE 01', code };
   }
-  return { bg: '#111111', ink: '#f2f0ec', accent: '#d71920', sub: 'rgba(242,240,236,0.5)', border: '#f2f0ec', hero: 'question', serie: 'SERIE 01', code };
+  return { bg: '#140102', ink: '#ffffff', accent: '#e90c17', sub: 'rgba(255,255,255,0.55)', border: '#ffffff', hero: 'question', serie: 'SERIE 01', code };
 }
 
 // ─── Gráfica de las caras ───────────────────────────────────────────────────
@@ -58,19 +59,22 @@ function mark(name: Mark, color: string, width: number, style = ''): string {
 function mascot(width: number, p: Palette, style = ''): string {
   const v = VECTORS.mascot as typeof VECTORS.mascot & { fill: string };
   const border = p.border ? `<path d="${v.fill}" fill="none" stroke="${p.border}" stroke-width="150" stroke-linejoin="round"/>` : '';
-  return `<svg viewBox="-60 -60 ${v.width + 120} ${v.height + 120}" width="${width}" style="display:block;overflow:visible;${style}" xmlns="http://www.w3.org/2000/svg"><g transform="${v.transform}">${border}<path d="${v.fill}" fill="#0c0c0c"/><path d="${v.d}" fill="#f4f2ee"/></g></svg>`;
+  return `<svg viewBox="-60 -60 ${v.width + 120} ${v.height + 120}" width="${width}" style="display:block;overflow:visible;${style}" xmlns="http://www.w3.org/2000/svg"><g transform="${v.transform}">${border}<path d="${v.fill}" fill="#140102"/><path d="${v.d}" fill="#ffffff"/></g></svg>`;
 }
 
+/*
+ * Una sola familia, la de la marca: Bastaman (solo mayúsculas, sin ¿ ¡ ·). El ¿ se compone con un
+ * «?» girado 180° y los separadores son barras. Aerosoldier no se usa en el packaging: la versión
+ * disponible es de uso personal.
+ */
 const FONTS = `
-@font-face{font-family:Archivo;src:url(${ORIGIN}/fonts/archivo.woff2) format('woff2');font-weight:100 900;font-stretch:62% 125%}
-@font-face{font-family:Mono;src:url(${ORIGIN}/fonts/mono.woff2) format('woff2');font-weight:100 800}
-@font-face{font-family:Gothic;src:url(${ORIGIN}/fonts/gothic.woff2) format('woff2');font-weight:900}
+@font-face{font-family:Bastaman;src:url(${ORIGIN}/fonts/bastaman.woff2) format('woff2');font-weight:100 900}
 *{box-sizing:border-box;margin:0}
-.face{position:relative;overflow:hidden;font-family:Archivo}
-.mono{font-family:Mono;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
-.crushed{font-weight:900;font-stretch:62%;text-transform:uppercase;line-height:.82}
-.wide{font-weight:900;font-stretch:125%;text-transform:uppercase;letter-spacing:-.03em;line-height:.9}
-.gothic{font-family:Gothic;font-weight:900}
+.face{position:relative;overflow:hidden;font-family:Bastaman;font-synthesis:none}
+.mono{letter-spacing:.08em;text-transform:uppercase}
+.crushed{text-transform:uppercase;line-height:.86;letter-spacing:-.03em}
+.wide{text-transform:uppercase;letter-spacing:-.02em;line-height:.9}
+.inv{display:inline-block;transform:rotate(180deg)}
 `;
 
 type Face = 'front' | 'back' | 'left' | 'right' | 'top' | 'bottom';
@@ -85,7 +89,7 @@ function faceHTML(face: Face, p: Palette): string {
   const [w, h] = faceSize(face);
   const base = `width:${w}px;height:${h}px;background:${p.bg};color:${p.ink}`;
   // Trabilla roja tejida, la firma de la marca, en el canto derecho del frente.
-  const tab = `<div style="position:absolute;right:0;top:${h * 0.72}px;width:44px;height:120px;background:${p.hero === 'star' ? '#0e0e0e' : '#c8102e'};box-shadow:inset 0 0 0 3px rgba(0,0,0,.12)"></div>`;
+  const tab = `<div style="position:absolute;right:0;top:${h * 0.72}px;width:44px;height:120px;background:${p.hero === 'star' ? '#140102' : '#e90c17'};box-shadow:inset 0 0 0 3px rgba(0,0,0,.12)"></div>`;
   if (face === 'front') {
     const heroMark =
       p.hero === 'star'
@@ -97,8 +101,8 @@ function faceHTML(face: Face, p: Palette): string {
       <div style="position:absolute;left:50%;top:150px;transform:translateX(-50%)">${mark('wordmark', p.ink, 640)}</div>
       ${heroMark}
       <div style="position:absolute;left:50%;top:640px;transform:translateX(-50%) rotate(-6deg)">${mascot(700, p)}</div>
-      <div class="crushed" style="position:absolute;left:0;right:0;top:1300px;text-align:center;font-size:300px">Blind box</div>
-      <div class="mono" style="position:absolute;left:0;right:0;top:1600px;text-align:center;font-size:38px;color:${p.sub}">1 figura sorpresa · vinilo</div>
+      <div class="crushed" style="position:absolute;left:0;right:0;top:1340px;text-align:center;font-size:188px">Blind box</div>
+      <div class="mono" style="position:absolute;left:0;right:0;top:1600px;text-align:center;font-size:36px;color:${p.sub}">1 figura sorpresa / vinilo</div>
       ${tab}
     </div>`;
   }
@@ -106,7 +110,7 @@ function faceHTML(face: Face, p: Palette): string {
     const ghost = (x: number, y: number, r: number) =>
       `<div style="position:absolute;left:${x}px;top:${y}px;transform:rotate(${r}deg);opacity:.9">${mark('mascot', p.sub, 340)}<div class="crushed" style="position:absolute;inset:0;display:grid;place-items:center;font-size:260px;color:${p.accent}">?</div></div>`;
     return `<div class="face" style="${base}">
-      <div class="gothic" style="position:absolute;left:0;right:0;top:120px;text-align:center;font-size:190px;line-height:.9">¿Cuál<br/>te toca?</div>
+      <div class="crushed" style="position:absolute;left:0;right:0;top:140px;text-align:center;font-size:168px;line-height:.92"><span class="inv">?</span>Cuál<br/>te toca?</div>
       ${ghost(150, 640, -6)}${ghost(800, 640, 7)}${ghost(475, 1020, -3)}
       <div class="mono" style="position:absolute;left:0;right:0;top:1520px;text-align:center;font-size:36px;color:${p.sub}">Abre la caja para descubrirlo</div>
     </div>`;
@@ -114,16 +118,16 @@ function faceHTML(face: Face, p: Palette): string {
   if (face === 'left') {
     return `<div class="face" style="${base}">
       <div style="position:absolute;left:50%;top:150px;transform:translateX(-50%)">${mark('monogram', p.accent, 240)}</div>
-      <div class="crushed" style="position:absolute;left:50%;top:1000px;transform:translate(-50%,-50%) rotate(-90deg);white-space:nowrap;font-size:250px;text-align:left">Built for<br/>the climb.</div>
+      <div class="crushed" style="position:absolute;left:50%;top:1000px;transform:translate(-50%,-50%) rotate(-90deg);white-space:nowrap;font-size:168px;text-align:left">Built for<br/>the climb.</div>
     </div>`;
   }
   if (face === 'back') {
     return `<div class="face" style="${base}">
       <div style="position:absolute;left:50%;top:130px;transform:translateX(-50%)">${mark('wordmark', p.ink, 520)}</div>
       <div style="position:absolute;left:50%;top:420px;transform:translateX(-50%);opacity:.16">${mark('monogram', p.ink, 900)}</div>
-      <div class="wide" style="position:absolute;left:90px;right:90px;top:820px;font-size:120px">HYPO<br/>${p.serie}</div>
+      <div class="wide" style="position:absolute;left:90px;right:90px;top:820px;font-size:112px">HYPO<br/>${p.serie}</div>
       <div class="mono" style="position:absolute;left:90px;right:90px;top:1180px;font-size:34px;line-height:1.55;color:${p.sub}">
-        Contiene 1 figura de vinilo sorpresa.<br/>No apto para menores de 3 años:<br/>contiene piezas pequeñas.<br/><br/>Producto de demostración · HYPSOS
+        Contiene 1 figura de vinilo sorpresa.<br/>No apto para menores de 3 años:<br/>contiene piezas pequeñas.<br/><br/>Producto de demostración / HYPSOS
       </div>
       ${tab}
     </div>`;
@@ -131,7 +135,7 @@ function faceHTML(face: Face, p: Palette): string {
   if (face === 'top') {
     return `<div class="face" style="${base}">
       <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)">${mark('monogram', p.accent, 560)}</div>
-      <div class="mono" style="position:absolute;left:0;right:0;bottom:110px;text-align:center;font-size:40px;color:${p.sub}">${p.serie} · HYPO</div>
+      <div class="mono" style="position:absolute;left:0;right:0;bottom:110px;text-align:center;font-size:40px;color:${p.sub}">${p.serie} / HYPO</div>
     </div>`;
   }
   return `<div class="face" style="${base}"></div>`;
@@ -258,9 +262,7 @@ async function getPage(): Promise<Page> {
   });
   page = await browser.newPage({ viewport: { width: 1300, height: 1800 }, deviceScaleFactor: 1 });
   const files: Record<string, string> = {
-    '/fonts/archivo.woff2': join(ROOT, '@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2'),
-    '/fonts/mono.woff2': join(ROOT, '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2'),
-    '/fonts/gothic.woff2': join(ROOT, '@fontsource/grenze-gotisch/files/grenze-gotisch-latin-900-normal.woff2'),
+    '/fonts/bastaman.woff2': resolve('src/assets/fonts/bastaman.woff2'),
   };
   const textures = new Map<string, Buffer>();
   (page as Page & { textures?: Map<string, Buffer> }).textures = textures;

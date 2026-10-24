@@ -1,4 +1,4 @@
-import { Sticker } from '@/components/brand/Sticker';
+import { Mascot } from '@/components/brand/BrandVector';
 import { Wordmark } from '@/components/brand/BrandVector';
 import { Button } from '@/components/ui/Button';
 import { isRouteErrorResponse, useRouteError } from 'react-router';
@@ -17,7 +17,7 @@ export function RouteError() {
     <main className={styles.errorPage} data-theme="dark">
       <div className={styles.errorInner}>
         <Wordmark title="HYPSOS" className={styles.errorWordmark} />
-        <Sticker mark="mascot" rotate={-10} className={styles.errorSticker} />
+        <Mascot className={styles.errorSticker} />
         <h1 className={styles.title}>{isRouteErrorResponse(error) && error.status === 404 ? 'Página no encontrada' : 'Algo ha fallado'}</h1>
         <p className={styles.lead}>
           {isChunkError

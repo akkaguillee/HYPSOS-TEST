@@ -1,4 +1,4 @@
-import { Sticker } from '@/components/brand/Sticker';
+import { Mascot, Monogram, Star } from '@/components/brand/BrandVector';
 import { CampaignImage } from '@/components/media/CampaignImage';
 import { ImageReveal } from '@/components/motion/ImageReveal';
 import { Reveal } from '@/components/motion/Reveal';
@@ -30,9 +30,9 @@ export function AboutPage() {
         <div className={`container ${styles.heroContent}`}>
           <Breadcrumbs items={[{ label: 'Inicio', to: paths.home }, { label: 'Quiénes somos' }]} />
           <p className="eyebrow">Sobre HYPSOS · Movimiento</p>
-          {/* «The» ancha y «Ascent» en gótica: el nombre del movimiento como un rótulo. */}
+          {/* «The» pequeña y «Ascent» como acento: el nombre del movimiento como un rótulo. */}
           <SplitHeadline as="h1" id="about-title" trigger="mount" className={styles.heroTitle}>
-            <span className="mix-wide">The</span> <span className={styles.heroGothic}>Ascent</span>
+            <span className={styles.heroSmall}>The</span> <span className={styles.heroAccent}>Ascent</span>
           </SplitHeadline>
           <p className={styles.heroLead}>
             HYPSOS es una marca streetwear independiente construida alrededor de una idea: seguir subiendo. Prendas premium para el día a día, gráficos
@@ -65,9 +65,9 @@ export function AboutPage() {
       <section className="section" data-theme="dark" aria-labelledby="hypo-title">
         <div className={`container ${styles.hypo}`}>
           <div className={styles.hypoArt}>
-            <Sticker mark="mascot" rotate={-6} className={styles.hypoSticker} title="HYPO, la mascota de HYPSOS" />
-            <Sticker mark="star" color="#d71920" rotate={12} className={styles.hypoStar} />
-            <Sticker mark="monogram" color="#090909" rotate={-14} className={styles.hypoMono} />
+            <Mascot className={styles.hypoSticker} title="HYPO, la mascota de HYPSOS" />
+            <Star className={styles.hypoStar} />
+            <Monogram className={styles.hypoMono} />
           </div>
           <div className={styles.hypoCopy}>
             <p className="eyebrow">Mascota</p>

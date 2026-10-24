@@ -26,8 +26,8 @@ export function IntroLoader() {
       timeline.current = gsap
         .timeline({ onComplete: finish })
         .set(q(`.${styles.wordmark}`), { visibility: 'visible' }, 0.1)
-        .fromTo(q(`.${styles.wordmark}`), { scale: 1.35 }, { scale: 1, duration: 0.6, ease: EASE.slap, immediateRender: false }, 0.1)
-        .fromTo(q(`.${styles.line}`), { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: EASE.stroke }, 0.45)
+        .fromTo(q(`.${styles.wordmark}`), { scale: 1.35 }, { scale: 1, duration: 0.6, ease: EASE.stamp, immediateRender: false }, 0.1)
+        .fromTo(q(`.${styles.line}`), { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: EASE.outSoft }, 0.45)
         .to(chapter, { duration: 0.6, scrambleText: { text: 'Chapter 01', chars: '01/\\_▮▯█', speed: 0.7 } }, 0.55)
         .to(movement, { duration: 0.6, scrambleText: { text: 'Ascent', chars: '01/\\_▮▯█', speed: 0.7 } }, 0.65)
         .set(q(`.${styles.skip}`), { visibility: 'hidden' }, 1.3)

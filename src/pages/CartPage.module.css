@@ -42,7 +42,7 @@
 }
 
 .summaryTitle {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -68,7 +68,7 @@
 }
 
 .row dd {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   text-align: right;
 }
 
@@ -89,7 +89,6 @@
   font-family: var(--font-display);
   font-size: var(--fs-h3);
   font-weight: 800;
-  font-stretch: var(--stretch-heading);
   line-height: 1;
 }
 

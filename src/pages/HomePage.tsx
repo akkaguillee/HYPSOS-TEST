@@ -1,31 +1,31 @@
-import { TapeMarquee } from '@/components/graffiti/TapeMarquee';
-import { tapes } from '@/content/campaign';
-import { CategoryShowcase } from '@/sections/home/CategoryShowcase';
+import { Ticker } from '@/components/brand/Ticker';
+import { ticker } from '@/content/campaign';
+import { CategoryIndex } from '@/sections/home/CategoryIndex';
 import { ChapterDrop } from '@/sections/home/ChapterDrop';
 import { Editorial } from '@/sections/home/Editorial';
 import { Hero } from '@/sections/home/Hero';
 import { LimitedDrop } from '@/sections/home/LimitedDrop';
+import { Manifesto } from '@/sections/home/Manifesto';
 import { Signature } from '@/sections/home/Signature';
-import { TheWall } from '@/sections/home/TheWall';
-import styles from './HomePage.module.css';
 
 /**
- * Portada por bandas a sangre (Manual: negro dominante, rojo como señal, blanco roto):
- * campaña en el túnel (negro) → cintas cruzadas sobre el corte → Chapter 01 (claro) → categorías
- * con modelos (negro) → lookbook y detalle firma (claro) → cápsula (rojo, una vez) → el muro:
- * manifiesto pintado a espray (negro) → newsletter y pie.
+ * Portada por bandas a sangre que alternan oscuro y claro (Shelby), con la foto editorial sin
+ * texto encima (21 TSI) y un solo color de acción (Cake):
+ * hero café → banda roja en bucle → Chapter 01 (blanco) → índice de categorías (café) →
+ * lookbook (blanco) → la señal roja → cápsula Signal con tarjeta oscura (blanco) →
+ * manifiesto (café) → pie.
  */
 export default function HomePage() {
   return (
     <>
       <Hero />
-      <TapeMarquee className={styles.tapes} top={tapes.top} bottom={tapes.bottom} label={tapes.label} />
+      <Ticker items={ticker.items} label={ticker.label} />
       <ChapterDrop />
-      <CategoryShowcase />
+      <CategoryIndex />
       <Editorial />
       <Signature />
       <LimitedDrop />
-      <TheWall />
+      <Manifesto />
     </>
   );
 }

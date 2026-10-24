@@ -36,7 +36,7 @@ legend.groupTitle + * {
 }
 
 .groupTitle {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -284,7 +284,7 @@ legend.groupTitle + * {
 }
 
 .sortLabel {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;

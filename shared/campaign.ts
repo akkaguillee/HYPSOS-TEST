@@ -46,13 +46,13 @@ export type CampaignPhotoId = keyof typeof campaignPhotos;
 
 /**
  * Marco de campaña de la portada (lo usan la interfaz y la precarga del HTML inicial).
- * `heroMedia`: fotografía o vídeo oficial. Mientras sea `null`, la portada usa `campaignPhotos.underpass`.
+ * `heroMedia`: fotografía o vídeo oficial. Mientras sea `null`, la portada usa `campaignPhotos.stairs`.
  */
 export type HeroMedia = { type: 'image'; src: string; alt: string; width: number; height: number } | { type: 'video'; src: string; poster: string };
 
 export const heroMedia: HeroMedia | null = null;
 
-export const heroPhoto = campaignPhotos.underpass;
+export const heroPhoto = campaignPhotos.stairs;
 
 /** Prenda destacada de la campaña (se usa en tarjetas y menús). */
 export const heroFeature: { handle: string; colorId: string; view: MediaView } = {

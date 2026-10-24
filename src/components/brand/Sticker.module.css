@@ -1,9 +1,0 @@
-.sticker {
-  display: block;
-  height: auto;
-  overflow: visible;
-  transform: rotate(var(--sticker-rotate, 0deg));
-  /* Las pegatinas no se seleccionan ni se arrastran como imagen. */
-  user-select: none;
-  -webkit-user-select: none;
-}

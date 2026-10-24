@@ -16,7 +16,6 @@
   font-family: var(--font-display);
   font-size: clamp(2rem, 1vw + 1.5rem, 2.5rem);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-tight);
   text-transform: uppercase;
 }
@@ -124,7 +123,7 @@
 }
 
 .lineCode {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -153,7 +152,7 @@
 }
 
 .linePrice {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-sm);
   font-weight: 500;
   white-space: nowrap;
@@ -196,7 +195,7 @@
 }
 
 .stepper output {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-sm);
   font-weight: 500;
 }
@@ -218,7 +217,7 @@
 .remove {
   min-height: 40px;
   padding: 0 var(--space-1);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -259,7 +258,7 @@
 }
 
 .summaryLabel {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -267,7 +266,7 @@
 }
 
 .summaryValue {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-lg);
   font-weight: 600;
 }
@@ -291,7 +290,7 @@
   align-items: center;
   min-height: 44px;
   padding-inline: var(--space-3);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);

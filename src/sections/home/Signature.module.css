@@ -1,95 +1,94 @@
-.grid {
+/* Banda roja centrada: círculo con el detalle, titular, texto y el sistema en cuatro columnas. */
+.inner {
   display: grid;
-  gap: var(--space-7);
-}
-
-@media (min-width: 1024px) {
-  .grid {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: var(--space-9);
-    align-items: center;
-  }
-}
-
-.media {
-  aspect-ratio: 1 / 1;
-  border-radius: var(--radius-5);
-  background: var(--c-black);
-}
-
-.copy {
-  display: grid;
+  justify-items: center;
   gap: var(--space-5);
-  align-content: start;
+  text-align: center;
+}
+
+.circle {
+  width: clamp(200px, 26vw, 380px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--c-coffee);
+  margin-block: var(--space-2);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  font-weight: 700;
+  line-height: var(--lh-crushed);
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
 }
 
 .text {
-  max-width: 46ch;
+  max-width: 52ch;
   font-size: var(--fs-lg);
   line-height: 1.5;
   color: var(--fg-muted);
+  text-wrap: balance;
 }
 
-/* Sistema en ficha técnica: códigos en monoespaciada, filas separadas por líneas finas. */
 .system {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  border-top: 1px solid var(--line-strong);
-  list-style: none;
+  width: 100%;
+  margin-top: var(--space-7);
   padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line-strong);
+  text-align: left;
+}
+
+@media (min-width: 900px) {
+  .system {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 .item {
   display: grid;
-  gap: var(--space-1);
   align-content: start;
-  padding: var(--space-4) var(--space-4) var(--space-5) 0;
-  border-bottom: 1px solid var(--line);
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-4) var(--space-5) 0;
 }
 
-.item:nth-child(odd) {
-  border-right: 1px solid var(--line);
-}
-
-.item:nth-child(even) {
+.item + .item {
   padding-left: var(--space-4);
+  border-left: 1px solid var(--line);
+}
+
+@media (max-width: 899px) {
+  .item:nth-child(3) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .item:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
 }
 
 .code {
-  font-family: var(--font-display);
-  font-stretch: var(--stretch-display);
-  font-size: clamp(2rem, 2.6vw, 2.8rem);
-  font-weight: 900;
-  line-height: 0.85;
-  color: var(--c-red);
-}
-
-.visual {
-  position: relative;
-}
-
-/* Óvalo vertical centrado en la trabilla (88 % / 62 % de la foto cuadrada). */
-.circle {
-  position: absolute;
-  left: 75%;
-  top: 62%;
-  width: 26%;
-  height: auto;
-  translate: 0 -50%;
-  rotate: 78deg;
-  pointer-events: none;
+  font-family: var(--font-label);
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  color: var(--fg-muted);
 }
 
 .itemTitle {
   font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 800;
-  font-stretch: var(--stretch-heading);
-  line-height: 1;
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  line-height: 1.1;
   text-transform: uppercase;
 }
 
 .itemText {
   font-size: var(--fs-sm);
+  line-height: 1.5;
   color: var(--fg-muted);
 }

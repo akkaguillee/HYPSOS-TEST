@@ -1,0 +1,62 @@
+/* Declaración centrada a escala de cartel y el nombre del movimiento cortado por el borde. */
+.section {
+  overflow: hidden;
+  overflow: clip;
+  padding-bottom: 0;
+}
+
+.inner {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-6);
+  text-align: center;
+}
+
+.statement {
+  max-width: 22ch;
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 4.6vw, 5rem);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+/* Rojo sobre café da 4,4:1: solo vale como texto grande (≥ 24 px), por eso va en Bastaman a 24 px. */
+.accent {
+  max-width: 30ch;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  color: var(--c-red);
+  text-wrap: balance;
+}
+
+/* Rótulo gigante, cortado por el borde inferior (oversize y cropped). */
+.giant {
+  margin-top: var(--space-10);
+  margin-bottom: -0.2em;
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 22vw, 24rem);
+  font-weight: 700;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-align: center;
+  color: var(--c-red);
+  user-select: none;
+}
+
+:root[data-accent-font='ready'] .giant {
+  font-family: var(--font-accent);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 0.9;
+  margin-bottom: -0.12em;
+}

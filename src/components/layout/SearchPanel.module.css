@@ -28,7 +28,7 @@
 /* Hoja de cristal flotante, alineada con la barra de la cabecera. */
 .panel {
   --bar-pad: clamp(8px, calc(var(--gutter) - 32px), 16px);
-  --lg-tint: rgb(9 9 9 / 0.78);
+  --lg-tint: rgb(20 1 2 / 0.78);
   position: absolute;
   top: var(--header-inset);
   left: max(calc(var(--gutter) - var(--bar-pad)), env(safe-area-inset-left, 0px));
@@ -85,7 +85,6 @@
   font-family: var(--font-display);
   font-size: clamp(1.25rem, 3vw, 2rem);
   font-weight: 700;
-  font-stretch: var(--stretch-heading);
   text-transform: uppercase;
   outline: none;
 }
@@ -120,7 +119,7 @@
 @media (hover: hover) and (pointer: fine) {
   .chip:hover {
     background: var(--c-white);
-    color: var(--c-black);
+    color: var(--c-coffee);
   }
 }
 

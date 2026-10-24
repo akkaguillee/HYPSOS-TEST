@@ -36,7 +36,7 @@
   width: min(calc(100% - var(--sheet-inset) * 2), var(--drawer-width, 440px));
   overflow: hidden;
   /* Cristal más denso: el panel contiene texto y formularios. */
-  --lg-tint: rgb(9 9 9 / 0.8);
+  --lg-tint: rgb(20 1 2 / 0.8);
   transition: transform var(--dur-panel) var(--ease-drawer);
   outline: none;
 }
@@ -69,7 +69,6 @@
   font-family: var(--font-display);
   font-size: var(--fs-sm);
   font-weight: 750;
-  font-stretch: var(--stretch-heading);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }

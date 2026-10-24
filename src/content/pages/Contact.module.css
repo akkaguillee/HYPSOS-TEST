@@ -15,7 +15,7 @@
 }
 
 .infoLabel {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);

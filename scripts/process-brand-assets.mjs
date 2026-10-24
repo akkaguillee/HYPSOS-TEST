@@ -194,16 +194,16 @@ export const mascotVector = {
 );
 
 // Logotipos oficiales en SVG para uso externo (prensa, emails, datos estructurados).
-writeFileSync(join(OUT_IMAGES, 'hypsos-wordmark.svg'), standaloneSvg(wordmark, '#080808'));
+writeFileSync(join(OUT_IMAGES, 'hypsos-wordmark.svg'), standaloneSvg(wordmark, '#140102'));
 writeFileSync(join(OUT_IMAGES, 'hypsos-wordmark-white.svg'), standaloneSvg(wordmark, '#F5F5F5'));
-writeFileSync(join(OUT_IMAGES, 'hypsos-monogram.svg'), standaloneSvg(monogram, '#080808'));
+writeFileSync(join(OUT_IMAGES, 'hypsos-monogram.svg'), standaloneSvg(monogram, '#140102'));
 writeFileSync(join(OUT_IMAGES, 'hypsos-star.svg'), standaloneSvg(star, '#F5F5F5'));
 
 console.log('Generando favicon, iconos y Open Graph…');
 // Favicon: monograma oficial, negro en pestañas claras y blanco en pestañas oscuras.
 writeFileSync(
   join(OUT_PUBLIC, 'favicon.svg'),
-  standaloneSvg(monogram, 'currentColor', '<style>svg{color:#080808}@media (prefers-color-scheme:dark){svg{color:#fff}}</style>'),
+  standaloneSvg(monogram, 'currentColor', '<style>svg{color:#140102}@media (prefers-color-scheme:dark){svg{color:#fff}}</style>'),
 );
 // Iconos de app: versión oficial negro sobre blanco con margen de seguridad.
 const monoBlack = Buffer.from(standaloneSvg(monogram, '#000'));
@@ -221,7 +221,7 @@ for (const [file, size] of [
     .toFile(join(OUT_PUBLIC, file));
 }
 // Open Graph 1200×630: monograma H negro sobre plano claro + logotipo blanco, sobre negro.
-const ogMonogram = await sharp(Buffer.from(standaloneSvg(monogram, '#080808')), { density: 300 })
+const ogMonogram = await sharp(Buffer.from(standaloneSvg(monogram, '#140102')), { density: 300 })
   .resize({ width: 300 })
   .png()
   .toBuffer();
@@ -234,7 +234,7 @@ const ogPanel = await sharp({ create: { width: 420, height: 470, channels: 3, ba
   .png()
   .toBuffer();
 const wordmarkHeight = Math.round((520 * wordmark.height) / wordmark.width);
-await sharp({ create: { width: 1200, height: 630, channels: 3, background: '#080808' } })
+await sharp({ create: { width: 1200, height: 630, channels: 3, background: '#140102' } })
   .composite([
     { input: ogPanel, top: 80, left: 700 },
     { input: ogWordmark, top: Math.round(315 - wordmarkHeight / 2), left: 100 },

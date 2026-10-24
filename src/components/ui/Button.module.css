@@ -13,10 +13,11 @@
   border-radius: var(--radius-pill);
   background: var(--btn-bg);
   color: var(--btn-fg);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: var(--tracking-label);
+  font-synthesis: none;
   line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
@@ -55,18 +56,19 @@
   width: 100%;
 }
 
-/* Acción principal: HYPSOS Red (Manual: el rojo marca la llamada a la acción). Una por pantalla. */
+/* Acción principal: Racing Red, el único color de relleno para convertir (Cake). Una por pantalla. */
 .primary {
   --btn-bg: var(--c-red);
-  --btn-fg: var(--c-white-soft);
+  --btn-fg: var(--c-white);
   --btn-border: var(--c-red);
 }
 
-/* Sobre la banda roja, la acción principal se invierte. */
-[data-theme='red'] .primary {
-  --btn-bg: var(--c-black);
-  --btn-fg: var(--c-white-soft);
-  --btn-border: var(--c-black);
+/* Sobre las bandas roja y verde, la acción principal pasa a café. */
+[data-theme='red'] .primary,
+[data-theme='lime'] .primary {
+  --btn-bg: var(--c-coffee);
+  --btn-fg: var(--c-white);
+  --btn-border: var(--c-coffee);
 }
 
 /* Contraste: relleno del color del texto (negro sobre claro, blanco roto sobre negro). */
@@ -76,7 +78,7 @@
   --btn-border: var(--fg);
 }
 
-/* Secundario: píldora con contorno de 1 px, como una pegatina recortada. */
+/* Secundario: píldora fantasma con contorno de 1 px (21 TSI). */
 .outline {
   --btn-bg: transparent;
   --btn-fg: var(--fg);
@@ -130,13 +132,14 @@
 
 @media (hover: hover) and (pointer: fine) {
   .primary:hover {
-    --btn-bg: #b8141a;
-    --btn-border: #b8141a;
+    --btn-bg: var(--c-red-deep);
+    --btn-border: var(--c-red-deep);
   }
 
-  [data-theme='red'] .primary:hover {
-    --btn-bg: var(--c-black-2);
-    --btn-border: var(--c-black-2);
+  [data-theme='red'] .primary:hover,
+  [data-theme='lime'] .primary:hover {
+    --btn-bg: var(--c-coffee-2);
+    --btn-border: var(--c-coffee-2);
   }
 
   .accent:hover {

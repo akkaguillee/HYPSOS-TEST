@@ -1,4 +1,4 @@
-import { Sticker } from '@/components/brand/Sticker';
+import { Mascot } from '@/components/brand/BrandVector';
 import { CampaignImage } from '@/components/media/CampaignImage';
 import { Reveal } from '@/components/motion/Reveal';
 import type { CampaignPhoto } from '@shared/campaign';
@@ -102,8 +102,8 @@ export function EndTile({ kicker, title, to, cta, text, note, photo, focus, vari
         </span>
       )}
       {note && <span className={styles.endCredit}>{note}</span>}
-      {!photo && variant === 'brand' && <Sticker mark="mascot" rotate={-8} className={styles.endSticker} />}
-      {variant === 'lab' && <Sticker mark="mascot" rotate={6} className={styles.labSticker} />}
+      {!photo && variant === 'brand' && <Mascot className={styles.endSticker} />}
+      {variant === 'lab' && <Mascot className={styles.labSticker} />}
     </>
   );
   return to ? (

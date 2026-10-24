@@ -1,5 +1,4 @@
 import { CartDrawer } from '@/components/commerce/CartDrawer';
-import { SprayDefs } from '@/components/graffiti/SprayDefs';
 import { CursorFollower } from '@/components/motion/CursorFollower';
 import { IntroLoader } from '@/components/motion/IntroLoader';
 import { PageTransition } from '@/components/motion/PageTransition';
@@ -75,7 +74,6 @@ export function Layout() {
       <div className="visually-hidden" role="status" aria-live="polite" aria-atomic="true">
         {announcement}
       </div>
-      <SprayDefs />
       <CursorFollower />
       <PageTransition />
       <ScrollRestoration getKey={(entry) => entry.pathname} />

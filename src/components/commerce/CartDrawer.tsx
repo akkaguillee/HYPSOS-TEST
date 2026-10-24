@@ -1,4 +1,4 @@
-import { Sticker } from '@/components/brand/Sticker';
+import { Mascot } from '@/components/brand/BrandVector';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { Drawer } from '@/components/ui/Drawer';
 import { Price } from '@/components/ui/Price';
@@ -62,7 +62,7 @@ export function CartDrawer() {
     >
       {lines.length === 0 ? (
         <div className={styles.empty}>
-          <Sticker mark="mascot" rotate={-8} className={styles.emptySticker} />
+          <Mascot className={styles.emptySticker} />
           <p className={styles.emptyTitle}>Tu carrito está vacío</p>
           <p className={styles.emptyText}>Los drops vuelan. Echa un vistazo a lo último antes de que se agote.</p>
           <ButtonLink to={paths.collection('novedades')} onClick={close}>

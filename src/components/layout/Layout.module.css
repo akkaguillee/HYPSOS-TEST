@@ -5,7 +5,7 @@
   z-index: calc(var(--z-intro) + 1);
   padding: var(--space-3) var(--space-4);
   background: var(--c-white);
-  color: var(--c-black);
+  color: var(--c-coffee);
   font-size: var(--fs-sm);
   font-weight: 600;
   transform: translateY(-200%);

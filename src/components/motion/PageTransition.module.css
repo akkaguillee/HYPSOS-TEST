@@ -9,7 +9,7 @@
   z-index: var(--z-intro);
   display: grid;
   place-items: center;
-  background: var(--c-black);
+  background: var(--c-coffee);
   visibility: hidden;
   pointer-events: none;
   -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole), #000 calc(var(--hole) + 1px));

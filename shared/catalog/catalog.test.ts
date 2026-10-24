@@ -33,7 +33,8 @@ describe('integridad del catálogo', () => {
   });
 
   it('busca sin distinguir acentos ni mayúsculas', () => {
-    expect(searchProducts('TECNICO').map((p) => p.handle)).toContain('jogger-tecnico');
+    expect(searchProducts('PANTALON').map((p) => p.handle)).toContain('cargo-altura');
+    expect(searchProducts('jogger')).toEqual([]); // retirado (borrador): no aparece
     expect(searchProducts('sudadera monogram')[0].handle).toBe('sudadera-capucha-monogram');
     expect(searchProducts('   ')).toEqual([]);
   });

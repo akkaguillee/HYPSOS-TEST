@@ -18,8 +18,8 @@
  */
 :where(.root) {
   /* Tono oscuro (por defecto) */
-  --lg-tint: rgb(9 9 9 / 0.35);
-  --lg-fg: #f2f0ec;
+  --lg-tint: rgb(20 1 2 / 0.35);
+  --lg-fg: #ffffff;
   --lg-edge-hi: rgb(255 255 255 / 0.3);
   --lg-edge-lo: rgb(0 0 0 / 0.42);
   --lg-glow: rgb(255 255 255 / 0.07);
@@ -27,7 +27,7 @@
   --lg-rim-soft: rgb(255 255 255 / 0.22);
   --lg-sheen: rgb(255 255 255 / 0.09);
   --lg-spot: rgb(255 255 255 / 0.08);
-  --lg-solid: var(--glass-solid, #141414);
+  --lg-solid: var(--glass-solid, #210d0e);
   --lg-fallback-blur: blur(16px) saturate(170%);
   --lg-drop: 0 12px 32px rgb(0 0 0 / 0.28), 0 2px 6px rgb(0 0 0 / 0.18);
 
@@ -47,16 +47,16 @@
 }
 
 :where(.root[data-tone='light']) {
-  --lg-tint: rgb(242 240 236 / 0.45);
-  --lg-fg: #090909;
+  --lg-tint: rgb(255 255 255 / 0.45);
+  --lg-fg: #140102;
   --lg-edge-hi: rgb(255 255 255 / 0.9);
-  --lg-edge-lo: rgb(9 9 9 / 0.16);
+  --lg-edge-lo: rgb(20 1 2 / 0.16);
   --lg-glow: rgb(255 255 255 / 0.28);
   --lg-rim: rgb(255 255 255 / 1);
   --lg-rim-soft: rgb(255 255 255 / 0.45);
   --lg-sheen: rgb(255 255 255 / 0.22);
   --lg-spot: rgb(255 255 255 / 0.16);
-  --lg-solid: #f2f0ec;
+  --lg-solid: #ffffff;
   --lg-drop: 0 12px 30px rgb(0 0 0 / 0.18), 0 2px 6px rgb(0 0 0 / 0.12);
 }
 
@@ -133,7 +133,7 @@
 }
 
 :where(.root):focus-visible {
-  outline: 2px solid var(--focus-ring, #f2f0ec);
+  outline: 2px solid var(--focus-ring, #ffffff);
   outline-offset: 3px;
 }
 
@@ -155,7 +155,7 @@
   }
 }
 
-/* Transparencia reducida: superficie sólida (#141414 / #f2f0ec), sin refracción ni especular.
+/* Transparencia reducida: superficie sólida (#210d0e / #ffffff), sin refracción ni especular.
    Especificidad alta para ganar a cualquier override: la preferencia del usuario manda. */
 @media (prefers-reduced-transparency: reduce) {
   .root > .lens,

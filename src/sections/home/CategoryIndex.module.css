@@ -1,0 +1,201 @@
+/* Índice tipo cartel: nombres gigantes centrados entre líneas finas, foto flotante con ratón. */
+.section {
+  position: relative;
+  overflow: hidden;
+  overflow: clip;
+}
+
+.head {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+  margin-bottom: clamp(var(--space-6), 4vw, var(--space-8));
+  text-align: center;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  line-height: var(--lh-heading);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.list {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--line);
+}
+
+.item {
+  border-bottom: 1px solid var(--line);
+}
+
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding-block: clamp(14px, 1.6vw, 24px);
+  color: var(--fg);
+  transition: color var(--dur-hover) var(--ease-out);
+}
+
+.count {
+  white-space: nowrap;
+}
+
+.index,
+.count {
+  font-family: var(--font-label);
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 7.4vw, 7.5rem);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  text-align: center;
+  transition:
+    color var(--dur-hover) var(--ease-out),
+    letter-spacing var(--dur-panel) var(--ease-out);
+}
+
+.arrow {
+  display: none;
+}
+
+/* Táctil y pantallas estrechas: foto circular a la izquierda, nombre alineado a la izquierda. */
+.thumb {
+  display: none;
+}
+
+@media (max-width: 767px), (hover: none) {
+  .row {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .index {
+    display: none;
+  }
+
+  .thumb {
+    display: block;
+    position: relative;
+    width: clamp(48px, 12vw, 64px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .thumb img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .name {
+    font-size: clamp(2rem, 9vw, 4rem);
+    text-align: left;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .row:hover .name {
+    color: var(--c-red);
+    letter-spacing: -0.01em;
+  }
+
+  .row:hover .count {
+    color: var(--fg);
+  }
+}
+
+.row:active .name {
+  color: var(--c-red);
+}
+
+/* Más destinos en píldoras fantasma. */
+.more {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-7);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-5);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-label);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  transition:
+    background-color var(--dur-hover) var(--ease-out),
+    color var(--dur-hover) var(--ease-out),
+    border-color var(--dur-hover) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover {
+    background: var(--fg);
+    border-color: var(--fg);
+    color: var(--bg);
+  }
+}
+
+.chip:active {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+/* Foto flotante: tarjeta 4:5 con esquinas de 20 px que sigue al puntero. */
+.preview {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: clamp(200px, 19vw, 300px);
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-4);
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--surface);
+  transform: scale(0);
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.slide img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@media (hover: none), (pointer: coarse), (max-width: 767px) {
+  .preview {
+    display: none;
+  }
+}

@@ -38,7 +38,7 @@
 }
 
 .label {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -57,7 +57,6 @@
   font-family: var(--font-display);
   font-size: clamp(10rem, 46vw, 28rem);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-crushed);
   letter-spacing: -0.02em;
 }
@@ -82,7 +81,6 @@
   font-family: var(--font-display);
   font-size: clamp(2.25rem, 2.6vw + 1.25rem, 3.75rem);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-tight);
   text-transform: uppercase;
 }
@@ -124,7 +122,7 @@
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);

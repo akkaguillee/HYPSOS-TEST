@@ -1,13 +1,16 @@
-/* Marquesina: la cinta se duplica y se desplaza media longitud para un bucle sin saltos. */
+/*
+ * Marquesina en verde «recibo» (Cake): la única franja de este color a escala, con avisos reales.
+ * La cinta se duplica y se desplaza media longitud para un bucle sin saltos.
+ */
 .bar {
   position: relative;
   height: var(--announcement-h);
   overflow: hidden;
-  background: var(--c-black);
-  color: var(--c-white-soft);
-  font-family: var(--font-mono);
+  background: var(--c-lime);
+  color: var(--c-coffee);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
@@ -34,16 +37,18 @@
   white-space: nowrap;
 }
 
-/* El aviso de demo, siempre presente, en gris para distinguirlo del lema. */
+/* El aviso de demo, siempre presente, subrayado para distinguirlo del lema. */
 .item[data-notice] {
-  color: var(--c-grey);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 .mark {
   flex: none;
-  width: 22px;
+  width: 18px;
   height: auto;
-  color: var(--c-red);
+  color: var(--c-coffee);
 }
 
 @keyframes marquee {

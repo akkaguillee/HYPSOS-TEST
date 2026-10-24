@@ -14,7 +14,7 @@ interface RevealProps {
 /**
  * Contenedor de bloques de contenido. Antes los fundía y deslizaba al entrar en pantalla; el
  * sistema de movimiento actual reserva la animación para piezas con intención (titulares
- * prensados, imágenes a espray, trazos y pegatinas), así que aquí el contenido está quieto.
+ * prensados, aperturas de imagen y sellos), así que aquí el contenido está quieto.
  */
 export function Reveal({ as: Tag = 'div', className, style, children, id }: RevealProps) {
   return (

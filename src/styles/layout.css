@@ -57,7 +57,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   line-height: 1;
@@ -126,7 +126,7 @@
 
 /*
  * <Reveal> ya no funde ni desliza: el contenido corriente está quieto y el movimiento se reserva
- * para piezas con intención (titulares prensados, imágenes a espray, trazos, pegatinas).
+ * para piezas con intención (titulares prensados, aperturas de imagen, sellos).
  */
 
 /* Marco de <ImageReveal>: recorta la imagen, que lo llena por completo. */

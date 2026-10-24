@@ -1,7 +1,6 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { CustomEase } from 'gsap/CustomEase';
-import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
 import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
@@ -9,23 +8,21 @@ import { SplitText } from 'gsap/SplitText';
 /**
  * Sistema de movimiento HYPSOS.
  *
- * Nada de fundidos ni deslizamientos genéricos: cada gesto imita un proceso físico de la calle.
+ * Nada de fundidos ni deslizamientos genéricos: cada gesto imita un proceso físico de imprenta y
+ * de cámara.
  * - press: las letras salen «prensadas» desde la línea base (escala vertical con rebote y un
  *   ancho que se comprime), como un titular estampado.
- * - spray: imágenes que se pintan con espray (canvas, ver spray.ts).
- * - draw + drip: trazos de graffiti que se dibujan y gotean con gravedad (DrawSVG).
- * - slap: pegatinas que se estampan con un golpe y un pequeño temblor.
+ * - stamp: una pieza (la palabra de acento, un sello) cae grande y girada y se asienta con un golpe.
+ * - aperture: las fotos se abren desde el centro como un diafragma (ImageReveal, Hero).
  * - scramble: etiquetas técnicas que se decodifican.
  *
  * Duraciones y curvas espejo de los tokens CSS (--dur-*, --ease-*) para lo que sigue en CSS.
  */
-gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText, CustomEase, DrawSVGPlugin, ScrambleTextPlugin);
+gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText, CustomEase, ScrambleTextPlugin);
 
 /* Curvas propias, dibujadas como en el editor de gráficos de un programa de animación. */
 CustomEase.create('hyp.press', 'M0,0 C0.1,0 0.16,1.16 0.38,1.08 0.56,1.01 0.74,0.99 1,1');
-CustomEase.create('hyp.slap', 'M0,0 C0.18,0 0.24,1.26 0.44,1.06 0.58,0.94 0.76,1.01 1,1');
-CustomEase.create('hyp.drip', 'M0,0 C0.38,0 0.56,0.36 0.68,0.64 0.8,0.9 0.9,1 1,1');
-CustomEase.create('hyp.stroke', 'M0,0 C0.3,0 0.36,0.52 0.5,0.7 0.66,0.9 0.78,1 1,1');
+CustomEase.create('hyp.stamp', 'M0,0 C0.18,0 0.24,1.26 0.44,1.06 0.58,0.94 0.76,1.01 1,1');
 
 export const DURATION = {
   micro: 0.16,
@@ -40,9 +37,7 @@ export const EASE = {
   outSoft: 'power3.out',
   inOut: 'power3.inOut',
   press: 'hyp.press',
-  slap: 'hyp.slap',
-  drip: 'hyp.drip',
-  stroke: 'hyp.stroke',
+  stamp: 'hyp.stamp',
 } as const;
 
 export function prefersReducedMotion(): boolean {
@@ -75,28 +70,19 @@ export function pressIn(chars: Element[], vars: gsap.TweenVars = {}): gsap.core.
 }
 
 /**
- * Pegatina estampada: cae desde «la mano» (grande, girada) y se pega con un golpe seco. Cada una
- * aparece justo en su golpe (no antes). `impact` hace temblar el soporte un instante al aterrizar.
+ * Sello: la pieza cae desde arriba grande y girada y se asienta con un golpe seco. Solo transform;
+ * la pieza se hace visible en el instante del golpe (no antes).
  */
-export function slap(
-  targets: Element[],
-  { delay = 0, stagger = 0.14, impact, scrollTrigger }: { delay?: number; stagger?: number; impact?: Element | null; scrollTrigger?: ScrollTrigger.Vars } = {},
-): gsap.core.Timeline {
-  const tl = gsap.timeline({ delay, scrollTrigger });
-  gsap.set(targets, { autoAlpha: 0 });
-  targets.forEach((target, index) => {
-    const at = index * stagger;
-    tl.set(target, { autoAlpha: 1 }, at).fromTo(
-      target,
-      { scale: 1.9, rotation: index % 2 ? -18 : 18 },
-      { scale: 1, rotation: 0, duration: 0.5, ease: EASE.slap, immediateRender: false },
-      at,
-    );
-    if (impact) {
-      tl.fromTo(impact, { x: 0 }, { keyframes: { x: [0, -3, 2.5, -1.5, 0] }, duration: 0.2, ease: 'none', clearProps: 'x', immediateRender: false }, at + 0.16);
-    }
-  });
+export function stamp(target: Element, vars: { delay?: number; rotation?: number } = {}): gsap.core.Timeline {
+  const { delay = 0, rotation = -14 } = vars;
+  const tl = gsap.timeline({ delay });
+  tl.set(target, { autoAlpha: 1 }, 0).fromTo(
+    target,
+    { scale: 1.8, rotation: rotation },
+    { scale: 1, rotation: 0, duration: 0.6, ease: EASE.stamp, immediateRender: false },
+    0,
+  );
   return tl;
 }
 
-export { CustomEase, DrawSVGPlugin, gsap, ScrambleTextPlugin, ScrollTrigger, SplitText, useGSAP };
+export { CustomEase, gsap, ScrambleTextPlugin, ScrollTrigger, SplitText, useGSAP };

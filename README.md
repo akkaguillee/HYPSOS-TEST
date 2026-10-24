@@ -95,53 +95,80 @@ Decisiones relevantes:
 
 ## Sistema de diseño y motion
 
-La dirección visual sigue el **Manual de Marca HYPSOS** («negro + rojo, con control») con la estructura de la guía de estilo de referencia: tipografía gigante comprimida, bandas de color a sangre, píldoras con contorno de 1 px y pegatinas troqueladas. Todos los valores viven en `src/styles/tokens.css`:
+La dirección visual (v3) mezcla tres referencias y se apoya en la paleta y las tipografías que
+fijó HYPSOS. Todos los valores viven en `src/styles/tokens.css`:
 
-- **Paleta del Manual:** HYPSOS Black `#090909` (campo dominante), HYPSOS Red `#D71920` (señal: acción principal, «Edición limitada», indicador activo; una vez por vista), Deep Red `#7A0F1D`, Off White `#F2F0EC` y Concrete Grey `#747474`. Temas por zona: `data-theme="light" | "dark" | "red"` (la banda roja, como mucho una por página).
-- **Tipografía base (las 3 familias del Manual):** Archivo variable en sus dos extremos —comprimida al 62 % para titulares tipo cartel y **ancha al 125 %** para palabras que tienen que ocupar el ancho—, Inter para el texto y JetBrains Mono para capítulos, códigos, etiquetas y botones.
-- **Una sola familia de acento (4 en total):** **Grenze Gotisch** (gótica tipo Old English, OFL vía Fontsource, solo latín y un peso) para nombres de capítulo y colección («Chapter», «Ascent», «Signal») y para las pintadas a espray, como el Old English de las pintadas chicanas. El contraste sale de mezclar Archivo comprimida y ancha en un mismo titular (`.mix-*`, `.t-wide`, `.t-gothic` en `src/styles/typography.css`), no de sumar familias.
-- **Referencias de la marca (tablero de Pinterest del cliente):** gótica tipo Old English, pintadas, gráficos Y2K (alambre de espino), pegatinas troqueladas, llaveros de goma y prendas boxy/cropped/baggy. Se traducen a tipografía, trazos y ornamentos; los gráficos de producto siguen siendo solo las marcas oficiales.
-- **Forma:** botones en píldora, imágenes de producto a 14 px, tarjetas a 20–32 px. Sin sombras en tarjetas.
-- **Espaciado:** base 4 px, márgenes laterales de 16 a 48 px, ritmo vertical fluido.
-- **Motion:** duraciones `--dur-ui` (200 ms), `--dur-panel` (380 ms); en JavaScript, curvas propias de GSAP (`hyp.press`, `hyp.slap`, `hyp.drip`, `hyp.stroke`) en `src/lib/motion.ts`.
+- **21 TSI (editorial de moda):** la foto a sangre hace el trabajo y no lleva texto encima; la interfaz se reduce a etiquetas pequeñas en mayúsculas, controles en píldora con contorno y un punto de estado. La escala salta de golpe: interfaz de 11 a 20 px y titulares desde 44 px, sin tamaños intermedios. Retrato en círculo como contrapunto.
+- **Shelby (bandas de color):** lienzo café casi negro; cada sección es un campo de color a sangre (café → rojo → blanco → café…), con titulares enormes centrados y una etiqueta tipo código de producto encima. Todo plano, sin sombras.
+- **Cake Equity (orden comercial):** un solo color de relleno para convertir (rojo), un verde «recibo» usado poco y a propósito (la franja de avisos, la disponibilidad, el foco), tarjetas con borde fino en vez de sombra, botones en píldora y una tarjeta oscura de producto por página.
 
-**Liquid Glass con refracción** (`src/components/ui/LiquidGlass.tsx`, `src/lib/liquid-glass.ts`): cabecera flotante, megamenú, búsqueda, carrito y cajones, modales, etiquetas y puntos sobre fotos, controles de galería.
+**Paleta (las cuatro tintas de HYPSOS):** Coffee Bean `#140102` (lienzo y tinta sobre claro), Racing Red `#e90c17` (acción principal, banda de señal, trabilla), Yellow Green `#96de2b` (recibo) y White `#ffffff`. Los derivados son mezclas de esas cuatro (café más claro para superficies, rojo con café para el hover, café al 70 % para texto secundario) y todos cumplen AA. Temas por banda: `data-theme="dark" | "light" | "red" | "lime"`.
+
+**Tipografía:** solo las dos familias que entregó HYPSOS (`src/assets/fonts/README.md`):
+
+- **Bastaman** (solo mayúsculas, un peso): titulares, navegación, botones, etiquetas y precios.
+- **Aerosoldier** (acento): el nombre del capítulo en el hero, la cápsula Signal, «The Ascent» del manifiesto y los nombres de colección. **Nunca para cifras**: se excluyen con `unicode-range` porque la versión recibida las sustituye por una marca de agua.
+- **Texto corrido** (descripciones, legales, formularios): la fuente del sistema del visitante, sin descargas. Párrafos largos en mayúsculas negras no se leen bien.
+
+**Licencias:**
+
+- El archivo de Aerosoldier es la versión **PERSONAL USE ONLY**: no permite uso comercial ni incrustarla. Por eso **no se sube al repositorio** y la web solo la carga si el archivo está en `src/assets/fonts/licensed/` (sin él, el acento se ve en Bastaman).
+- Bastaman sí permite incrustarla, pero su archivo no incluye texto de licencia: hay que confirmar el uso comercial con el autor.
+
+**Forma:** botones y controles en píldora, imágenes de producto a 12 px, tarjetas a 20 px, la tarjeta oscura a 28 px, fotos editoriales a sangre. Sin sombras. Espaciado en base 4 px, márgenes laterales de 16 a 48 px y bandas de 72 a 136 px de alto. Motion: `--dur-ui` (200 ms) y `--dur-panel` (380 ms); en JavaScript, las curvas propias `hyp.press` y `hyp.stamp` (`src/lib/motion.ts`).
+
+**Liquid Glass con refracción** (`src/components/ui/LiquidGlass.tsx`, `src/lib/liquid-glass.ts`): cabecera flotante, megamenú, búsqueda, carrito y cajones, modales y controles de galería.
 
 - En Chromium (Chrome, Edge, Opera…) hay **refracción real**: un mapa de desplazamiento generado en canvas (perfil convexo tipo «squircle», ley de Snell con índice 1,5) se aplica con `backdrop-filter: url(#filtro)` y `feDisplacementMap`, con una ligera aberración cromática. El fondo se curva en el bisel y el centro queda plano y legible.
-- **Cabecera = gota de agua** (perfil `drop`): toda la píldora actúa como lente; el borde comprime y el centro amplía lo que pasa por detrás (remapeo de Hermite monótono, sin inversiones). Al hacer scroll la gota «se carga» con la velocidad (más refracción) y al parar rebota con un muelle elástico (`useLiquidWobble`, que solo reescala el filtro, sin re-render).
-- Safari y Firefox no admiten filtros SVG en `backdrop-filter`: reciben cristal con desenfoque y las mismas capas de luz, **sin refracción**.
-- Con `prefers-reduced-transparency` el material pasa a sólido; con `prefers-reduced-motion` el brillo no sigue al puntero.
+- **Cabecera = gota de agua** (perfil `drop`): toda la píldora actúa como lente; el borde comprime y el centro amplía lo que pasa por detrás (remapeo de Hermite monótono, sin inversiones). Al hacer scroll la gota «se carga» con la velocidad y al parar rebota con un muelle elástico (`useLiquidWobble`, que solo reescala el filtro, sin re-render).
+- Safari y Firefox no admiten filtros SVG en `backdrop-filter`: reciben cristal con desenfoque, **sin refracción**.
+- Con `prefers-reduced-transparency` el material pasa a sólido.
 - Reglas: un cristal no va dentro de otro ni dentro de un ancestro con `opacity`, `filter`, `mask`, `clip-path` o **`view-transition-name`** (este último lo convierte en raíz del fondo y el cristal deja de ver la página).
 
-**Portada** (por bandas, oversize y con graffiti): campaña en un túnel con graffiti, titular de dos anchos «BUILT FOR / THE CLIMB.» con el capítulo «Ascent» pintado a espray en gótica en el centro de la frase, subrayado que gotea, pegatinas de HYPO y la estrella y puntos sobre las prendas → dos cintas de precinto cruzadas sobre el corte → Chapter 01 (gótica + cifra comprimida rodeada a espray, rejilla de producto) → categorías con índices numerados → lookbook «Above ordinary.» con «Above» en gótica roja y corona a espray → detalle firma con la trabilla señalada a rotulador → cápsula Signal (tag negro sobre la banda roja) → **el muro**: manifiesto que se enciende con el scroll, foto pintando con espray, «keep climbing» pintado sobre el muro y rótulo gigante cortado. Marquesina superior con las frases del Manual y el aviso de demo.
+**Portada** (bandas a sangre que alternan oscuro y claro):
 
-**Sistema de movimiento** (JavaScript: GSAP con DrawSVG, ScrambleText, SplitText y CustomEase; canvas y SVG). Nada de fundidos, desenfoques ni deslizamientos de entrada; cada gesto imita un proceso físico:
+1. Franja verde de avisos: el aviso de catálogo de demostración y las frases del Manual.
+2. **Hero en dos tiempos:**
+   - la foto de campaña a sangre, sin texto encima, con dos puntos «en vivo» que llevan a sudaderas y pantalones;
+   - debajo, sobre café, «BUILT FOR / THE CLIMB.» centrado en Bastaman con «Ascent» encajado en medio y las dos acciones.
+3. Banda roja en bucle con las frases del Manual.
+4. **Chapter 01** (blanco): cabecera centrada tipo cartel y rejilla de producto.
+5. **Índice de categorías** (café):
+   - nombres gigantes entre líneas finas, con su número y el recuento real de piezas;
+   - con ratón, una foto sigue al puntero y cambia abriéndose desde el centro;
+   - en táctil, cada fila lleva su foto en círculo.
+6. **Lookbook** (blanco): composición asimétrica, retrato en círculo y dos looks con paralaje.
+7. **La señal roja**: el detalle de la trabilla en un círculo y The Climb System en cuatro columnas.
+8. **Cápsula Signal** (blanco): tarjeta oscura con la foto y las piezas, con precio, estado de stock real y, si tienen tirada declarada, cuánto queda de ella.
+9. **Manifiesto** (café): la declaración se enciende palabra a palabra al leerla y «The Ascent» aparece gigante y cortado por el borde.
+
+**Sistema de movimiento** (GSAP con ScrambleText, SplitText y CustomEase). Nada de fundidos, desenfoques ni deslizamientos de entrada; cada gesto imita un proceso físico de imprenta o de cámara:
 
 - **Prensado** (`pressIn`): las letras de los titulares nacen aplastadas contra la línea base y se estampan con rebote.
-- **Apertura** (`ImageReveal`): las fotos asoman por una ventana redondeada en el centro del marco que se abre hasta llenarlo, mientras la imagen se aleja desde un primer plano y se endereza (como una cámara que abre plano). El hero hace lo mismo a pantalla completa.
-- **Iris entre páginas** (`PageTransition`): al pulsar un enlace interno, un círculo negro se expande desde el punto del clic con la estrella de la marca girando; la ruta cambia cubierta y la página nueva se abre desde el centro con un leve asentamiento. La intro termina con el mismo iris. Sin fundidos del navegador (las View Transitions quedan instantáneas).
-- **Trazo y goteo** (`SprayMark`, `GraffitiTag`): círculos, subrayados, coronas y tags (en gótica) se dibujan a la velocidad de un brazo y después escurren con gravedad; textura de espray con un filtro SVG compartido (`#hyp-spray`).
-- **Alambre de espino** (`BarbedWire`): los dos hilos se tienden de izquierda a derecha y cada púa salta cuando el hilo pasa por ella.
-- **Golpe** (`slap`): las pegatinas se estampan con un pequeño temblor del soporte.
+- **Sello** (`stamp`): la palabra de acento cae grande y girada y se asienta con un golpe.
+- **Apertura** (`ImageReveal`, hero): la foto asoma por una ventana en el centro del marco que se abre hasta llenarlo, como un diafragma. Al hacer scroll, la foto del hero se recoge en una tarjeta con esquinas redondeadas.
+- **Iris entre páginas** (`PageTransition`): un círculo se expande desde el punto del clic con la estrella de la marca; la página nueva se abre desde el centro. La intro termina con el mismo iris.
 - **Decodificación** (`Scramble`): las etiquetas técnicas giran como un panel de salidas.
-- **Scroll**: cintas que aceleran, se inclinan e invierten según la velocidad; barrido rojo que se pinta con el scroll; manifiesto que se enciende palabra a palabra; paralaje moderado.
-- **Puntero**: anillo con inercia (crece con etiqueta sobre imágenes de producto) y botones magnéticos con rebote elástico; luz del cristal que sigue al puntero.
+- **Scroll**: la banda en bucle acelera con la velocidad; el manifiesto se enciende palabra a palabra; paralaje moderado en el lookbook.
+- **Puntero**: anillo con inercia, botones magnéticos y la foto flotante del índice de categorías.
 
 Accesibilidad y plataforma:
 
-- Todo respeta `prefers-reduced-motion`: contenido estático y visible (la marquesina se detiene).
+- Todo respeta `prefers-reduced-motion`: contenido estático y visible (las bandas en bucle se detienen).
 - Los `:hover` solo se aplican con ratón (`hover: hover` y `pointer: fine`).
 - Controles táctiles sin retardo (`touch-action: manipulation`), campos de 16 px y márgenes seguros en horizontal.
 
-Los textos de campaña (marquesina, hero, lookbook, detalle firma, cápsula, manifiesto) se editan en `src/content/campaign.ts` y salen del Manual de Marca (eslogan, frases secundarias, manifiesto y biografía).
+Los textos de campaña (avisos, hero, banda, lookbook, detalle firma, cápsula, manifiesto) se editan en `src/content/campaign.ts` y salen del Manual de Marca (eslogan, frases secundarias, manifiesto y biografía).
 
 ### Fotografía de campaña (provisional, generada con IA)
 
-Las fotos de campaña de `public/assets/campaign/` (túnel con graffiti, muro pintado a espray, escalera, azotea, looks en estudio, gorra, cargo, detalle de la trabilla, accesorios) **están generadas con IA** (Figma AI) como material provisional hasta la sesión de fotos. Las prendas que aparecen son lisas (sin los gráficos de HYPSOS) y **no representan ningún producto concreto**; por eso enlazan a categorías y no a fichas. La web lo indica junto a las fotos principales («Imágenes de campaña generadas con IA · provisionales»).
+Las fotos de campaña de `public/assets/campaign/` (escalera, azotea, looks en estudio, gorra, cargo, detalle de la trabilla, accesorios; el túnel con graffiti y el muro pintado ya no se usan) **están generadas con IA** (Figma AI) como material provisional hasta la sesión de fotos. Las prendas que aparecen son lisas (sin los gráficos de HYPSOS) y **no representan ningún producto concreto**; por eso enlazan a categorías y no a fichas. La web lo indica junto a las fotos principales («Imágenes de campaña generadas con IA · provisionales»).
 
-**Revelado analógico** (`pnpm campaign:film`, `scripts/campaign/film.ts`): las fotos con modelos no se publican tal cual salen de la IA. Desde los originales guardados en `scripts/campaign/originals/` se les aplica lo que haría una cámara de verdad: menos nitidez y contraste local artificiales, curva de película con negros algo mates, color más contenido, halo rojizo en las luces fuertes, viñeteado, esquinas más blandas, aberración cromática leve y grano fino. Así pierden el aspecto plástico típico de la IA. Los bodegones de producto no pasan por este revelado.
+**Revelado analógico** (`pnpm campaign:film`, `scripts/campaign/film.ts`): las fotos con modelos no se publican tal cual salen de la IA. Desde los originales guardados en `scripts/campaign/originals/` se les aplica lo que haría una cámara de verdad: menos nitidez y contraste local artificiales, curva de película con negros algo mates, color más contenido, halo solo alrededor de las luces puntuales, viñeteado, esquinas más blandas, aberración cromática leve y grano fino. Así pierden el aspecto plástico típico de la IA. Los bodegones de producto no pasan por este revelado.
 
 Para sustituirlas basta con dejar las fotos reales con el mismo nombre (`<nombre>-<ancho>.avif|webp`, anchos 640/960/original) o cambiar `shared/campaign.ts`. La foto o el vídeo oficial del hero va en `heroMedia`.
+
+**Cómo conseguir imágenes de calidad alta** (sesión real, packs de mockup, Figma, Weave, API de Gemini, Adobe Stock), con el brief y la lista de tomas: [`docs/brief-fotografia.md`](docs/brief-fotografia.md).
 
 ---
 
@@ -272,7 +299,7 @@ Para la tienda completa con el dominio en Netlify, despliega la API en un host N
   - compra hasta el aviso honesto de checkout no configurado;
   - cuentas, recuperación de contraseña, favoritos, buscador con teclado, newsletter y contacto;
   - ausencia de scripts de terceros sin consentimiento y movimiento reducido;
-  - que ninguna capa decorativa (espray, puntos, cintas) tape la acción principal del hero;
+  - que ninguna capa decorativa (puntos, bandas) tape la acción principal del hero;
   - **axe (WCAG 2.1 AA) sin infracciones graves**;
   - una batería específica en **móvil horizontal**.
 - **Auditoría responsive** (`scripts/responsive-audit.mjs`): 11 rutas × 12 tamaños (320, 375, 390, 430, 768, 1024, 1280, 1440, 1920, y 667×375, 844×390 y 932×430 en horizontal) sin scroll horizontal ni elementos fuera de pantalla.
@@ -287,7 +314,7 @@ Para la tienda completa con el dominio en Netlify, despliega la API en un host N
   - las entradas animadas del contenido sobre el pliegue no lo ocultan;
   - el HTML precarga la imagen principal.
 
-  El límite restante es que la web se renderiza en el cliente y necesita JS antes de pintar. Tras el rediseño con el sistema de movimiento son ~226 KB gzip (React 102 KB, código 67 KB, GSAP con DrawSVG/ScrambleText/CustomEase 57 KB); el hover WebGL (11 KB) se carga aparte y solo al pasar el ratón. Estas cifras de LCP son anteriores a ese aumento y hay que repetir la medición. Ver pendientes. No son datos de campo: hay que confirmarlos con usuarios reales (CrUX o la analítica).
+  El límite restante es que la web se renderiza en el cliente y necesita JS antes de pintar. Con el sistema v3 el JS inicial es de ~220 KB gzip (React 102 KB, código 62 KB, GSAP con ScrambleText/SplitText/CustomEase 56 KB, según la salida de `vite build`); el hover WebGL (11 KB) se carga aparte y solo al pasar el ratón. Las tipografías pesan 9 KB (Bastaman) más 62 KB de Aerosoldier cuando su archivo está presente. Estas cifras de LCP son anteriores a los dos últimos rediseños y hay que repetir la medición. Ver pendientes. No son datos de campo: hay que confirmarlos con usuarios reales (CrUX o la analítica).
 
 Los E2E de este entorno usan el Chromium del sistema: `PLAYWRIGHT_CHROMIUM_PATH=/ruta/a/chromium pnpm test:e2e`. En una máquina normal basta con `npx playwright install chromium`. **No se ha probado en dispositivos físicos**: el tacto, el notch y el teclado virtual deben revisarse en un móvil real.
 
@@ -304,5 +331,14 @@ Los E2E de este entorno usan el Chromium del sistema: `PLAYWRIGHT_CHROMIUM_PATH=
 7. **Atención al cliente:** email, plazo de respuesta y redes sociales (`shared/config.ts`).
 8. **Rendimiento en redes lentas:** prerenderizar el HTML de las rutas principales (o SSR) y cargar GSAP bajo demanda para bajar el LCP de 2,5 s en 4G lenta.
 9. **Textos de marca:** el eslogan, el manifiesto, los valores y la biografía salen del Manual; las descripciones de colecciones y productos siguen siendo borradores a validar.
-10. **Bases de mockup que faltan:** las fotos base (prendas lisas generadas con IA, en corte oversize/baggy) de manga larga, jogger, cargo, short, gorra, gorro, bolsa y calcetines ya están generadas en el archivo de Figma del proyecto, pero no se pueden descargar desde este entorno: la red no permite `www.figma.com` y la captura vía Figma está limitada por el plan Starter. Con `www.figma.com` permitido: `pnpm mockups:bases && pnpm mockups`. Sin red: exportar los nodos (lista en `scripts/mockups/sources.ts`) a `scripts/mockups/bases/<tipo>-<color>-<cara>.webp` y ejecutar `pnpm mockups`.
-11. **Catálogo según el Manual:** el Manual recomienda un primer drop corto (ASCENT TEE 01, CORE TEE 01, SUMMIT HOODIE 01, HYPOCAP 01, HYPOSTICKER SET 01). El catálogo de demostración aún tiene 20 piezas de ejemplo.
+10. **Bases de mockup que faltan:**
+    - Qué falta: las fotos base (prendas lisas generadas con IA, en corte oversize/baggy) de manga larga, short, gorra, gorro, bolsa y calcetines, y la espalda del cargo. El jogger ya no hace falta: se retiró de la tienda (queda como borrador).
+    - Dónde están: ya generadas en el archivo de Figma del proyecto.
+    - Por qué no se han descargado: la red de este entorno no permite `www.figma.com` y el conector de Figma está limitado por el plan Starter.
+    - Con `www.figma.com` permitido: `pnpm mockups:bases && pnpm mockups`.
+    - Sin red: exportar los nodos (lista en `scripts/mockups/sources.ts`) a `scripts/mockups/bases/<tipo>-<color>-<cara>.webp`, o subir los PNG exportados, y ejecutar `pnpm mockups`.
+    - Más opciones de imagen en [`docs/brief-fotografia.md`](docs/brief-fotografia.md).
+11. **Licencias tipográficas:**
+    - Comprar la licencia comercial de Aerosoldier (la versión recibida es de uso personal) y añadir su archivo según `src/assets/fonts/README.md`.
+    - Confirmar con el autor que Bastaman permite el uso comercial.
+12. **Catálogo según el Manual:** el Manual recomienda un primer drop corto (ASCENT TEE 01, CORE TEE 01, SUMMIT HOODIE 01, HYPOCAP 01, HYPOSTICKER SET 01). El catálogo de demostración aún tiene 19 piezas publicadas de ejemplo.

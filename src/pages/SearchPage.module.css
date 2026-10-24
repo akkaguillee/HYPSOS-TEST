@@ -27,7 +27,6 @@
   font-family: var(--font-display);
   font-size: clamp(1.75rem, 2.4vw + 1rem, 2.5rem);
   font-weight: 700;
-  font-stretch: var(--stretch-heading);
   line-height: 1;
   text-transform: uppercase;
   outline: none;
@@ -89,7 +88,7 @@
 
 .suggestionsLabel {
   margin-right: var(--space-2);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
@@ -131,14 +130,13 @@
   font-family: var(--font-display);
   font-size: var(--fs-h2);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-crushed);
   text-transform: uppercase;
 }
 
 .popularTitle {
   margin-bottom: var(--space-5);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);

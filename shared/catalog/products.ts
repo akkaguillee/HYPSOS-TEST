@@ -246,7 +246,8 @@ export const products: Product[] = [
     handle: 'jogger-tecnico',
     code: 'HYP-PT-001',
     name: 'Jogger Técnico',
-    status: 'published',
+    // Retirado de la tienda a petición de HYPSOS (se conserva el registro por si vuelve).
+    status: 'draft',
     category: 'pantalones',
     collections: ['drop-01-ascenso'],
     tags: ['training', 'técnico', 'elástico'],

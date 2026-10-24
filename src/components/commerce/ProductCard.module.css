@@ -86,13 +86,13 @@
 }
 
 .badge {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 10px;
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--c-black);
+  color: var(--c-coffee);
 }
 
 .badges[data-surface='page'] .badge {
@@ -119,7 +119,7 @@
   height: 40px;
   border-radius: 50%;
   /* Sobre el fondo claro de estudio de la imagen. */
-  color: var(--c-black);
+  color: var(--c-coffee);
   transition:
     background-color var(--dur-hover) var(--ease-out),
     transform var(--dur-micro) var(--ease-out);
@@ -159,7 +159,7 @@
   padding: 0 var(--space-4);
   border: 1px solid var(--fg);
   border-radius: var(--radius-pill);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: var(--tracking-label);
@@ -204,7 +204,7 @@
 }
 
 .quickLabel {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -224,7 +224,7 @@
   padding: 0 var(--space-2);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-pill);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   transition:
@@ -235,9 +235,9 @@
 
 @media (hover: hover) and (pointer: fine) {
   .quickSize:hover:not(:disabled) {
-    background: var(--c-white-soft);
-    color: var(--c-black);
-    border-color: var(--c-white-soft);
+    background: var(--c-white);
+    color: var(--c-coffee);
+    border-color: var(--c-white);
   }
 }
 
@@ -253,7 +253,7 @@
 }
 
 .code {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 10px;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
@@ -261,10 +261,12 @@
 }
 
 .title {
+  font-family: var(--font-display);
   font-size: var(--fs-sm);
-  font-weight: 500;
-  line-height: 1.35;
-  letter-spacing: -0.005em;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
 }
 
 /* Una línea en escritorio; en móvil se permiten dos para distinguir nombres parecidos. */
@@ -295,9 +297,9 @@
 }
 
 .price {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  font-weight: 500;
+  font-family: var(--font-label);
+  font-size: var(--fs-sm);
+  font-weight: 700;
   white-space: nowrap;
 }
 
@@ -347,7 +349,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0 var(--space-2);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 10px;
   letter-spacing: 0.04em;
   color: var(--fg);

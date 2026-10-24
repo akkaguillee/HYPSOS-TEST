@@ -16,7 +16,7 @@
   align-items: baseline;
   flex-wrap: wrap;
   gap: var(--space-1) var(--space-2);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   line-height: 1.3;

@@ -1,8 +1,4 @@
-@import '@fontsource-variable/archivo/wdth.css';
-@import '@fontsource-variable/inter/wght.css';
-@import '@fontsource-variable/jetbrains-mono/index.css';
-/* Única familia de acento: gótica (solo latín y el peso que se usa). */
-@import '@fontsource/grenze-gotisch/latin-900.css';
+@import './fonts.css';
 @import './tokens.css';
 @import './base.css';
 @import './typography.css';

@@ -1,45 +1,55 @@
 /*
- * HYPSOS — Tokens de diseño.
+ * HYPSOS — Tokens de diseño (v3).
  * Única fuente de verdad para color, espaciado, tipografía, movimiento y capas.
- * Ajustar la identidad global se hace aquí.
+ *
+ * Sistema: mezcla de tres referencias.
+ * - 21 TSI (editorial de moda): la foto a sangre hace el trabajo, la interfaz se reduce a una
+ *   línea fina, etiquetas pequeñas en mayúsculas y controles en píldora con contorno. Salto de
+ *   escala brusco entre la interfaz (12–20 px) y los titulares (≥ 44 px): nada en medio.
+ * - Shelby (bandas de color): lienzo marrón casi negro, cada sección es un campo de color a
+ *   sangre (café → blanco → rojo → café), titulares enormes centrados, etiquetas tipo código de
+ *   producto encima, todo plano (sin sombras).
+ * - Cake Equity (orden comercial): un solo color de acción (rojo) para cada conversión, un verde
+ *   «recibo» que se usa poco y a propósito, tarjetas con borde fino en vez de sombra y botones
+ *   en píldora.
  */
 
 :root {
-  /* ─── Paleta del Manual de Marca (negro + rojo, con control) ───────── */
-  /* Regla: ~70-80 % negro / blanco roto, 10-15 % rojo, el resto gris o rojo profundo. */
-  --c-black: #090909; /* HYPSOS Black: campo dominante */
-  --c-black-2: #121212;
-  --c-graphite: #1d1c1b;
-  --c-white: #ffffff; /* solo cuando el blanco roto no basta (raro) */
-  --c-white-soft: #f2f0ec; /* Off White: texto, etiquetas y bandas claras */
-  --c-paper-2: #e7e3dc; /* banda clara secundaria */
-  --c-concrete: #747474; /* Concrete Grey: líneas e información técnica (no texto pequeño) */
-  --c-grey: #a3a09a; /* texto secundario sobre negro (AA) */
-  --c-red: #d71920; /* HYPSOS Red: señal, acción principal, trabilla firma */
-  --c-red-dark: #7a0f1d; /* Deep Red */
-  --c-studio: #ece9e3; /* fondo de los mockups de producto: se funde con el blanco roto */
+  /* ─── Paleta (las cuatro tintas de la marca) ─────────────────────────── */
+  --c-coffee: #140102; /* Coffee Bean: lienzo dominante y tinta sobre claro */
+  --c-red: #e90c17; /* Racing Red: acción principal, bandas de señal, trabilla firma */
+  --c-lime: #96de2b; /* Yellow Green: «recibo» (avisos, disponibilidad, foco). Poco y pequeño */
+  --c-white: #ffffff; /* White: texto sobre café y bandas claras */
 
-  /* Derivados funcionales */
-  --c-grey-700: #5e5b56; /* texto secundario sobre blanco roto (AA) */
-  --c-grey-300: #d6d2cb;
-  --c-success: #3ddc84;
-  --c-error-on-dark: #ff6b6f; /* rojo legible sobre negro para mensajes (AA) */
-  --c-error-on-light: #a3121a;
+  /* Derivados de las cuatro tintas (mezclas, nunca colores nuevos) */
+  --c-coffee-2: #210d0e; /* café 6 % más claro: superficies elevadas sobre café */
+  --c-coffee-3: #2e1a1b; /* café 12 % más claro: tarjetas oscuras, campos */
+  --c-coffee-deep: #0b0001; /* café más hundido: pie, fondos de vídeo */
+  --c-paper: #f6f2f2; /* blanco con 4 % de café: banda clara secundaria */
+  --c-red-deep: #b4060f; /* rojo con 20 % de café: hover y pulsado del rojo */
+  --c-grey: #b8adad; /* blanco al 68 % sobre café: texto secundario sobre oscuro (AA) */
+  --c-grey-700: #5a4a4b; /* café al 70 % sobre blanco: texto secundario sobre claro (AA) */
+  --c-studio: #ece9e3; /* fondo fotográfico de los mockups (forma parte de la foto) */
+  --c-error-on-dark: #ff6b72; /* rojo aclarado: mensajes de error legibles sobre café (AA) */
+  --c-error-on-light: #b4060f;
 
-  /* ─── Superficies semánticas (oscuro por defecto) ─────────────────── */
-  --bg: var(--c-black);
-  --bg-raised: var(--c-black-2);
-  --bg-sunken: #050505;
-  --surface: var(--c-graphite);
-  --fg: var(--c-white-soft);
-  --fg-soft: var(--c-white-soft);
+  /* ─── Superficies semánticas (café por defecto) ───────────────────── */
+  --bg: var(--c-coffee);
+  --bg-raised: var(--c-coffee-2);
+  --bg-sunken: var(--c-coffee-deep);
+  --surface: var(--c-coffee-3);
+  --fg: var(--c-white);
+  --fg-soft: rgb(255 255 255 / 0.88);
   --fg-muted: var(--c-grey);
-  --line: rgb(242 240 236 / 0.14);
-  --line-strong: rgb(242 240 236 / 0.34);
+  --line: rgb(255 255 255 / 0.14);
+  --line-strong: rgb(255 255 255 / 0.4);
   --accent: var(--c-red);
-  --accent-strong: var(--c-red-dark);
+  --accent-strong: var(--c-red-deep);
+  --receipt: var(--c-lime);
+  --receipt-ink: var(--c-coffee);
   --error: var(--c-error-on-dark);
-  --focus-ring: var(--c-white-soft);
+  --success: var(--c-lime);
+  --focus-ring: var(--c-lime);
 
   /* ─── Espaciado (base 4 px) ───────────────────────────────────────── */
   --space-1: 4px;
@@ -57,11 +67,11 @@
 
   /* Márgenes laterales adaptativos: 16 px en móvil → 48 px en escritorio */
   --gutter: clamp(16px, 2.4vw + 8px, 48px);
-  /* Ritmo vertical de secciones */
-  --section-y: clamp(64px, 7vw + 32px, 128px);
-  --section-y-tight: clamp(48px, 4vw + 24px, 80px);
+  /* Ritmo vertical de las bandas (Shelby: 80–120 px) */
+  --section-y: clamp(72px, 7vw + 32px, 136px);
+  --section-y-tight: clamp(48px, 4vw + 24px, 88px);
 
-  --container: 1440px;
+  --container: 1320px;
   --container-text: 720px;
   /* Cabecera flotante: barra de cristal separada de los bordes por --header-inset. */
   --announcement-h: 32px;
@@ -69,39 +79,37 @@
   --header-inset: 8px;
   --header-h: calc(var(--header-bar-h) + var(--header-inset) * 2);
 
-  /* ─── Tipografía (Manual: condensada para titulares, neutra para cuerpo, mono técnica) ─ */
-  --font-display: 'Archivo Variable', 'Archivo', 'Arial Narrow', system-ui, sans-serif;
-  --font-body: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  /* Acento: gótica tipo Old English para nombres de capítulo y colección y para las pintadas. */
-  --font-gothic: 'Grenze Gotisch', 'UnifrakturCook', Georgia, serif;
-  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  /* ─── Tipografía ──────────────────────────────────────────────────── */
+  /* Bastaman: geométrica negra en mayúsculas. Titulares, navegación, botones, etiquetas, precios. */
+  --font-display: 'Bastaman', 'Arial Black', 'Helvetica Neue', system-ui, sans-serif;
+  /* Etiquetas tipo código de producto: la misma Bastaman, pequeña y espaciada. */
+  --font-label: var(--font-display);
+  /* Acento: Aerosoldier (solo si su archivo con licencia está presente; si no, Bastaman). */
+  --font-accent: 'Aerosoldier', var(--font-display);
+  /* Texto corrido (descripciones, legales, formularios): la fuente del sistema, sin descargas. */
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 
-  /* Titulares comprimidos tipo cartel: el texto como objeto. */
-  --fs-campaign: clamp(4.25rem, 13.5vw, 15rem);
-  --fs-display: clamp(3rem, 8vw, 8.5rem);
-  --fs-h1: clamp(2.5rem, 4vw + 1rem, 5rem);
-  --fs-h2: clamp(2rem, 2.6vw + 1rem, 3.75rem);
-  --fs-h3: clamp(1.125rem, 0.35vw + 1rem, 1.375rem);
-  --fs-lg: clamp(1.0625rem, 0.3vw + 1rem, 1.25rem);
+  /* Escala con salto (21 TSI): interfaz hasta 20 px, titulares desde 44 px. */
+  --fs-campaign: clamp(3.25rem, 11.5vw, 13.5rem);
+  --fs-display: clamp(3rem, 7.4vw, 8rem);
+  --fs-h1: clamp(2.75rem, 3.4vw + 1.2rem, 5rem);
+  --fs-h2: clamp(2.75rem, 2.4vw + 1.6rem, 4rem);
+  --fs-h3: 1.25rem;
+  --fs-lg: 1.125rem;
   --fs-md: 1rem;
   --fs-sm: 0.875rem;
   --fs-xs: 0.75rem;
   --fs-2xs: 0.6875rem;
 
-  --lh-crushed: 0.82;
-  --lh-tight: 0.88;
-  --lh-heading: 0.95;
-  --lh-snug: 1.3;
-  --lh-body: 1.6;
+  --lh-crushed: 0.86;
+  --lh-tight: 0.9;
+  --lh-heading: 0.94;
+  --lh-snug: 1.25;
+  --lh-body: 1.55;
 
-  --tracking-display: -0.005em;
+  --tracking-display: -0.02em;
   --tracking-tight: -0.01em;
-  --tracking-label: 0.06em;
-
-  /* Ancho de Archivo (eje 62-125 %): condensada en titulares. */
-  --stretch-display: 62%;
-  --stretch-heading: 68%;
-  --stretch-wide: 125%;
+  --tracking-label: 0.07em;
 
   /* ─── Movimiento ──────────────────────────────────────────────────── */
   --dur-micro: 160ms;
@@ -116,29 +124,29 @@
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1); /* cajones (curva tipo iOS) */
 
-  /* ─── Forma ───────────────────────────────────────────────────────── */
+  /* ─── Forma (plana: sin sombras) ──────────────────────────────────── */
   --radius-0: 0;
   --radius-1: 2px;
-  --radius-2: 4px;
-  --radius-3: 12px;
-  --radius-card: 14px; /* imágenes de producto */
-  --radius-4: 20px; /* tarjetas */
-  --radius-5: 32px; /* tarjetas grandes y bandas */
-  --radius-pill: 999px;
+  --radius-2: 4px; /* etiquetas cuadradas, marcas pequeñas */
+  --radius-3: 12px; /* campos y miniaturas */
+  --radius-card: 12px; /* imágenes de producto */
+  --radius-4: 20px; /* tarjetas y paneles (Cake) */
+  --radius-5: 28px; /* tarjeta oscura de producto destacada */
+  --radius-pill: 999px; /* todos los botones y controles */
 
   /* ─── Liquid Glass (capas flotantes; ver components/ui/LiquidGlass) ─── */
-  --glass-bg: rgb(9 9 9 / 0.42);
-  --glass-bg-strong: rgb(9 9 9 / 0.72);
-  --glass-blur: blur(18px) saturate(160%);
-  --glass-border: rgb(242 240 236 / 0.16);
-  --glass-highlight: inset 0 1px 0 rgb(242 240 236 / 0.14);
-  --glass-shadow: 0 10px 30px rgb(0 0 0 / 0.22);
-  --glass-solid: #141414; /* sin backdrop-filter o con transparencia reducida */
+  --glass-bg: rgb(20 1 2 / 0.4);
+  --glass-bg-strong: rgb(20 1 2 / 0.74);
+  --glass-blur: blur(18px) saturate(150%);
+  --glass-border: rgb(255 255 255 / 0.16);
+  --glass-highlight: inset 0 1px 0 rgb(255 255 255 / 0.12);
+  --glass-shadow: 0 0 0 transparent; /* plano: el cristal no proyecta sombra */
+  --glass-solid: #210d0e; /* sin backdrop-filter o con transparencia reducida */
   /* Variante clara, sobre superficies claras. */
-  --glass-light-bg: rgb(242 240 236 / 0.55);
-  --glass-light-border: rgb(9 9 9 / 0.14);
-  --glass-light-highlight: inset 0 1px 0 rgb(255 255 255 / 0.55);
-  --glass-light-solid: #f2f0ec;
+  --glass-light-bg: rgb(255 255 255 / 0.58);
+  --glass-light-border: rgb(20 1 2 / 0.14);
+  --glass-light-highlight: inset 0 1px 0 rgb(255 255 255 / 0.6);
+  --glass-light-solid: #ffffff;
 
   /* ─── Capas ───────────────────────────────────────────────────────── */
   --z-base: 1;
@@ -161,52 +169,79 @@
 }
 
 /*
- * Temas por zona. Tienda (catálogo, ficha, carrito, cuenta, contenido): claro, como en las
- * referencias de comercio premium; el producto oscuro mantiene el contraste. Momentos de marca
- * (campaña, manifiesto, pie): negro. Las capas de cristal fijan su propio tema oscuro.
+ * Bandas por zona. Tienda (catálogo, ficha, carrito, cuenta, contenido): blanca, con tarjetas de
+ * borde fino. Momentos de marca (campaña, manifiesto, pie): café. Las capas de cristal fijan su
+ * propio tema.
  */
 [data-theme='light'] {
-  --bg: var(--c-white-soft);
-  --bg-raised: #faf9f7;
-  --bg-sunken: var(--c-paper-2);
-  --surface: var(--c-paper-2);
-  --fg: var(--c-black);
-  --fg-soft: var(--c-black-2);
+  --bg: var(--c-white);
+  --bg-raised: var(--c-white);
+  --bg-sunken: var(--c-paper);
+  --surface: var(--c-paper);
+  --fg: var(--c-coffee);
+  --fg-soft: rgb(20 1 2 / 0.86);
   --fg-muted: var(--c-grey-700);
-  --line: rgb(9 9 9 / 0.12);
-  --line-strong: rgb(9 9 9 / 0.4);
+  --line: rgb(20 1 2 / 0.12);
+  --line-strong: rgb(20 1 2 / 0.42);
   --error: var(--c-error-on-light);
-  --focus-ring: var(--c-black);
+  --success: #3d7a0a; /* verde de la paleta oscurecido con café para texto sobre blanco (AA) */
+  --focus-ring: var(--c-coffee);
   color-scheme: light;
 }
 
 [data-theme='dark'] {
-  --bg: var(--c-black);
-  --bg-raised: var(--c-black-2);
-  --bg-sunken: #050505;
-  --surface: var(--c-graphite);
-  --fg: var(--c-white-soft);
-  --fg-soft: var(--c-white-soft);
+  --bg: var(--c-coffee);
+  --bg-raised: var(--c-coffee-2);
+  --bg-sunken: var(--c-coffee-deep);
+  --surface: var(--c-coffee-3);
+  --fg: var(--c-white);
+  --fg-soft: rgb(255 255 255 / 0.88);
   --fg-muted: var(--c-grey);
-  --line: rgb(242 240 236 / 0.14);
-  --line-strong: rgb(242 240 236 / 0.34);
+  --line: rgb(255 255 255 / 0.14);
+  --line-strong: rgb(255 255 255 / 0.4);
   --error: var(--c-error-on-dark);
-  --focus-ring: var(--c-white-soft);
+  --success: var(--c-lime);
+  --focus-ring: var(--c-lime);
   color-scheme: dark;
 }
 
-/* Banda roja: la señal de HYPSOS, una vez por página como mucho. */
+/*
+ * Banda roja: la señal de HYPSOS. El blanco puro sobre este rojo cumple AA (4,7:1) con lo justo:
+ * aquí el texto secundario también es blanco (cualquier transparencia baja del 4,5:1).
+ */
 [data-theme='red'] {
   --bg: var(--c-red);
-  --bg-raised: #c3161c;
-  --bg-sunken: var(--c-red-dark);
-  --surface: var(--c-red-dark);
-  --fg: var(--c-white-soft);
-  --fg-soft: var(--c-white-soft);
-  --fg-muted: rgb(242 240 236 / 0.82);
-  --line: rgb(242 240 236 / 0.24);
-  --line-strong: rgb(242 240 236 / 0.6);
-  --error: var(--c-white-soft);
-  --focus-ring: var(--c-white-soft);
+  --bg-raised: var(--c-red);
+  --bg-sunken: var(--c-red-deep);
+  --surface: var(--c-red-deep);
+  --fg: var(--c-white);
+  --fg-soft: var(--c-white);
+  --fg-muted: var(--c-white);
+  --line: rgb(255 255 255 / 0.3);
+  --line-strong: rgb(255 255 255 / 0.7);
+  --accent: var(--c-coffee);
+  --accent-strong: var(--c-coffee-deep);
+  --error: var(--c-white);
+  --success: var(--c-white);
+  --focus-ring: var(--c-white);
   color-scheme: dark;
+}
+
+/* Banda verde («recibo» a escala): como mucho una por página. Café sobre verde: 12,6:1. */
+[data-theme='lime'] {
+  --bg: var(--c-lime);
+  --bg-raised: var(--c-lime);
+  --bg-sunken: #86c826;
+  --surface: #86c826;
+  --fg: var(--c-coffee);
+  --fg-soft: var(--c-coffee);
+  --fg-muted: rgb(20 1 2 / 0.78);
+  --line: rgb(20 1 2 / 0.2);
+  --line-strong: rgb(20 1 2 / 0.6);
+  --accent: var(--c-coffee);
+  --accent-strong: var(--c-coffee-deep);
+  --error: var(--c-coffee);
+  --success: var(--c-coffee);
+  --focus-ring: var(--c-coffee);
+  color-scheme: light;
 }

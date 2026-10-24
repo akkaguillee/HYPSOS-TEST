@@ -30,7 +30,7 @@
 
 /* Diálogo de cristal: cabecera fija y cuerpo con su propio scroll. */
 .dialog {
-  --lg-tint: rgb(9 9 9 / 0.78);
+  --lg-tint: rgb(20 1 2 / 0.78);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -64,7 +64,6 @@
   font-family: var(--font-display);
   font-size: var(--fs-sm);
   font-weight: 750;
-  font-stretch: var(--stretch-heading);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }

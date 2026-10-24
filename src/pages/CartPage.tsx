@@ -1,4 +1,4 @@
-import { Sticker } from '@/components/brand/Sticker';
+import { Mascot } from '@/components/brand/BrandVector';
 import { CartLineItem } from '@/components/commerce/CartLineItem';
 import { FreeShippingProgress } from '@/components/commerce/FreeShippingProgress';
 import { PageIntro } from '@/content/pages/PageIntro';
@@ -36,7 +36,7 @@ export default function CartPage() {
       <div className="container">
         {lines.length === 0 ? (
           <div className={`${cartStyles.empty} ${styles.empty}`}>
-            <Sticker mark="mascot" rotate={-8} className={cartStyles.emptySticker} />
+            <Mascot className={cartStyles.emptySticker} />
             <p className={cartStyles.emptyTitle}>Tu carrito está vacío</p>
             <p className={cartStyles.emptyText}>Cuando añadas productos aparecerán aquí.</p>
             <ButtonLink to={paths.collection('all')}>Ir a la tienda</ButtonLink>

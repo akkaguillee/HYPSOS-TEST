@@ -1,4 +1,4 @@
-import { Sticker } from '@/components/brand/Sticker';
+import { Mascot } from '@/components/brand/BrandVector';
 import { ButtonLink } from '@/components/ui/Button';
 import { useDocumentMeta } from '@/hooks/useDocumentMeta';
 import { paths } from '@shared/routes';
@@ -20,7 +20,7 @@ export default function NotFoundPage() {
         <div className={styles.codeWrap} aria-hidden="true">
           <span className={styles.code}>404</span>
           <span className={styles.sticker}>
-            <Sticker mark="mascot" rotate={-12} />
+            <Mascot />
           </span>
         </div>
         <div className={styles.copy}>

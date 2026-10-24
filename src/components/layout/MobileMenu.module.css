@@ -30,7 +30,6 @@
   font-family: var(--font-display);
   font-size: clamp(2.25rem, 9vw, 3rem);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: 0.95;
   text-transform: uppercase;
   transition: color var(--dur-hover) var(--ease-out);
@@ -61,7 +60,7 @@
 }
 
 .count {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -75,7 +74,7 @@
 }
 
 .groupTitle {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -120,7 +119,7 @@
 }
 
 .kicker {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -142,7 +141,7 @@
   padding: 0 var(--space-4);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-pill);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);

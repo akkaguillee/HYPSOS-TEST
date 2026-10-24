@@ -46,7 +46,7 @@
 }
 
 .stepNumber {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -58,7 +58,6 @@
   font-family: var(--font-display);
   font-size: clamp(1.5rem, 1vw + 1.25rem, 2rem);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-tight);
   text-transform: uppercase;
 }
@@ -149,7 +148,7 @@
 }
 
 .methodPrice {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-sm);
   font-weight: 500;
 }
@@ -220,7 +219,7 @@
 }
 
 .summaryTitle {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -258,7 +257,7 @@
 
 .summaryHeadTotal {
   margin-left: auto;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-md);
   font-weight: 600;
 }
@@ -328,7 +327,7 @@
 }
 
 .summaryCode {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -342,7 +341,7 @@
 }
 
 .summaryPrice {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-sm);
   font-weight: 500;
   white-space: nowrap;
@@ -364,7 +363,7 @@
 }
 
 .row dd {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   text-align: right;
 }
 
@@ -379,7 +378,6 @@
   font-family: var(--font-display);
   font-size: var(--fs-h3);
   font-weight: 800;
-  font-stretch: var(--stretch-heading);
   line-height: 1;
 }
 
@@ -405,7 +403,6 @@
   font-family: var(--font-display);
   font-size: clamp(2rem, 3vw + 1rem, 2.75rem);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-tight);
   text-transform: uppercase;
 }

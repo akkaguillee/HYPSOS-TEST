@@ -20,7 +20,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgb(9 9 9 / 0.45) 0%, rgb(9 9 9 / 0.2) 40%, rgb(9 9 9 / 0.9) 100%);
+  background: linear-gradient(180deg, rgb(20 1 2 / 0.45) 0%, rgb(20 1 2 / 0.2) 40%, rgb(20 1 2 / 0.9) 100%);
 }
 
 .heroContent {
@@ -35,23 +35,28 @@
   font-family: var(--font-display);
   font-size: clamp(4.5rem, 16vw, 16rem);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-crushed);
   letter-spacing: var(--tracking-display);
   text-transform: uppercase;
 }
 
-.heroTitle :global(.mix-wide) {
+.heroSmall {
+  display: block;
   margin: 0 0 0.04em;
   font-size: 0.34em;
 }
 
-.heroGothic {
+/* Sin el archivo de Aerosoldier, el acento es Bastaman en rojo. */
+.heroAccent {
   display: block;
-  font-family: var(--font-gothic);
-  font-size: 0.92em;
-  line-height: 0.82;
-  letter-spacing: -0.01em;
+  color: var(--c-red);
+}
+
+:root[data-accent-font='ready'] .heroAccent {
+  font-family: var(--font-accent);
+  font-weight: 400;
+  line-height: 0.86;
+  letter-spacing: 0;
   text-transform: none;
 }
 
@@ -59,15 +64,15 @@
   max-width: 56ch;
   font-size: var(--fs-lg);
   line-height: 1.5;
-  color: rgb(242 240 236 / 0.88);
+  color: rgb(255 255 255 / 0.88);
 }
 
 .credit {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: rgb(242 240 236 / 0.6);
+  color: rgb(255 255 255 / 0.6);
 }
 
 /* ─── Valores: ficha técnica en 3 × 2 ───────────────────────────────── */
@@ -100,7 +105,7 @@
 }
 
 .code {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   color: var(--c-red);
 }
@@ -109,7 +114,6 @@
   font-family: var(--font-display);
   font-size: clamp(2rem, 2.6vw + 1rem, 3rem);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-tight);
   text-transform: uppercase;
 }
@@ -169,7 +173,7 @@
   max-width: 48ch;
   font-size: var(--fs-lg);
   line-height: 1.5;
-  color: rgb(242 240 236 / 0.86);
+  color: rgb(255 255 255 / 0.86);
 }
 
 /* ─── Llamada final en la banda roja ────────────────────────────────── */
@@ -183,7 +187,6 @@
   font-family: var(--font-display);
   font-size: clamp(4rem, 15vw, 15rem);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-crushed);
   letter-spacing: var(--tracking-display);
   text-transform: uppercase;

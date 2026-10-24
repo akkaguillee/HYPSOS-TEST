@@ -1,150 +1,119 @@
+/*
+ * Composición asimétrica (21 TSI): texto a la izquierda con aire, foto grande a la derecha,
+ * retrato circular que cruza entre columnas y un segundo look más pequeño.
+ */
 .section {
   overflow: hidden;
+  overflow: clip;
 }
 
-/*
- * Escenario: el titular ocupa todo el ancho en dos líneas y las fotos se colocan sobre él en una
- * rejilla de 12 columnas, tapando parte de las letras (la tipografía queda detrás).
- */
-.stage {
-  position: relative;
+.grid {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  margin-top: var(--space-5);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--space-6) var(--space-4);
+  align-items: start;
+}
+
+.copy {
+  grid-column: 1 / -1;
+  display: grid;
+  justify-items: start;
+  gap: var(--space-4);
 }
 
 .title {
-  grid-column: 1 / -1;
-  grid-row: 1;
-  align-self: start;
-  display: grid;
-  align-content: start;
   font-family: var(--font-display);
-  font-size: clamp(4.5rem, 19vw, 21rem);
-  font-weight: 900;
-  font-stretch: var(--stretch-display);
+  font-size: clamp(2.75rem, 5.4vw, 6.5rem);
+  font-weight: 700;
   line-height: var(--lh-crushed);
-  letter-spacing: var(--tracking-display);
+  letter-spacing: -0.03em;
   text-transform: uppercase;
-  white-space: nowrap;
+  overflow-wrap: normal;
 }
 
-/*
- * «Above» en gótica roja cruzando por encima de las fotos, como el Old English de una camiseta;
- * «ordinary.» comprimida a cuerpo entero.
- */
-.wordA {
-  position: relative;
-  z-index: 2;
-  justify-self: start;
-  margin-bottom: -0.2em;
-  font-family: var(--font-gothic);
-  font-size: 0.62em;
-  font-weight: 900;
-  font-stretch: normal;
-  line-height: 0.8;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--c-red);
-  translate: 0.18em 0.1em;
-  pointer-events: none;
+.text {
+  max-width: 40ch;
+  font-size: var(--fs-lg);
+  line-height: 1.5;
+  color: var(--fg-muted);
 }
 
-.wordB {
+.figMain {
+  grid-column: 1 / span 5;
+  grid-row: 2;
+  margin: 0;
+}
+
+/* Móvil: el retrato circular asoma por la esquina de la foto grande; el segundo look, debajo y desplazado. */
+.figCircle {
+  grid-column: 4 / span 3;
+  grid-row: 2;
   justify-self: end;
-}
-
-/* Corona a espray sobre «Above», como una firma en la pared. */
-.crown {
-  position: relative;
-  z-index: 2;
-  grid-column: 4 / span 2;
-  grid-row: 1;
   align-self: start;
-  width: 100%;
-  height: auto;
-  translate: 0 -48%;
-  rotate: 8deg;
-  pointer-events: none;
-}
-
-.figA,
-.figB {
-  position: relative;
+  width: min(100%, 200px);
+  margin: calc(var(--space-6) * -1) 0 0;
   z-index: 1;
-  grid-row: 1;
-  display: grid;
-  gap: var(--space-2);
-  align-self: start;
 }
 
-.figA {
-  grid-column: 7 / span 4;
-  margin-top: 0.45em;
-  font-size: clamp(4.5rem, 19vw, 21rem);
-}
-
-.figB {
-  grid-column: 2 / span 3;
-  align-self: end;
-  font-size: clamp(4.5rem, 19vw, 21rem);
-  translate: 0 40%; /* propiedad independiente: no choca con el paralaje (transform) */
+.figSide {
+  grid-column: 3 / span 4;
+  grid-row: 3;
+  margin: var(--space-2) 0 0;
+  z-index: 1;
 }
 
 .frame {
-  aspect-ratio: 3 / 4;
-  border-radius: var(--radius-4);
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-card);
   background: var(--surface);
 }
 
+.circle {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--surface);
+  outline: 6px solid var(--bg);
+}
+
 .caption {
-  font-family: var(--font-mono);
+  margin-top: var(--space-3);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
+  font-weight: 700;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--fg-muted);
 }
 
-.foot {
-  display: grid;
-  gap: var(--space-4);
-  justify-items: start;
-  margin-top: clamp(var(--space-9), 14vw, 15rem);
-}
-
 @media (min-width: 1024px) {
-  .foot {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: end;
-    margin-left: calc(100% / 12 * 6);
-  }
-}
-
-.text {
-  max-width: 44ch;
-  font-size: var(--fs-lg);
-  line-height: 1.45;
-}
-
-/* Móvil: dos fotos lado a lado bajo el titular, la segunda desplazada. */
-@media (max-width: 767px) {
-  .title,
-  .figA,
-  .figB {
-    font-size: 17vw;
+  .grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--space-4);
   }
 
-  .figA {
-    grid-column: 6 / span 7;
-    margin-top: 1.1em;
-  }
-
-  .figB {
+  .copy {
     grid-column: 1 / span 5;
-    translate: 0 60%;
+    grid-row: 1;
+    align-self: center;
   }
 
-  .foot {
-    margin-top: calc(var(--space-12) + var(--space-8));
+  .figMain {
+    grid-column: 7 / span 5;
+    grid-row: 1;
+  }
+
+  /* Fila 2: el segundo look sube al hueco bajo el texto; el retrato circular, bajo la foto grande. */
+  .figSide {
+    grid-column: 2 / span 4;
+    grid-row: 2;
+    margin-top: calc(var(--space-11) * -1);
+  }
+
+  .figCircle {
+    grid-column: 8 / span 3;
+    grid-row: 2;
+    justify-self: center;
+    width: clamp(200px, 17vw, 280px);
+    margin-top: var(--space-8);
   }
 }

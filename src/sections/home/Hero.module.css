@@ -1,26 +1,47 @@
 /*
- * Hero de campaña: foto a sangre bajo la cabecera de cristal, titular comprimido gigante abajo a
- * la izquierda con dos pegatinas de marca, y la entradilla + acciones en la base.
+ * Hero en dos tiempos: foto a sangre sin texto encima (editorial 21 TSI) y, debajo, el titular
+ * centrado sobre café (bandas de Shelby) con la palabra de acento encajada entre las dos líneas.
  */
 .hero {
-  --hero-type: var(--fs-campaign);
   position: relative;
-  display: grid;
-  min-height: 100svh;
-  overflow: hidden;
   background: var(--bg);
   color: var(--fg);
   isolation: isolate;
 }
 
 /* ─── Foto ──────────────────────────────────────────────────────────── */
+.frame {
+  position: relative;
+  height: clamp(460px, 74svh, 980px);
+  overflow: hidden;
+  background: var(--c-coffee-deep);
+}
+
+@media (min-width: 1024px) {
+  .frame {
+    height: clamp(540px, 76svh, 960px);
+  }
+}
+
 .media {
   position: absolute;
-  /* Contexto de apilamiento propio: la foto y sus puntos quedan bajo el texto y las acciones. */
-  z-index: 0;
   inset: 0;
   overflow: hidden;
   container-type: size;
+}
+
+/*
+ * Móvil: la foto empieza bajo la cabecera flotante (en vertical, las cabezas quedan arriba del
+ * todo y la barra las taparía).
+ */
+@media (max-width: 767px) {
+  .frame {
+    height: calc(clamp(440px, 70svh, 760px) + var(--announcement-h) + var(--header-h));
+  }
+
+  .media {
+    top: calc(var(--announcement-h) + var(--header-h));
+  }
 }
 
 .image,
@@ -31,303 +52,265 @@
   height: 100%;
 }
 
-/* El margen para el paralaje lo pone GSAP en la <img> (la <picture> es display: contents). */
-
-/* Velo inferior para leer el titular sobre la foto (no decora: garantiza contraste). */
-.scrim {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgb(9 9 9 / 0.55) 0%, rgb(9 9 9 / 0) 22%, rgb(9 9 9 / 0) 45%, rgb(9 9 9 / 0.88) 100%);
-  pointer-events: none;
-}
-
-/* Capa con la proporción de la foto (1536×864) y su mismo encuadre «cover» (foco 50 % 42 %). */
+/* Capa con la proporción de la foto (1536×864) y su mismo encuadre «cover». */
 .hotspots {
   --ratio: 1.7778;
   position: absolute;
   z-index: 2;
   width: max(100cqw, 100cqh * var(--ratio));
   height: max(100cqh, 100cqw / var(--ratio));
-  left: calc((100cqw - max(100cqw, 100cqh * var(--ratio))) * 0.5);
-  top: calc((100cqh - max(100cqh, 100cqw / var(--ratio))) * 0.42);
+  left: calc((100cqw - max(100cqw, 100cqh * var(--ratio))) * var(--fx));
+  top: calc((100cqh - max(100cqh, 100cqw / var(--ratio))) * var(--fy));
 }
 
+/* Píldora fantasma con el punto «en vivo» en verde (recibo), como los controles de 21 TSI. */
 .hotspot {
   position: absolute;
   left: var(--x);
   top: var(--y);
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  height: 40px;
-  padding: 0 var(--space-4) 0 var(--space-2);
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 16px 0 14px;
+  border: 1px solid rgb(255 255 255 / 0.55);
   border-radius: var(--radius-pill);
-  font-family: var(--font-mono);
+  background: rgb(20 1 2 / 0.38);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  color: var(--c-white);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  /* Propiedad independiente: GSAP anima scale sin pisar este desplazamiento. */
-  translate: -20px -50%;
+  translate: -14px -50%;
+  transition:
+    background-color var(--dur-hover) var(--ease-out),
+    border-color var(--dur-hover) var(--ease-out),
+    color var(--dur-hover) var(--ease-out);
 }
 
-.hotspot svg {
-  display: grid;
-  width: 24px;
-  height: 24px;
-  padding: 4px;
+.dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: var(--c-white-soft);
-  color: var(--c-black);
-  transition: transform var(--dur-hover) var(--ease-out);
+  background: var(--c-lime);
+}
+
+.dot::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 1px solid var(--c-lime);
+  animation: hotspot-ping 2.4s var(--ease-out) infinite;
+}
+
+@keyframes hotspot-ping {
+  from {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.6);
+    opacity: 0;
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .hotspot:hover svg {
-    transform: rotate(90deg);
+  .hotspot:hover {
+    background: var(--c-white);
+    border-color: var(--c-white);
+    color: var(--c-coffee);
   }
 }
 
-/* En móvil vertical solo cabe la parte central de la foto. */
-@media (max-width: 767px) and (orientation: portrait) {
-  .hotspot[data-spot='hoodie'],
-  .hotspot[data-spot='cargo'] {
-    display: none;
-  }
+.hotspot:active {
+  background: var(--c-white);
+  color: var(--c-coffee);
 }
 
-/* ─── Texto ─────────────────────────────────────────────────────────── */
+.credit {
+  position: absolute;
+  z-index: 3;
+  right: var(--gutter);
+  bottom: var(--space-4);
+  max-width: 60vw;
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.7);
+  text-align: right;
+}
+
+/* ─── Titular y acciones ────────────────────────────────────────────── */
 .content {
-  position: relative;
   display: grid;
-  grid-template-rows: auto 1fr auto auto;
-  min-height: 100svh;
-  padding-top: calc(var(--announcement-h) + var(--header-h) + var(--space-4));
-  /* Las cintas de la portada suben media altura sobre el borde inferior del hero. */
-  padding-bottom: calc(var(--space-6) + clamp(150px, 16vw, 250px) * 0.5);
-  pointer-events: none;
+  justify-items: center;
+  gap: var(--space-5);
+  padding-top: clamp(var(--space-7), 4.4vw, var(--space-9));
+  padding-bottom: var(--section-y);
+  text-align: center;
 }
 
-.content a,
-.content button {
-  pointer-events: auto;
-}
-
+/* Etiqueta tipo código de producto con el punto de estado, encima del titular (Shelby). */
 .chapter {
-  justify-self: start;
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  height: 34px;
-  padding: 0 var(--space-4);
-  border-radius: var(--radius-pill);
-  font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
-  font-weight: 500;
+  font-family: var(--font-label);
+  font-size: var(--fs-xs);
+  font-weight: 700;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
+  color: var(--fg-muted);
 }
 
 .chapterDot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--c-red);
 }
 
-.titleBlock {
-  position: relative;
-  align-self: end;
-  justify-self: start;
-  /* Hueco para el subrayado a espray y sus gotas (en em del titular). */
-  margin-bottom: calc(var(--hero-type) * 0.42);
-}
-
-/*
- * Titular de dos anchos (todo en em del propio titular, así escala como una pieza):
- * «Built for» comprimida al 62 % y «the climb.» ancha al 125 % y a menos de la mitad de cuerpo.
- */
 .headline {
-  max-width: 7.4em;
+  position: relative;
+  display: grid;
+  justify-items: center;
+  margin-block: var(--space-2) var(--space-3);
   font-family: var(--font-display);
-  font-size: var(--hero-type);
-  font-weight: 900;
-  line-height: var(--lh-crushed);
-  letter-spacing: var(--tracking-display);
+  font-size: clamp(3.25rem, 12.2vw, 14.5rem);
+  font-weight: 700;
+  line-height: 0.86;
+  letter-spacing: -0.03em;
   text-transform: uppercase;
-  color: var(--c-white-soft);
+  text-wrap: nowrap;
+  font-synthesis: none;
 }
 
-.lineCrushed {
+.line {
   display: block;
-  font-stretch: var(--stretch-display);
-}
-
-.lineWide {
-  display: block;
-  margin-top: 0.08em;
-  font-size: 0.46em;
-  font-stretch: var(--stretch-wide);
-  line-height: 0.9;
-  letter-spacing: -0.035em;
 }
 
 /*
- * Pintada roja del capítulo en el centro de la frase: centrada en el ancho del titular y montada
- * sobre el corte entre «Built for» y «the climb.» (como un tag hecho encima del cartel).
- * El texto del tag ocupa ~45 % superior de su caja (el resto es aire para las gotas).
+ * Palabra de acento entre las dos líneas, roja y algo girada, montada sobre ellas. Sin el archivo
+ * de Aerosoldier se ve en Bastaman (más pequeña, para no tapar las letras).
  */
-.tag {
-  position: absolute;
-  top: calc(0.74em - 2.2em * 0.6 * 0.45);
-  left: calc(1.9em - 1.1em);
-  width: 2.2em;
-  height: auto;
-  font-size: var(--hero-type);
+.accent {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin-block: -0.16em -0.2em;
+  font-family: var(--font-display);
+  font-size: 0.46em;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--c-red);
+  rotate: -5deg;
+  text-transform: uppercase;
+}
+
+:root[data-accent-font='ready'] .accent {
+  margin-block: -0.34em -0.3em;
+  font-family: var(--font-accent);
+  font-size: 0.86em;
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0;
+  text-transform: none;
   rotate: -7deg;
-  pointer-events: none;
-}
-
-/* Subrayado a espray bajo la línea ancha (sin tapar las letras), con goteo. */
-.underline {
-  position: absolute;
-  left: -0.06em;
-  bottom: -0.5em;
-  width: 3.5em;
-  height: auto;
-  font-size: var(--hero-type);
-  pointer-events: none;
-}
-
-.stickerSlot {
-  position: absolute;
-  pointer-events: none;
-}
-
-.sticker {
-  width: 100%;
-}
-
-/* Pegatinas «pegadas» sobre el titular: posiciones en em del propio titular, escalan con él. */
-.stickerMascot {
-  top: -0.42em;
-  left: -0.16em;
-  width: 0.62em;
-  font-size: var(--hero-type);
-  rotate: -8deg;
-}
-
-.stickerStar {
-  bottom: -0.04em;
-  left: 3.42em;
-  width: 0.5em;
-  font-size: var(--hero-type);
-}
-
-.footer {
-  display: grid;
-  gap: var(--space-5);
-  align-items: end;
-}
-
-@media (min-width: 1024px) {
-  .footer {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
 }
 
 .lead {
-  max-width: 44ch;
+  max-width: 46ch;
   font-size: var(--fs-lg);
-  line-height: 1.45;
-  color: rgb(242 240 236 / 0.86);
-}
-
-.actions {
-  display: grid;
-  gap: var(--space-3);
-  justify-items: start;
-}
-
-@media (min-width: 1024px) {
-  .actions {
-    justify-items: end;
-  }
-}
-
-/* Nota sobre las acciones: etiqueta técnica en mono con su flecha. */
-.note {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  font-weight: 500;
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: rgb(242 240 236 / 0.8);
+  line-height: 1.5;
+  color: var(--fg-muted);
+  text-wrap: balance;
 }
 
 .ctas {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: var(--space-3);
+  margin-top: var(--space-2);
 }
 
-.credit {
-  margin-top: var(--space-5);
-  font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: rgb(242 240 236 / 0.6);
-}
-
-/* ─── Móvil vertical ────────────────────────────────────────────────── */
-@media (max-width: 767px) and (orientation: portrait) {
-  .hero {
-    --hero-type: 20.5vw;
+@media (max-width: 599px) {
+  .accent {
+    margin-block: -0.06em -0.08em;
   }
 
-  .stickerStar {
-    left: 3.38em;
-    width: 0.42em;
+  :root[data-accent-font='ready'] .accent {
+    margin-block: -0.24em -0.2em;
+    font-size: 0.74em;
   }
 
-
-  .lead {
-    font-size: var(--fs-md);
+  .ctas {
+    width: 100%;
   }
 
   .ctas > * {
-    flex: 1 1 auto;
+    flex: 1 1 100%;
+  }
+
+  .hotspot {
+    min-height: 36px;
+    padding-inline: 12px 14px;
   }
 }
 
-/* ─── Pantallas apaisadas con poca altura (móvil en horizontal) ─────── */
-@media (orientation: landscape) and (max-height: 520px) {
-  .content {
-    padding-top: calc(var(--announcement-h) + var(--header-h) + var(--space-2));
-    padding-bottom: calc(var(--space-4) + clamp(150px, 16vw, 250px) * 0.5);
+/*
+ * Móvil en horizontal: no cabe foto + titular uno debajo de otro. Foto a la izquierda (a sangre,
+ * sin texto encima) y titular con las acciones a la derecha, todo en la primera pantalla.
+ */
+@media (orientation: landscape) and (max-height: 560px) {
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    min-height: 100svh;
   }
 
-  /* La sudadera queda bajo la cabecera en pantallas tan bajas. */
-  .hotspot[data-spot='hoodie'] {
+  .frame {
+    height: auto;
+    min-height: 100svh;
+  }
+
+  .content {
+    align-content: center;
+    gap: var(--space-3);
+    padding-top: calc(var(--announcement-h) + var(--header-h) + var(--space-2));
+    padding-bottom: var(--space-4);
+  }
+
+  .headline {
+    margin-block: 0;
+    font-size: clamp(2rem, 12vh, 3.5rem);
+  }
+
+  .lead {
     display: none;
   }
 
-  /* HYPO baja sobre la «B» para no tapar la etiqueta del capítulo. */
-  .stickerMascot {
-    top: -0.2em;
-    width: 0.48em;
+  .ctas {
+    width: auto;
+    margin-top: 0;
+    gap: var(--space-2);
   }
 
-  .hero {
-    --hero-type: clamp(3rem, 22svh, 6rem);
+  .ctas > * {
+    flex: 0 1 auto;
+    min-height: 44px;
+    padding-inline: var(--space-5);
   }
 
-  .titleBlock {
-    margin-bottom: var(--space-3);
-  }
-
-  .lead,
+  /* Con la foto a media pantalla, el punto de los pantalones queda fuera del encuadre. */
+  .hotspot[data-spot='cargo'],
   .credit {
     display: none;
   }

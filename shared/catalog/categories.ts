@@ -19,7 +19,7 @@ export const categories: Category[] = [
     handle: 'pantalones',
     name: 'Pantalones',
     singular: 'Pantalón',
-    description: 'Joggers, cargos y shorts técnicos para la calle y el entrenamiento.',
+    description: 'Cargos y shorts amplios para la calle.',
     silhouette: 'pants',
   },
   {

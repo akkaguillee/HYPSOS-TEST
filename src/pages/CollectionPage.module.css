@@ -25,7 +25,7 @@
 
 .bar {
   /* Tinte más denso que el de la cabecera: la barra pasa sobre prendas negras. */
-  --lg-tint: rgb(242 240 236 / 0.8);
+  --lg-tint: rgb(255 255 255 / 0.8);
   display: grid;
   grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
   align-items: center;
@@ -48,7 +48,7 @@
   justify-self: center;
   gap: var(--space-2);
   min-height: 44px;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -112,7 +112,7 @@
 }
 
 .resultLine {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
@@ -135,7 +135,6 @@
   font-family: var(--font-display);
   font-size: var(--fs-h2);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-crushed);
   text-transform: uppercase;
 }

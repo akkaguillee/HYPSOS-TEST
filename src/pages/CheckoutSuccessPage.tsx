@@ -1,4 +1,4 @@
-import { Sticker } from '@/components/brand/Sticker';
+import { Mascot } from '@/components/brand/BrandVector';
 import { PageIntro } from '@/content/pages/PageIntro';
 import { ButtonLink } from '@/components/ui/Button';
 import { Alert } from '@/components/ui/Field';
@@ -60,7 +60,7 @@ export default function CheckoutSuccessPage() {
       <PageIntro title="Gracias" breadcrumbs={[{ label: 'Inicio', to: paths.home }, { label: 'Pedido' }]} />
       <div className="container">
         <div className={styles.result}>
-          <Sticker mark="mascot" rotate={-8} className={styles.resultSticker} />
+          <Mascot className={styles.resultSticker} />
           {state.kind === 'loading' && (
             <p className="t-lead" role="status">
               Comprobando tu pedido…

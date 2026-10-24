@@ -11,19 +11,10 @@ import { paths } from '@shared/routes';
 /** Banda superior en movimiento: frases del Manual (se repiten en bucle). */
 export const announcements: string[] = ['Built for the climb.', 'Chapter 01 / Ascent', 'Reach higher.', 'Keep climbing.'];
 
-/** Cintas cruzadas bajo el hero: frases del Manual en tres voces (comprimida, ancha y gótica). */
-export const tapes = {
+/** Banda roja bajo el hero: frases del Manual en bucle. */
+export const ticker = {
   label: 'Built for the climb. Chapter 01 / Ascent. Reach higher. Keep climbing. Above ordinary.',
-  top: [
-    { text: 'Built for the climb', style: 'wide' },
-    { text: 'Chapter 01', style: 'gothic' },
-    { text: 'Reach higher', style: 'crushed' },
-  ],
-  bottom: [
-    { text: 'Keep climbing', style: 'crushed' },
-    { text: 'Ascent', style: 'gothic' },
-    { text: 'Above ordinary', style: 'wide' },
-  ],
+  items: ['Built for the climb', 'Chapter 01 / Ascent', 'Reach higher', 'Keep climbing', 'Above ordinary'],
 } as const;
 
 /** Aviso fijo mientras el catálogo sea de demostración (store.demoCatalog). */
@@ -38,12 +29,10 @@ export const generatedImageNotice = 'Imágenes de campaña generadas con IA · p
 export const hero = {
   chapter: 'Chapter 01 / Ascent',
   title: 'Built for the climb.',
-  /** El titular se compone en dos anchos: comprimida arriba, ancha abajo. Juntas = `title`. */
+  /** El titular en dos líneas; juntas = `title`. */
   titleLines: ['Built for', 'the climb.'] as const,
-  /** Pintada decorativa sobre el titular (nombre del capítulo, Manual). */
-  tag: 'Ascent',
-  /** Nota a mano junto a las acciones (frase secundaria del Manual). */
-  note: 'keep climbing',
+  /** Palabra de acento encajada entre las dos líneas (nombre del capítulo, Manual). Decorativa. */
+  accent: 'Ascent',
   lead: 'Streetwear independiente con un punto premium, gráficos con intención y drops limitados guiados por historias.',
   primaryCta: { label: 'Comprar Chapter 01', to: paths.collection('drop-01-ascenso') },
   secondaryCta: { label: 'Ver el editorial', to: '#editorial' },
@@ -70,8 +59,8 @@ export const limited = {
   kicker: 'Cápsula Signal · Ediciones cortas',
   title: 'Reach higher.',
   titleLines: ['Reach', 'higher.'] as const,
-  /** Pintada sobre la banda: nombre de la cápsula. */
-  tag: 'Signal',
+  /** Nombre de la cápsula, como acento. */
+  accent: 'Signal',
   text: 'La estrella HYPSOS, en gráficos de tirada corta.',
   cta: { label: 'Ver Signal', to: paths.collection('signal') },
   photo: campaignPhotos.rooftop,
@@ -82,9 +71,6 @@ export const manifesto = {
   movement: 'The Ascent',
   statement: 'Siempre hay otro nivel. HYPSOS existe para las personas que siguen avanzando, aprendiendo, creando y construyendo.',
   accent: 'No estamos aquí para parecer terminados. Estamos aquí para seguir subiendo.',
-  /** Pintada sobre el muro de la foto (frase secundaria del Manual). */
-  tag: 'keep climbing',
-  photo: campaignPhotos.spray,
 };
 
 /** The Climb System (Manual, sección 04): los códigos que hacen reconocible a HYPSOS. */

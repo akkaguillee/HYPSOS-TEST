@@ -1,0 +1,13 @@
+/*
+ * Tipografía de marca: Bastaman (titulares, navegación, botones, etiquetas y precios).
+ * Aerosoldier, el acento, se registra desde src/lib/fonts.ts solo si su archivo con licencia
+ * está presente. El texto corrido usa la fuente del sistema (ver --font-body).
+ * Un único peso (Bold) declarado para todo el rango: el navegador no sintetiza negritas.
+ */
+@font-face {
+  font-family: 'Bastaman';
+  src: url('../assets/fonts/bastaman.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}

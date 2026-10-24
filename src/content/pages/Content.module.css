@@ -45,7 +45,7 @@
 }
 
 .tocTitle {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -87,7 +87,7 @@
 }
 
 .tocIndex {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   color: var(--fg-muted);
   font-variant-numeric: tabular-nums;
@@ -139,7 +139,6 @@
   font-family: var(--font-display);
   font-size: clamp(1.5rem, 1vw + 1.25rem, 2rem);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-tight);
   text-transform: uppercase;
   color: var(--fg);
@@ -171,7 +170,7 @@
 }
 
 .article li::marker {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-sm);
   color: var(--fg-muted);
 }
@@ -217,7 +216,7 @@
 .article thead th {
   padding-bottom: var(--space-2);
   border-bottom-color: var(--line-strong);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -262,7 +261,6 @@
   font-family: var(--font-display);
   font-size: clamp(2rem, 2.4vw + 1.25rem, 3.25rem);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-tight);
   text-transform: uppercase;
 }
@@ -293,13 +291,12 @@
   font-family: var(--font-display);
   font-size: clamp(1.75rem, 1.4vw + 1.25rem, 2.5rem);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-tight);
   text-transform: uppercase;
 }
 
 .groupIndex {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -317,7 +314,6 @@
   font-family: var(--font-display);
   font-size: clamp(1.5rem, 1vw + 1.25rem, 2rem);
   font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-tight);
   text-transform: uppercase;
   color: var(--fg);
@@ -343,7 +339,7 @@
 
 .sizeTables table thead th {
   border-bottom-color: var(--line-strong);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -356,13 +352,13 @@
 }
 
 .sizeTables table tbody th {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-weight: 600;
   color: var(--fg);
 }
 
 .sizeTables table td {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -397,7 +393,7 @@
 }
 
 .sizeNote {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;

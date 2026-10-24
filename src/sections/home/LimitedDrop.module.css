@@ -1,97 +1,199 @@
-.section {
-  position: relative;
-  z-index: 1;
-}
-
-@media (min-width: 1024px) {
-  .section {
-    padding-bottom: var(--section-y-tight);
-  }
-}
-
+/* Texto a la izquierda y tarjeta oscura de producto a la derecha (Cake), sobre banda blanca. */
 .grid {
   display: grid;
   gap: var(--space-8);
+  align-items: center;
 }
 
 @media (min-width: 1024px) {
   .grid {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    align-items: center;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-10);
   }
 }
 
 .copy {
   display: grid;
-  gap: var(--space-5);
   justify-items: start;
-}
-
-.copy :global(.eyebrow) {
-  color: var(--fg);
+  gap: var(--space-4);
 }
 
 .title {
   font-family: var(--font-display);
-  font-size: clamp(4rem, 13vw, 13rem);
-  font-weight: 900;
-  font-stretch: var(--stretch-display);
+  font-size: var(--fs-display);
+  font-weight: 700;
   line-height: var(--lh-crushed);
-  letter-spacing: var(--tracking-display);
+  letter-spacing: -0.03em;
   text-transform: uppercase;
 }
 
 .text {
   max-width: 40ch;
   font-size: var(--fs-lg);
+  line-height: 1.5;
+  color: var(--fg-muted);
 }
 
-/* La foto sobresale por arriba de la banda: desplazada con `translate`, sin márgenes negativos. */
-.visual {
-  position: relative;
-}
-
-@media (min-width: 1024px) {
-  .visual {
-    translate: 0 -20%;
-  }
-}
-
-.media {
-  aspect-ratio: 3 / 4;
+/* Tarjeta oscura: café, 28 px de radio, sin sombra (un borde de 1 px casi invisible). */
+.card {
+  display: grid;
+  gap: var(--space-4);
+  padding: clamp(12px, 1.6vw, 20px);
   border-radius: var(--radius-5);
-  background: var(--c-black);
+  background: var(--c-coffee);
+  color: var(--fg);
+  box-shadow: 0 0 0 1px rgb(20 1 2 / 0.04);
 }
 
-.sticker {
-  position: absolute;
-  left: -12%;
-  bottom: 8%;
-  width: 38%;
+.photo {
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-4);
+  background: var(--surface);
 }
 
-/* Tag negro a espray sobre la banda roja, asomando por detrás de la foto. */
-.tag {
-  position: absolute;
-  z-index: 1;
-  left: -30%;
-  top: 4%;
-  width: 72%;
-  height: auto;
-  rotate: -9deg;
-  pointer-events: none;
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-2) 0;
 }
 
-/* En la banda roja el titular abre con la palabra ancha. */
-.title :global(.mix-wide) {
-  margin-top: 0;
-  margin-bottom: 0.06em;
+.cardTitle {
+  font-family: var(--font-accent);
+  font-size: clamp(1.75rem, 2.4vw, 2.5rem);
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
-@media (max-width: 1023px) {
-  .tag {
-    left: -2%;
-    top: -7%;
-    width: 58%;
+:root[data-accent-font='ready'] .cardTitle {
+  text-transform: none;
+}
+
+/* El «recibo» verde: la única nota de este color en la tarjeta. */
+.receipt {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 12px;
+  border-radius: var(--radius-pill);
+  background: var(--c-lime);
+  color: var(--c-coffee);
+  font-family: var(--font-label);
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.rows {
+  display: grid;
+}
+
+.rows > li + li {
+  border-top: 1px solid var(--line);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-2);
+  border-radius: var(--radius-3);
+  transition: background-color var(--dur-hover) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .row:hover {
+    background: var(--c-coffee-2);
   }
+}
+
+.thumb {
+  position: relative;
+  width: 56px;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-2);
+  overflow: hidden;
+  background: var(--c-studio);
+}
+
+.thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.info {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.code {
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  color: var(--fg-muted);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  line-height: 1.15;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Barra de tirada: unidades disponibles sobre la tirada declarada. */
+.meter {
+  position: relative;
+  height: 4px;
+  margin-top: 4px;
+  border-radius: var(--radius-pill);
+  background: rgb(255 255 255 / 0.12);
+  overflow: hidden;
+}
+
+.meter > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: var(--c-lime);
+}
+
+.side {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+}
+
+.price {
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.status {
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--c-lime);
+}
+
+.status[data-tone='low'] {
+  color: var(--c-white);
+}
+
+.status[data-tone='out'] {
+  color: var(--fg-muted);
 }

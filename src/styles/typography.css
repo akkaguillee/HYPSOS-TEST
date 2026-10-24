@@ -1,7 +1,10 @@
 /*
- * Jerarquía tipográfica (Manual de Marca): titulares en sans condensada contundente, cuerpo en
- * sans neutra y datos técnicos (capítulos, códigos, etiquetas) en monoespaciada.
- * Los titulares grandes se componen comprimidos, como un cartel: el texto como objeto.
+ * Jerarquía tipográfica (v3). Dos familias de marca y la fuente del sistema para leer:
+ * - Bastaman: titulares, navegación, botones, etiquetas y precios. Siempre en mayúsculas.
+ * - Aerosoldier: acento puntual (el nombre del capítulo, una palabra firma). Nunca cifras.
+ * - Sistema: descripciones, textos legales y formularios (párrafos largos en mayúsculas negras
+ *   no se leen bien).
+ * Salto de escala (21 TSI): la interfaz vive entre 11 y 20 px y los titulares empiezan en 44 px.
  */
 
 .t-campaign,
@@ -9,19 +12,18 @@
 .t-h1,
 .t-h2 {
   font-family: var(--font-display);
-  font-weight: 800;
-  font-stretch: var(--stretch-heading);
+  font-weight: 700;
   line-height: var(--lh-heading);
   letter-spacing: var(--tracking-display);
   text-transform: uppercase;
+  font-synthesis: none;
 }
 
-/* Titular de campaña: uno por vista, comprimido al máximo. */
+/* Titular de campaña: uno por vista, como un cartel. */
 .t-campaign,
 .t-display {
-  font-weight: 900;
-  font-stretch: var(--stretch-display);
   line-height: var(--lh-crushed);
+  letter-spacing: -0.03em;
 }
 
 .t-campaign {
@@ -42,12 +44,14 @@
   font-size: var(--fs-h2);
 }
 
+/* Subtítulo de interfaz (techo de la escala pequeña). */
 .t-h3 {
   font-family: var(--font-display);
   font-size: var(--fs-h3);
-  font-weight: 600;
+  font-weight: 700;
   line-height: var(--lh-snug);
-  letter-spacing: var(--tracking-tight);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
 }
 
 /* Entradilla. */
@@ -68,53 +72,38 @@
   line-height: 1.5;
 }
 
-/*
- * Cuatro familias en total: Archivo (titulares, en sus dos extremos de anchura), Inter (texto),
- * JetBrains Mono (etiquetas) y una gótica de acento. El contraste sale de mezclar comprimida y
- * ancha en un mismo titular y de la gótica, no de sumar familias.
- */
-
-/* Ancha: Archivo al 125 % y negra. Para palabras sueltas que tienen que «ocupar» el ancho. */
-.t-wide {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-stretch: var(--stretch-wide);
-  line-height: 0.86;
-  letter-spacing: -0.035em;
-  text-transform: uppercase;
-}
-
-/* Gótica: nombres de capítulo y colección. Nunca en mayúsculas (la gótica no se lee así). */
-.t-gothic {
-  font-family: var(--font-gothic);
-  font-weight: 900;
+/* Acento: Aerosoldier (o Bastaman si no hay licencia). Una palabra, no frases. */
+.t-accent {
+  font-family: var(--font-accent);
+  font-weight: 400;
   line-height: 0.9;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   text-transform: none;
+  font-synthesis: none;
 }
 
-/* Etiquetas técnicas: capítulos, códigos, tallas y microcopy. */
+/* Etiquetas tipo código de producto: capítulos, códigos, tallas y microcopy. */
 .t-label {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
-  font-weight: 500;
-  line-height: 1.2;
+  font-weight: 700;
+  line-height: 1.15;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
 
 .t-micro {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: var(--fs-2xs);
-  font-weight: 500;
-  line-height: 1.3;
+  font-weight: 700;
+  line-height: 1.25;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--fg-muted);
 }
 
 .t-mono {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
 }
 
 .t-muted {
@@ -140,11 +129,13 @@
 
 .prose h2 {
   margin-top: var(--space-7);
-  font-family: var(--font-body);
+  font-family: var(--font-display);
   font-size: var(--fs-h3);
-  font-weight: 600;
+  font-weight: 700;
+  line-height: var(--lh-snug);
   color: var(--fg);
-  letter-spacing: -0.005em;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
 }
 
 .prose h3 {
@@ -199,33 +190,25 @@
 
 /* Marcador de dato pendiente de completar por el propietario. */
 .pending {
-  background: rgb(200 16 46 / 0.16);
-  outline: 1px dashed rgb(200 16 46 / 0.6);
+  background: rgb(233 12 23 / 0.14);
+  outline: 1px dashed rgb(233 12 23 / 0.6);
   padding: 0 0.25em;
   border-radius: var(--radius-1);
 }
 
 /*
- * Titular mixto: un mismo titular compuesto en dos anchos (o con una palabra en gótica).
- * El titular fija el cuerpo; cada línea se ajusta en em para que la pieza escale entera.
+ * Titular con palabra de acento: el titular en Bastaman y una palabra en Aerosoldier, roja y algo
+ * más grande, encajada en medio («Built for · Ascent · the climb»).
  */
-.mix-crushed {
+.mix-line {
   display: block;
-  font-stretch: var(--stretch-display);
 }
 
-.mix-wide {
-  display: block;
-  margin-top: 0.06em;
-  font-size: 0.5em;
-  font-stretch: var(--stretch-wide);
-  line-height: 0.9;
-  letter-spacing: -0.035em;
-}
-
-.mix-gothic {
-  font-family: var(--font-gothic);
-  font-weight: 900;
-  letter-spacing: -0.01em;
+.mix-accent {
+  font-family: var(--font-accent);
+  font-weight: 400;
+  letter-spacing: 0;
   text-transform: none;
+  color: var(--accent);
+  font-synthesis: none;
 }
