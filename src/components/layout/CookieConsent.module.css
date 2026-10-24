@@ -1,7 +1,7 @@
 /* Aviso flotante de cristal (LiquidGlass oscuro), separado de los bordes como la cabecera. */
 .banner {
   /* Tinte denso: el aviso se lee sobre páginas claras y fotografías. */
-  --lg-tint: rgb(20 1 2 / 0.9);
+  --lg-tint: rgb(10 10 10 / 0.9);
   position: fixed;
   left: max(var(--space-3), env(safe-area-inset-left));
   right: max(var(--space-3), env(safe-area-inset-right));

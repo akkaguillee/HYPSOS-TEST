@@ -18,7 +18,7 @@
  */
 :where(.root) {
   /* Tono oscuro (por defecto) */
-  --lg-tint: rgb(20 1 2 / 0.35);
+  --lg-tint: rgb(10 10 10 / 0.35);
   --lg-fg: #ffffff;
   --lg-edge-hi: rgb(255 255 255 / 0.3);
   --lg-edge-lo: rgb(0 0 0 / 0.42);
@@ -27,7 +27,7 @@
   --lg-rim-soft: rgb(255 255 255 / 0.22);
   --lg-sheen: rgb(255 255 255 / 0.09);
   --lg-spot: rgb(255 255 255 / 0.08);
-  --lg-solid: var(--glass-solid, #140102);
+  --lg-solid: var(--glass-solid, #0a0a0a);
   --lg-fallback-blur: blur(16px) saturate(170%);
   --lg-drop: 0 12px 32px rgb(0 0 0 / 0.28), 0 2px 6px rgb(0 0 0 / 0.18);
 
@@ -48,9 +48,9 @@
 
 :where(.root[data-tone='light']) {
   --lg-tint: rgb(255 255 255 / 0.45);
-  --lg-fg: #140102;
+  --lg-fg: #0a0a0a;
   --lg-edge-hi: rgb(255 255 255 / 0.9);
-  --lg-edge-lo: rgb(20 1 2 / 0.16);
+  --lg-edge-lo: rgb(10 10 10 / 0.16);
   --lg-glow: rgb(255 255 255 / 0.28);
   --lg-rim: rgb(255 255 255 / 1);
   --lg-rim-soft: rgb(255 255 255 / 0.45);
@@ -155,7 +155,7 @@
   }
 }
 
-/* Transparencia reducida: superficie sólida (#140102 / #ffffff), sin refracción ni especular.
+/* Transparencia reducida: superficie sólida (#0a0a0a / #ffffff), sin refracción ni especular.
    Especificidad alta para ganar a cualquier override: la preferencia del usuario manda. */
 @media (prefers-reduced-transparency: reduce) {
   .root > .lens,

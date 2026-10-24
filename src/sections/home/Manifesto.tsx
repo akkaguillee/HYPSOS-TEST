@@ -6,7 +6,7 @@ import { useRef } from 'react';
 import styles from './Manifesto.module.css';
 
 /**
- * Manifiesto en banda café (Shelby): la declaración enorme y centrada se «enciende» palabra a
+ * Manifiesto en banda negro (Shelby): la declaración enorme y centrada se «enciende» palabra a
  * palabra al leerla con el scroll (de tinta apagada a blanco, sin desplazamientos), la frase final
  * en rojo y el nombre del movimiento, gigante y cortado por el borde inferior.
  */

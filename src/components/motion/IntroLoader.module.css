@@ -5,7 +5,7 @@
   display: grid;
   place-items: center;
   --hole: 0px;
-  background: var(--c-coffee);
+  background: var(--c-black);
   /* Iris de salida: agujero radial cuyo radio anima GSAP (--hole). */
   -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole), #000 calc(var(--hole) + 1px));
   mask-image: radial-gradient(circle at 50% 50%, transparent var(--hole), #000 calc(var(--hole) + 1px));

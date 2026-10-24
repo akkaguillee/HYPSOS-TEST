@@ -16,3 +16,6 @@ node_modules/.tmp
 # Tipografías con licencia que no permite redistribuirlas (ver src/assets/fonts/README.md)
 src/assets/fonts/licensed/*
 !src/assets/fonts/licensed/.gitkeep
+
+# Candidatas generadas con Gemini (se elige una con pnpm campaign:generate --pick)
+scripts/campaign/generated/

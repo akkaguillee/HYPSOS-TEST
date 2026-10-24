@@ -23,7 +23,7 @@ const FOCUS = { x: 0.62, y: 0.2 };
  * Hero de campaña en dos tiempos, como un editorial de moda:
  * 1. La foto a sangre, sola (sin texto encima): solo dos puntos discretos que llevan a la
  *    categoría de cada prenda.
- * 2. Debajo, sobre café, el titular centrado en Bastaman con la palabra del capítulo encajada en
+ * 2. Debajo, sobre negro, el titular centrado en Bastaman con la palabra del capítulo encajada en
  *    medio («Built for · Ascent · the climb.»), la entradilla y las dos acciones.
  *
  * Movimiento: la foto se abre desde el centro como un diafragma (o la descubre el iris de la

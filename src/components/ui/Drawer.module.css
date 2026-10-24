@@ -36,7 +36,7 @@
   width: min(calc(100% - var(--sheet-inset) * 2), var(--drawer-width, 440px));
   overflow: hidden;
   /* Cristal más denso: el panel contiene texto y formularios. */
-  --lg-tint: rgb(20 1 2 / 0.8);
+  --lg-tint: rgb(10 10 10 / 0.8);
   transition: transform var(--dur-panel) var(--ease-drawer);
   outline: none;
 }

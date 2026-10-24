@@ -99,10 +99,10 @@ La dirección visual (v3) mezcla tres referencias y se apoya en la paleta y las 
 fijó HYPSOS. Todos los valores viven en `src/styles/tokens.css`:
 
 - **21 TSI (editorial de moda):** la foto a sangre hace el trabajo y no lleva texto encima; la interfaz se reduce a etiquetas pequeñas en mayúsculas, controles en píldora con contorno y un punto de estado. La escala salta de golpe: interfaz de 11 a 20 px y titulares desde 44 px, sin tamaños intermedios. Retrato en círculo como contrapunto.
-- **Shelby (bandas de color):** lienzo café casi negro; cada sección es un campo de color a sangre (café → rojo → blanco → café…), con titulares enormes centrados y una etiqueta tipo código de producto encima. Todo plano, sin sombras.
+- **Shelby (bandas de color):** lienzo oscuro; cada sección es un campo de color a sangre (negro → rojo → blanco → negro…), con titulares enormes centrados y una etiqueta tipo código de producto encima. Todo plano, sin sombras.
 - **Cake Equity (orden comercial):** un solo color de relleno para convertir (rojo), un verde «recibo» usado poco y a propósito (la franja de avisos, la disponibilidad, el foco), tarjetas con borde fino en vez de sombra, botones en píldora y una tarjeta oscura de producto por página.
 
-**Paleta (las cuatro tintas de HYPSOS):** Coffee Bean `#140102` (lienzo y tinta sobre claro), Racing Red `#e90c17` (acción principal, banda de señal, trabilla), Yellow Green `#96de2b` (recibo) y White `#ffffff`. No hay tonos intermedios (cafés aclarados ni rojos oscurecidos): la jerarquía sale de la transparencia del texto (blanco o café al 72 %), de las líneas finas y de las bandas. El hover del rojo aclara en lugar de oscurecer. El gris cálido `#ece9e3` solo aparece como fondo de las fotos de producto. Todo cumple AA. Temas por banda: `data-theme="dark" | "light" | "red" | "lime"`.
+**Paleta:** negro neutro `#0a0a0a` (lienzo y tinta sobre claro; sustituye al Coffee Bean `#140102` de la paleta original, que en superficies grandes se leía granate), Racing Red `#e90c17` (acción principal, banda de señal, trabilla), Yellow Green `#96de2b` (recibo) y White `#ffffff`. No hay tonos intermedios (cafés aclarados ni rojos oscurecidos): la jerarquía sale de la transparencia del texto (blanco o negro al 72 %), de las líneas finas y de las bandas. El hover del rojo aclara en lugar de oscurecer. El gris cálido `#ece9e3` solo aparece como fondo de las fotos de producto. Todo cumple AA. Temas por banda: `data-theme="dark" | "light" | "red" | "lime"`.
 
 **Tipografía:** solo las dos familias que entregó HYPSOS (`src/assets/fonts/README.md`):
 
@@ -129,17 +129,17 @@ fijó HYPSOS. Todos los valores viven en `src/styles/tokens.css`:
 1. Franja verde de avisos: el aviso de catálogo de demostración y las frases del Manual.
 2. **Hero en dos tiempos:**
    - la foto de campaña a sangre, sin texto encima, con dos puntos «en vivo» que llevan a sudaderas y pantalones;
-   - debajo, sobre café, «BUILT FOR / THE CLIMB.» centrado en Bastaman con «Ascent» encajado en medio y las dos acciones.
+   - debajo, sobre negro, «BUILT FOR / THE CLIMB.» centrado en Bastaman con «Ascent» encajado en medio y las dos acciones.
 3. Banda roja en bucle con las frases del Manual.
 4. **Chapter 01** (blanco): cabecera centrada tipo cartel y rejilla de producto.
-5. **Índice de categorías** (café):
+5. **Índice de categorías** (negro):
    - nombres gigantes entre líneas finas, con su número y el recuento real de piezas;
    - con ratón, una foto sigue al puntero y cambia abriéndose desde el centro;
    - en táctil, cada fila lleva su foto en círculo.
 6. **Lookbook** (blanco): composición asimétrica, retrato en círculo y dos looks con paralaje.
 7. **La señal roja**: el detalle de la trabilla en un círculo y The Climb System en cuatro columnas.
 8. **Cápsula Signal** (blanco): tarjeta oscura con la foto y las piezas, con precio, estado de stock real y, si tienen tirada declarada, cuánto queda de ella.
-9. **Manifiesto** (café): la declaración se enciende palabra a palabra al leerla y «The Ascent» aparece gigante y cortado por el borde.
+9. **Manifiesto** (negro): la declaración se enciende palabra a palabra al leerla y «The Ascent» aparece gigante y cortado por el borde.
 
 **Sistema de movimiento** (GSAP con ScrambleText, SplitText y CustomEase). Nada de fundidos, desenfoques ni deslizamientos de entrada; cada gesto imita un proceso físico de imprenta o de cámara:
 
@@ -166,6 +166,15 @@ Las fotos de campaña de `public/assets/campaign/` (escalera, azotea, looks en e
 **Revelado analógico** (`pnpm campaign:film`, `scripts/campaign/film.ts`): las fotos con modelos no se publican tal cual salen de la IA. Desde los originales guardados en `scripts/campaign/originals/` se les aplica lo que haría una cámara de verdad: menos nitidez y contraste local artificiales, curva de película con negros algo mates, color más contenido, halo solo alrededor de las luces puntuales, viñeteado, esquinas más blandas, aberración cromática leve y grano fino. Así pierden el aspecto plástico típico de la IA. Los bodegones de producto no pasan por este revelado.
 
 Para sustituirlas basta con dejar las fotos reales con el mismo nombre (`<nombre>-<ancho>.avif|webp`, anchos 640/960/original) o cambiar `shared/campaign.ts`. La foto o el vídeo oficial del hero va en `heroMedia`.
+
+**Generar fotos nuevas con Gemini** (`scripts/campaign/generate.ts`). Necesita la clave en `GEMINI_API_KEY` (variable o secreto de red del entorno; cada imagen se cobra en esa cuenta de Google):
+
+1. `pnpm campaign:generate --list`: comprueba la clave y lista los modelos de imagen disponibles.
+2. `pnpm campaign:generate`: crea 2 candidatas por toma en `scripts/campaign/generated/` (fuera del repositorio). Usa `--only <toma>` para una toma y `--count` para más candidatas.
+3. `pnpm campaign:generate --pick <toma>=<n>`: copia la elegida a `originals/`.
+4. `pnpm campaign:film --only <toma>`: la revela y publica.
+
+Las tomas y sus prompts siguen el brief (sin graffiti, luz dura, ropa negra lisa). Si cambia la foto del hero, hay que recolocar los dos puntos de `src/sections/home/Hero.tsx`.
 
 **Cómo conseguir imágenes de calidad alta** (sesión real, packs de mockup, Figma, Weave, API de Gemini, Adobe Stock), con el brief y la lista de tomas: [`docs/brief-fotografia.md`](docs/brief-fotografia.md).
 

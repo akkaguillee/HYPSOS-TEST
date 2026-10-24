@@ -3,7 +3,7 @@
 Las fotos actuales son provisionales: fotos de campaña generadas con IA y reveladas para quitarles
 el aspecto plástico, y mockups de producto compuestos sobre prendas lisas generadas con IA. Este
 documento recoge cómo conseguir imágenes de calidad alta y qué tienen que mostrar para encajar con
-el sistema visual (foto editorial a sangre, café, rojo y blanco, sin graffiti).
+el sistema visual (foto editorial a sangre, negro, rojo y blanco, sin graffiti).
 
 ## Opciones, de mejor a peor
 
@@ -13,7 +13,7 @@ el sistema visual (foto editorial a sangre, café, rojo y blanco, sin graffiti).
 | **2. Packs de mockup profesionales** (PSD con objeto inteligente) | Muy alta en producto: prendas fotografiadas de verdad | 15–60 € por pack, con licencia comercial | Exportar las prendas lisas a PNG y dejarlas en `scripts/mockups/bases/`. `pnpm mockups` compone encima los gráficos oficiales |
 | **3. Figma** (bases ya generadas) | Alta (960×1280) | Gratis: las 25 bases que faltan ya están generadas | Permitir `www.figma.com` en la red del entorno y ejecutar `pnpm mockups:bases && pnpm mockups`. Los enlaces caducan hacia el 29–30 de octubre de 2026 |
 | **4. Weave** (Nano Banana 2.1 / Pro, hasta 4K) | Alta | Unos 10 créditos por imagen a 2K (quedan 140) | Permitir `media.weavy.ai` en la red del entorno. La primera prueba (manga larga negra) ya está generada y pendiente de descarga |
-| **5. API de Gemini** (Imagen / Gemini Image) | Alta | Pago por imagen, en la cuenta de Google del cliente | Guardar la clave como secreto del entorno (`GEMINI_API_KEY`). `generativelanguage.googleapis.com` sí responde desde aquí |
+| **5. API de Gemini** (Imagen / Gemini Image) | Alta | Pago por imagen, en la cuenta de Google del cliente | Guardar la clave como secreto del entorno (`GEMINI_API_KEY`) y usar `pnpm campaign:generate` (ver README). `generativelanguage.googleapis.com` sí responde desde aquí |
 | **6. Adobe Stock** (vía el conector de Adobe) | Fotos reales de banco | Licencia por imagen | Solo para fondos y texturas. No sirve para el producto (no muestra las prendas de HYPSOS). El conector no genera imágenes |
 
 Cualquier generador externo (Midjourney, Firefly en la web, etc.) también sirve: basta con subir
@@ -25,7 +25,7 @@ aquí los archivos y se integran igual.
   fuera de cámara. Movimiento en la tela (capucha, bajo del cargo) o en el pelo.
 - **Luz:** una sola fuente dura y lateral; la otra mitad cae a negro. Cuando haya color, que lo
   ponga la luz: gel rojo (tipo `#e90c17`) o ciudad de noche. Nada de luz plana de mediodía.
-- **Escenario:** hormigón, escaleras, azoteas, ciudad de noche, estudio café oscuro. **Sin
+- **Escenario:** hormigón, escaleras, azoteas, ciudad de noche, estudio negro. **Sin
   graffiti** ni muros pintados.
 - **Ropa:** siluetas oversize, cropped y anchas. Prendas de HYPSOS con su gráfico real y la
   trabilla roja visible en alguna toma.

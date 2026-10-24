@@ -1,6 +1,6 @@
 /*
  * Hero en dos tiempos: foto a sangre sin texto encima (editorial 21 TSI) y, debajo, el titular
- * centrado sobre café (bandas de Shelby) con la palabra de acento encajada entre las dos líneas.
+ * centrado sobre negro (bandas de Shelby) con la palabra de acento encajada entre las dos líneas.
  */
 .hero {
   position: relative;
@@ -14,7 +14,7 @@
   position: relative;
   height: clamp(460px, 74svh, 980px);
   overflow: hidden;
-  background: var(--c-coffee);
+  background: var(--c-black);
 }
 
 @media (min-width: 1024px) {
@@ -75,7 +75,7 @@
   padding: 0 16px 0 14px;
   border: 1px solid rgb(255 255 255 / 0.55);
   border-radius: var(--radius-pill);
-  background: rgb(20 1 2 / 0.38);
+  background: rgb(10 10 10 / 0.38);
   backdrop-filter: blur(10px) saturate(140%);
   -webkit-backdrop-filter: blur(10px) saturate(140%);
   color: var(--c-white);
@@ -123,13 +123,13 @@
   .hotspot:hover {
     background: var(--c-white);
     border-color: var(--c-white);
-    color: var(--c-coffee);
+    color: var(--c-black);
   }
 }
 
 .hotspot:active {
   background: var(--c-white);
-  color: var(--c-coffee);
+  color: var(--c-black);
 }
 
 .credit {

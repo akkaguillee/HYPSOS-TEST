@@ -215,18 +215,18 @@
 
 /* Vista activa: el indicador es negro sólido (el rojo queda para la compra). */
 .view[aria-current='true'] {
-  background: var(--c-coffee);
+  background: var(--c-black);
   color: var(--c-white);
 }
 
 .view:focus-visible {
-  outline: 2px solid var(--c-coffee);
+  outline: 2px solid var(--c-black);
   outline-offset: 1px;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .view:not([aria-current='true']):hover {
-    background: rgb(20 1 2 / 0.08);
+    background: rgb(10 10 10 / 0.08);
   }
 }
 
@@ -265,7 +265,7 @@
 }
 
 .arrow:disabled {
-  color: rgb(20 1 2 / 0.3);
+  color: rgb(10 10 10 / 0.3);
   cursor: default;
 }
 
@@ -320,17 +320,17 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  outline: 1px solid rgb(20 1 2 / 0.3);
+  outline: 1px solid rgb(10 10 10 / 0.3);
   outline-offset: -1px;
 }
 
 .dockSwatch[aria-pressed='true'] span {
-  outline: 1.5px solid var(--c-coffee);
+  outline: 1.5px solid var(--c-black);
   outline-offset: 2px;
 }
 
 .dockSwatch:focus-visible {
-  outline: 2px solid var(--c-coffee);
+  outline: 2px solid var(--c-black);
   outline-offset: 0;
 }
 
@@ -347,7 +347,7 @@
   position: absolute;
   inset: 50% 6px auto;
   height: 1px;
-  background: var(--c-coffee);
+  background: var(--c-black);
   transform: rotate(-45deg);
 }
 

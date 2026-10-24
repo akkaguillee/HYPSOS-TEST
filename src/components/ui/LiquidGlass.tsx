@@ -6,7 +6,7 @@
  *   tamaño exacto del elemento (ver src/lib/liquid-glass.ts). Solo Chromium/Blink.
  * - "blur": `backdrop-filter: blur() saturate()` con las mismas capas especulares y de luz de borde.
  *   Safari, Firefox, SSR/primer render, `forceFallback`, o mientras aún no se ha medido.
- * - Con `prefers-reduced-transparency: reduce` el CSS pasa a superficie sólida (#140102 / #ffffff).
+ * - Con `prefers-reduced-transparency: reduce` el CSS pasa a superficie sólida (#0a0a0a / #ffffff).
  *
  * RESTRICCIÓN IMPORTANTE (igual que `.glass` en src/styles/glass.css): un elemento con
  * `backdrop-filter` solo ve lo que hay detrás hasta su "backdrop root". Si algún ancestro tiene
@@ -64,7 +64,7 @@ interface LiquidGlassOwnProps<T extends ElementType> {
    * (toda la profundidad del bisel actúa como lente: borde que comprime y centro que amplía).
    */
   profile?: GlassProfile;
-  /** Tinte: oscuro rgb(20 1 2 / .35) o claro rgb(255 255 255 / .45). */
+  /** Tinte: oscuro rgb(10 10 10 / .35) o claro rgb(255 255 255 / .45). */
   tone?: 'dark' | 'light';
   /** Brillo especular y luz de borde que siguen al puntero (solo puntero fino, sin reduced-motion). */
   interactive?: boolean;

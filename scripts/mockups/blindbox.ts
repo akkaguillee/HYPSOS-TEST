@@ -38,14 +38,14 @@ interface Palette {
 
 function palette(product: Product, colorId: string): Palette {
   const code = product.code;
-  // Paleta de marca: Coffee Bean #140102, Racing Red #e90c17, White #ffffff (el cartón blanco es blanco impreso).
+  // Paleta de marca: Coffee Bean #0a0a0a, Racing Red #e90c17, White #ffffff (el cartón blanco es blanco impreso).
   if (product.id === 'p-blindbox-signal') {
-    return { bg: '#e90c17', ink: '#ffffff', accent: '#140102', sub: 'rgba(20,1,2,0.62)', border: '#ffffff', hero: 'star', serie: 'SIGNAL', code };
+    return { bg: '#e90c17', ink: '#ffffff', accent: '#0a0a0a', sub: 'rgba(10,10,10,0.62)', border: '#ffffff', hero: 'star', serie: 'SIGNAL', code };
   }
   if (colorId === 'blanco') {
-    return { bg: '#f4f1f0', ink: '#140102', accent: '#e90c17', sub: 'rgba(20,1,2,0.55)', border: null, hero: 'question', serie: 'SERIE 01', code };
+    return { bg: '#f4f1f0', ink: '#0a0a0a', accent: '#e90c17', sub: 'rgba(10,10,10,0.55)', border: null, hero: 'question', serie: 'SERIE 01', code };
   }
-  return { bg: '#140102', ink: '#ffffff', accent: '#e90c17', sub: 'rgba(255,255,255,0.55)', border: '#ffffff', hero: 'question', serie: 'SERIE 01', code };
+  return { bg: '#0a0a0a', ink: '#ffffff', accent: '#e90c17', sub: 'rgba(255,255,255,0.55)', border: '#ffffff', hero: 'question', serie: 'SERIE 01', code };
 }
 
 // ─── Gráfica de las caras ───────────────────────────────────────────────────
@@ -59,7 +59,7 @@ function mark(name: Mark, color: string, width: number, style = ''): string {
 function mascot(width: number, p: Palette, style = ''): string {
   const v = VECTORS.mascot as typeof VECTORS.mascot & { fill: string };
   const border = p.border ? `<path d="${v.fill}" fill="none" stroke="${p.border}" stroke-width="150" stroke-linejoin="round"/>` : '';
-  return `<svg viewBox="-60 -60 ${v.width + 120} ${v.height + 120}" width="${width}" style="display:block;overflow:visible;${style}" xmlns="http://www.w3.org/2000/svg"><g transform="${v.transform}">${border}<path d="${v.fill}" fill="#140102"/><path d="${v.d}" fill="#ffffff"/></g></svg>`;
+  return `<svg viewBox="-60 -60 ${v.width + 120} ${v.height + 120}" width="${width}" style="display:block;overflow:visible;${style}" xmlns="http://www.w3.org/2000/svg"><g transform="${v.transform}">${border}<path d="${v.fill}" fill="#0a0a0a"/><path d="${v.d}" fill="#ffffff"/></g></svg>`;
 }
 
 /*
@@ -89,7 +89,7 @@ function faceHTML(face: Face, p: Palette): string {
   const [w, h] = faceSize(face);
   const base = `width:${w}px;height:${h}px;background:${p.bg};color:${p.ink}`;
   // Trabilla roja tejida, la firma de la marca, en el canto derecho del frente.
-  const tab = `<div style="position:absolute;right:0;top:${h * 0.72}px;width:44px;height:120px;background:${p.hero === 'star' ? '#140102' : '#e90c17'};box-shadow:inset 0 0 0 3px rgba(0,0,0,.12)"></div>`;
+  const tab = `<div style="position:absolute;right:0;top:${h * 0.72}px;width:44px;height:120px;background:${p.hero === 'star' ? '#0a0a0a' : '#e90c17'};box-shadow:inset 0 0 0 3px rgba(0,0,0,.12)"></div>`;
   if (face === 'front') {
     const heroMark =
       p.hero === 'star'

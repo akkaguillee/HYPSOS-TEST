@@ -143,7 +143,7 @@
 }
 
 .endTile:focus-visible {
-  outline: 2px solid var(--c-coffee);
+  outline: 2px solid var(--c-black);
   outline-offset: 3px;
 }
 
@@ -186,7 +186,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgb(20 1 2 / 0.5) 0%, rgb(20 1 2 / 0.1) 35%, rgb(20 1 2 / 0.82) 100%);
+  background: linear-gradient(180deg, rgb(10 10 10 / 0.5) 0%, rgb(10 10 10 / 0.1) 35%, rgb(10 10 10 / 0.82) 100%);
 }
 
 .endSticker {

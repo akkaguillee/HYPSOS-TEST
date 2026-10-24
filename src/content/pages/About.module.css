@@ -20,7 +20,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgb(20 1 2 / 0.45) 0%, rgb(20 1 2 / 0.2) 40%, rgb(20 1 2 / 0.9) 100%);
+  background: linear-gradient(180deg, rgb(10 10 10 / 0.45) 0%, rgb(10 10 10 / 0.2) 40%, rgb(10 10 10 / 0.9) 100%);
 }
 
 .heroContent {

@@ -30,7 +30,7 @@
 
 /* Diálogo de cristal: cabecera fija y cuerpo con su propio scroll. */
 .dialog {
-  --lg-tint: rgb(20 1 2 / 0.78);
+  --lg-tint: rgb(10 10 10 / 0.78);
   position: relative;
   display: flex;
   flex-direction: column;

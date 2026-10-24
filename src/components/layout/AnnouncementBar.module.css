@@ -7,7 +7,7 @@
   height: var(--announcement-h);
   overflow: hidden;
   background: var(--c-lime);
-  color: var(--c-coffee);
+  color: var(--c-black);
   font-family: var(--font-label);
   font-size: var(--fs-2xs);
   font-weight: 700;
@@ -48,7 +48,7 @@
   flex: none;
   width: 18px;
   height: auto;
-  color: var(--c-coffee);
+  color: var(--c-black);
 }
 
 @keyframes marquee {

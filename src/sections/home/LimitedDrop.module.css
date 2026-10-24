@@ -34,15 +34,15 @@
   color: var(--fg-muted);
 }
 
-/* Tarjeta oscura: café, 28 px de radio, sin sombra (un borde de 1 px casi invisible). */
+/* Tarjeta oscura: negro, 28 px de radio, sin sombra (un borde de 1 px casi invisible). */
 .card {
   display: grid;
   gap: var(--space-4);
   padding: clamp(12px, 1.6vw, 20px);
   border-radius: var(--radius-5);
-  background: var(--c-coffee);
+  background: var(--c-black);
   color: var(--fg);
-  box-shadow: 0 0 0 1px rgb(20 1 2 / 0.04);
+  box-shadow: 0 0 0 1px rgb(10 10 10 / 0.04);
 }
 
 .photo {
@@ -79,7 +79,7 @@
   padding: 0 12px;
   border-radius: var(--radius-pill);
   background: var(--c-lime);
-  color: var(--c-coffee);
+  color: var(--c-black);
   font-family: var(--font-label);
   font-size: var(--fs-2xs);
   font-weight: 700;

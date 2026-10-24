@@ -10,7 +10,7 @@
   width: clamp(200px, 26vw, 380px);
   aspect-ratio: 1;
   border-radius: 50%;
-  background: var(--c-coffee);
+  background: var(--c-black);
   margin-block: var(--space-2);
 }
 

@@ -92,7 +92,7 @@
   line-height: 1.2;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--c-coffee);
+  color: var(--c-black);
 }
 
 .badges[data-surface='page'] .badge {
@@ -119,7 +119,7 @@
   height: 40px;
   border-radius: 50%;
   /* Sobre el fondo claro de estudio de la imagen. */
-  color: var(--c-coffee);
+  color: var(--c-black);
   transition:
     background-color var(--dur-hover) var(--ease-out),
     transform var(--dur-micro) var(--ease-out);
@@ -236,7 +236,7 @@
 @media (hover: hover) and (pointer: fine) {
   .quickSize:hover:not(:disabled) {
     background: var(--c-white);
-    color: var(--c-coffee);
+    color: var(--c-black);
     border-color: var(--c-white);
   }
 }

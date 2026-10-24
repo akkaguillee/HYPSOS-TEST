@@ -8,8 +8,8 @@
   inset: 0;
   z-index: var(--z-modal);
   background: var(--c-studio);
-  color: var(--c-coffee);
-  --focus-ring: var(--c-coffee);
+  color: var(--c-black);
+  --focus-ring: var(--c-black);
   visibility: hidden;
 }
 
@@ -106,7 +106,7 @@
   width: 1px;
   height: 20px;
   margin-inline: var(--space-3) var(--space-1);
-  background: rgb(20 1 2 / 0.18);
+  background: rgb(10 10 10 / 0.18);
 }
 
 .tool {
@@ -126,19 +126,19 @@
 }
 
 .tool:disabled {
-  color: rgb(20 1 2 / 0.3);
+  color: rgb(10 10 10 / 0.3);
   cursor: default;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .tool:not(:disabled):hover {
-    background: rgb(20 1 2 / 0.08);
+    background: rgb(10 10 10 / 0.08);
   }
 }
 
 .tool:focus-visible,
 .thumb:focus-visible {
-  outline: 2px solid var(--c-coffee);
+  outline: 2px solid var(--c-black);
   outline-offset: 1px;
 }
 
@@ -200,7 +200,7 @@
 }
 
 .thumb[aria-current='true'] {
-  outline-color: var(--c-coffee);
+  outline-color: var(--c-black);
 }
 
 .thumb > img {
@@ -211,7 +211,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .thumb:not([aria-current='true']):hover {
-    outline-color: rgb(20 1 2 / 0.3);
+    outline-color: rgb(10 10 10 / 0.3);
   }
 }
 

@@ -11,9 +11,9 @@ import { Signature } from '@/sections/home/Signature';
 /**
  * Portada por bandas a sangre que alternan oscuro y claro (Shelby), con la foto editorial sin
  * texto encima (21 TSI) y un solo color de acción (Cake):
- * hero café → banda roja en bucle → Chapter 01 (blanco) → índice de categorías (café) →
+ * hero negro → banda roja en bucle → Chapter 01 (blanco) → índice de categorías (negro) →
  * lookbook (blanco) → la señal roja → cápsula Signal con tarjeta oscura (blanco) →
- * manifiesto (café) → pie.
+ * manifiesto (negro) → pie.
  */
 export default function HomePage() {
   return (

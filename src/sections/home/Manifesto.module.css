@@ -23,7 +23,7 @@
   text-wrap: balance;
 }
 
-/* Rojo sobre café da 4,4:1: solo vale como texto grande (≥ 24 px), por eso va en Bastaman a 24 px. */
+/* Rojo sobre negro da 4,4:1: solo vale como texto grande (≥ 24 px), por eso va en Bastaman a 24 px. */
 .accent {
   max-width: 30ch;
   font-family: var(--font-display);

@@ -3,7 +3,7 @@
   overflow: hidden;
   isolation: isolate;
   --panel-mark: var(--c-white);
-  --panel-accent: var(--c-coffee);
+  --panel-accent: var(--c-black);
 }
 
 .panel[data-tone='red'] {
@@ -11,21 +11,21 @@
 }
 
 .panel[data-tone='black'] {
-  background: var(--c-coffee);
+  background: var(--c-black);
   --panel-mark: var(--c-red);
   --panel-accent: var(--c-red);
   box-shadow: inset 0 0 0 1px var(--line);
 }
 
 .panel[data-tone='graphite'] {
-  background: var(--c-coffee);
+  background: var(--c-black);
   border: 1px solid rgb(255 255 255 / 0.16);
   --panel-accent: var(--c-red);
 }
 
 .panel[data-tone='light'] {
   background: var(--c-white);
-  --panel-mark: var(--c-coffee);
+  --panel-mark: var(--c-black);
   --panel-accent: var(--c-red);
 }
 

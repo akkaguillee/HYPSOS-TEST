@@ -46,7 +46,7 @@ export const Monogram = (props: BrandVectorProps) => <BrandVector def={monogramV
 export const Star = (props: BrandVectorProps) => <BrandVector def={starVector} {...props} />;
 /**
  * Mascota: trazo en `currentColor` (blanco por defecto, como en el original) sobre su silueta
- * rellena en café, igual que el archivo oficial, para que se lea sobre cualquier superficie.
+ * rellena en negro, igual que el archivo oficial, para que se lea sobre cualquier superficie.
  * Plana: sin troquel ni sombra.
  */
 export function Mascot({ className, style, title }: BrandVectorProps) {
@@ -62,7 +62,7 @@ export function Mascot({ className, style, title }: BrandVectorProps) {
       xmlns="http://www.w3.org/2000/svg"
     >
       <g transform={mascotVector.transform}>
-        <path d={mascotVector.fill} fill="var(--c-coffee)" />
+        <path d={mascotVector.fill} fill="var(--c-black)" />
         <path d={mascotVector.d} fill="currentColor" />
       </g>
     </svg>

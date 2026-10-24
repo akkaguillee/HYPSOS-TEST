@@ -45,7 +45,7 @@
 
 .bar {
   /* Tinte más ligero que el de los paneles: la gota tiene que dejar ver (deformado) lo de detrás. */
-  --lg-tint: rgb(20 1 2 / 0.24);
+  --lg-tint: rgb(10 10 10 / 0.24);
   --header-fg: var(--c-white);
   --header-fg-muted: rgb(255 255 255 / 0.74);
   display: grid;
@@ -58,8 +58,8 @@
 
 .bar[data-tone='light'] {
   --lg-tint: rgb(255 255 255 / 0.3);
-  --header-fg: var(--c-coffee);
-  --header-fg-muted: rgb(20 1 2 / 0.72);
+  --header-fg: var(--c-black);
+  --header-fg-muted: rgb(10 10 10 / 0.72);
 }
 
 .left,

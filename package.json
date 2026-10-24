@@ -25,6 +25,7 @@
     "mockups": "tsx scripts/mockups/render.ts",
     "mockups:bases": "tsx scripts/mockups/fetch-bases.ts",
     "campaign:film": "tsx scripts/campaign/film.ts",
+    "campaign:generate": "tsx scripts/campaign/generate.ts",
     "admin": "tsx scripts/admin.ts"
   },
   "dependencies": {

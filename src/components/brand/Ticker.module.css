@@ -15,11 +15,11 @@
 
 .lime {
   background: var(--c-lime);
-  color: var(--c-coffee);
+  color: var(--c-black);
 }
 
 .coffee {
-  background: var(--c-coffee);
+  background: var(--c-black);
   color: var(--c-white);
   border-color: rgb(255 255 255 / 0.14);
 }

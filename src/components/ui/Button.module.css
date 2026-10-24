@@ -63,12 +63,12 @@
   --btn-border: var(--c-red);
 }
 
-/* Sobre las bandas roja y verde, la acción principal pasa a café. */
+/* Sobre las bandas roja y verde, la acción principal pasa a negro. */
 [data-theme='red'] .primary,
 [data-theme='lime'] .primary {
-  --btn-bg: var(--c-coffee);
+  --btn-bg: var(--c-black);
   --btn-fg: var(--c-white);
-  --btn-border: var(--c-coffee);
+  --btn-border: var(--c-black);
 }
 
 /* Contraste: relleno del color del texto (negro sobre claro, blanco roto sobre negro). */
@@ -139,7 +139,7 @@
   [data-theme='red'] .primary:hover,
   [data-theme='lime'] .primary:hover {
     --btn-bg: var(--c-white);
-    --btn-fg: var(--c-coffee);
+    --btn-fg: var(--c-black);
     --btn-border: var(--c-white);
   }
 
