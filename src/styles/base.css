@@ -174,3 +174,25 @@ p {
     transition-duration: 0.01ms !important;
   }
 }
+
+/*
+ * Impresión / PDF (p. ej. «Imprimir → PDF» en Safari de iOS): todo el contenido visible tal cual,
+ * sin los estados intermedios de las animaciones (letras prensadas, sellos, aperturas) ni capas
+ * que solo tienen sentido en pantalla.
+ */
+@media print {
+  .split-char,
+  .split-word,
+  .mix-accent,
+  .image-reveal,
+  .image-reveal > * {
+    transform: none !important;
+    clip-path: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  [data-print-hide] {
+    display: none !important;
+  }
+}

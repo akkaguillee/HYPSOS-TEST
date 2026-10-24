@@ -107,11 +107,11 @@ fijó HYPSOS. Todos los valores viven en `src/styles/tokens.css`:
 **Tipografía:** solo las dos familias que entregó HYPSOS (`src/assets/fonts/README.md`):
 
 - **Bastaman** (solo mayúsculas, un peso): todo el texto, desde los titulares hasta los párrafos, los formularios y los precios. El texto corrido va un punto más pequeño y con aire entre letras. Le faltan `¿ ¡ « » · – —`, que salen de la fuente del sistema; en los textos de la web los separadores son barras.
-- **Aerosoldier** (acento): una palabra en cada titular de la portada («Ascent», «Chapter», «subida», «ordinary.», «roja.», «higher.»), la cápsula Signal, «The Ascent» del manifiesto y los nombres de colección. **Nunca para cifras**: se excluyen con `unicode-range` porque la versión recibida las sustituye por una marca de agua.
+- **Aerosoldier** (acento; mientras no esté su archivo con licencia, lo sustituye **Sedgwick Ave Display**, un rotulado de graffiti muy parecido con licencia libre OFL, para que la web publicada tenga siempre las dos voces): una palabra en cada titular de la portada («Ascent», «Chapter», «subida», «ordinary.», «roja.», «higher.»), la cápsula Signal, «The Ascent» del manifiesto y los nombres de colección. **Nunca para cifras**: se excluyen con `unicode-range` porque la versión recibida las sustituye por una marca de agua.
 
 **Licencias:**
 
-- El archivo de Aerosoldier es la versión **PERSONAL USE ONLY**: no permite uso comercial ni incrustarla. Por eso **no se sube al repositorio** y la web solo la carga si el archivo está en `src/assets/fonts/licensed/` (sin él, el acento se ve en Bastaman).
+- El archivo de Aerosoldier es la versión **PERSONAL USE ONLY**: no permite uso comercial ni incrustarla. Por eso **no se sube al repositorio** y la web solo la carga si el archivo está en `src/assets/fonts/licensed/` (sin él, el acento se ve en Sedgwick Ave Display).
 - Bastaman sí permite incrustarla, pero su archivo no incluye texto de licencia: hay que confirmar el uso comercial con el autor.
 
 **Forma:** botones y controles en píldora, imágenes de producto a 12 px, tarjetas a 20 px, la tarjeta oscura a 28 px, fotos editoriales a sangre. Sin sombras. Espaciado en base 4 px, márgenes laterales de 16 a 48 px y bandas de 72 a 136 px de alto. Motion: `--dur-ui` (200 ms) y `--dur-panel` (380 ms); en JavaScript, las curvas propias `hyp.press` y `hyp.stamp` (`src/lib/motion.ts`).

@@ -116,7 +116,7 @@ export function CursorFollower() {
   if (!enabled) return null;
   return (
     <>
-      <div ref={ring} className={styles.ring} data-mode="idle" aria-hidden="true">
+      <div ref={ring} className={styles.ring} data-mode="idle" aria-hidden="true" data-print-hide="">
         <span ref={label} className={styles.label} />
       </div>
       <div ref={dot} className={styles.dot} aria-hidden="true" />

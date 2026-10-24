@@ -83,8 +83,12 @@
   --font-display: 'Bastaman', 'Arial Black', 'Helvetica Neue', system-ui, sans-serif;
   /* Etiquetas tipo código de producto: la misma Bastaman, pequeña y espaciada. */
   --font-label: var(--font-display);
-  /* Acento: Aerosoldier (solo si su archivo con licencia está presente; si no, Bastaman). */
-  --font-accent: 'Aerosoldier', var(--font-display);
+  /*
+   * Acento: Aerosoldier si su archivo con licencia está presente; si no, Sedgwick Ave Display
+   * (rotulado de graffiti con licencia libre OFL, muy parecido) para que la web publicada tenga
+   * siempre sus dos voces.
+   */
+  --font-accent: 'Aerosoldier', 'Sedgwick Ave Display', var(--font-display);
   /* Texto corrido: también Bastaman (más pequeña, con aire entre letras y líneas). Solo dos familias. */
   --font-body: var(--font-display);
 

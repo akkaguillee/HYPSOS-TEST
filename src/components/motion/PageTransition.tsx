@@ -100,7 +100,7 @@ export function PageTransition() {
 
   if (reduced) return null;
   return (
-    <div ref={overlay} className={styles.overlay} aria-hidden="true">
+    <div ref={overlay} className={styles.overlay} aria-hidden="true" data-print-hide="">
       <div ref={star} className={styles.star}>
         <Star />
       </div>

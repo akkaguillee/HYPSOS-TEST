@@ -37,7 +37,10 @@
 
 .button:disabled,
 .button[aria-disabled='true'] {
-  opacity: 0.4;
+  /* Sin opacidad: un rojo transparente sobre negro se ve granate. Desactivado = contorno neutro. */
+  --btn-bg: transparent;
+  --btn-fg: var(--fg-muted);
+  --btn-border: var(--line-strong);
   pointer-events: none;
 }
 

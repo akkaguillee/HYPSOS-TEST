@@ -39,6 +39,11 @@
     height: calc(clamp(440px, 70svh, 760px) + var(--announcement-h) + var(--header-h));
   }
 
+  /* En vertical el encuadre recorta la derecha de la foto: ese punto quedaría cortado. */
+  .hotspot[data-spot='cargo'] {
+    display: none;
+  }
+
   .media {
     top: calc(var(--announcement-h) + var(--header-h));
   }
@@ -215,14 +220,27 @@
 }
 
 :root[data-accent-font='ready'] .accent {
-  margin-block: -0.34em -0.3em;
+  margin-block: -0.3em -0.26em;
   font-family: var(--font-accent);
-  font-size: 0.86em;
+  font-size: 0.8em;
   font-weight: 400;
   line-height: 0.9;
   letter-spacing: 0;
   text-transform: none;
   rotate: -7deg;
+  /*
+   * Contorno negro (como un cartel recortado): donde la palabra pisa las letras blancas, el borde
+   * las separa y se leen las dos. Con sombras, que funcionan en todos los navegadores.
+   */
+  text-shadow:
+    0.045em 0 0 var(--c-black),
+    -0.045em 0 0 var(--c-black),
+    0 0.045em 0 var(--c-black),
+    0 -0.045em 0 var(--c-black),
+    0.032em 0.032em 0 var(--c-black),
+    -0.032em -0.032em 0 var(--c-black),
+    0.032em -0.032em 0 var(--c-black),
+    -0.032em 0.032em 0 var(--c-black);
 }
 
 .lead {
@@ -247,8 +265,8 @@
   }
 
   :root[data-accent-font='ready'] .accent {
-    margin-block: -0.24em -0.2em;
-    font-size: 0.74em;
+    margin-block: -0.16em -0.12em;
+    font-size: 0.68em;
   }
 
   .ctas {

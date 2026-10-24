@@ -6,9 +6,10 @@
  *   1. .lens (z −2): backdrop-filter — refracción SVG (Blink) o blur + saturate (resto) —, tinte
  *      (--lg-tint) y box-shadow inset: filo de luz de 1 px arriba-izquierda, sombra interior
  *      abajo-derecha y resplandor interior suave → volumen.
- *   2. ::before (z −1): luz de borde direccional (anillo de 1 px, gradiente cónico; sigue al puntero).
- *   3. ::after (z −1): brillo especular (radial en la posición del puntero + lámina superior).
- *   4. Hijos.
+ *   2. ::after (z −1): brillo especular (radial en la posición del puntero + lámina superior).
+ *   3. Hijos.
+ * El filo de luz es solo el box-shadow inset de .lens: el anillo cónico con máscara que había
+ * antes lo pintaba Safari en iOS como una mancha blanca (máscaras compuestas).
  *
  * Mismas reglas que `.glass` (src/styles/glass.css): ningún ancestro con opacity < 1, filter, mask,
  * clip-path ni otro backdrop-filter, y no anidar cristales.
@@ -23,8 +24,6 @@
   --lg-edge-hi: rgb(255 255 255 / 0.3);
   --lg-edge-lo: rgb(0 0 0 / 0.42);
   --lg-glow: rgb(255 255 255 / 0.07);
-  --lg-rim: rgb(255 255 255 / 0.7);
-  --lg-rim-soft: rgb(255 255 255 / 0.22);
   --lg-sheen: rgb(255 255 255 / 0.09);
   --lg-spot: rgb(255 255 255 / 0.08);
   --lg-solid: var(--glass-solid, #0a0a0a);
@@ -52,8 +51,6 @@
   --lg-edge-hi: rgb(255 255 255 / 0.9);
   --lg-edge-lo: rgb(10 10 10 / 0.16);
   --lg-glow: rgb(255 255 255 / 0.28);
-  --lg-rim: rgb(255 255 255 / 1);
-  --lg-rim-soft: rgb(255 255 255 / 0.45);
   --lg-sheen: rgb(255 255 255 / 0.22);
   --lg-spot: rgb(255 255 255 / 0.16);
   --lg-solid: #ffffff;
@@ -82,34 +79,6 @@
   backdrop-filter: var(--lg-filter);
 }
 
-/* Luz de borde direccional: anillo fino (1 px), sin bordes blancos gruesos. */
-.root::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  padding: 1px;
-  border-radius: inherit;
-  background: conic-gradient(
-    from var(--lg-angle),
-    var(--lg-rim) 0deg,
-    transparent 70deg,
-    transparent 150deg,
-    var(--lg-rim-soft) 180deg,
-    transparent 210deg,
-    transparent 290deg,
-    var(--lg-rim) 360deg
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box exclude,
-    linear-gradient(#000 0 0);
-  pointer-events: none;
-}
-
 /* Brillo especular: mancha que sigue al puntero + lámina superior. */
 .root::after {
   content: '';
@@ -125,7 +94,6 @@
 
 .root[data-lit='true'] {
   --lg-spot: rgb(255 255 255 / 0.18);
-  --lg-rim: rgb(255 255 255 / 0.9);
 }
 
 .root[data-tone='light'][data-lit='true'] {
@@ -158,6 +126,20 @@
 /* Transparencia reducida: superficie sólida (#0a0a0a / #ffffff), sin refracción ni especular.
    Especificidad alta para ganar a cualquier override: la preferencia del usuario manda. */
 @media (prefers-reduced-transparency: reduce) {
+  .root > .lens,
+  .root[data-glass='refraction'] > .lens {
+    background-color: var(--lg-solid);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .root::after {
+    display: none;
+  }
+}
+
+/* Impresión y PDF: el cristal pasa a sólido (sin filtros ni brillos que el PDF no reproduce). */
+@media print {
   .root > .lens,
   .root[data-glass='refraction'] > .lens {
     background-color: var(--lg-solid);
