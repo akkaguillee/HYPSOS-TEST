@@ -28,7 +28,7 @@ export function ProductBadges({
       {badges.map((badge) => (
         <li key={badge.id} className={styles.badge} data-tone={badge.tone}>
           {badge.label}
-          {badge.id === 'limitada' && edition ? ` · ${edition} uds` : null}
+          {badge.id === 'limitada' && edition ? ` / ${edition} uds` : null}
         </li>
       ))}
     </ul>

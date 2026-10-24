@@ -18,7 +18,8 @@
 }
 
 .panel[data-tone='graphite'] {
-  background: var(--c-coffee-3);
+  background: var(--c-coffee);
+  border: 1px solid rgb(255 255 255 / 0.16);
   --panel-accent: var(--c-red);
 }
 

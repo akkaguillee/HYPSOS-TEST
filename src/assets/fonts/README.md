@@ -1,12 +1,11 @@
 # Tipografías de HYPSOS
 
-La web usa dos familias de marca y, para el texto corrido, la fuente del sistema del visitante
-(no se descarga ninguna otra).
+La web usa solo dos familias: Bastaman para todo el texto y Aerosoldier para las palabras de acento.
 
 | Familia | Archivo | Uso | Licencia |
 |---|---|---|---|
-| **Bastaman** (Bold) | `bastaman.woff2` (en el repositorio) | Titulares, navegación, botones, etiquetas, precios | Autor: Mohamad Farhan Ramadhan. El archivo permite incrustarla (`fsType 0`), pero no trae texto de licencia: **confirma con el autor que la licencia cubre el uso comercial** antes de lanzar la tienda. |
-| **Aerosoldier Basic** | `licensed/aerosoldier.woff2` (**fuera del repositorio**) | Palabras de acento (nombre del capítulo, firmas) | El archivo recibido es la versión **PERSONAL USE ONLY**: prohíbe el uso comercial y la incrustación (`fsType` restringido) y sustituye las cifras por una marca de agua. Hay que comprar la licencia comercial en https://mn.sg/aerosoldier. |
+| **Bastaman** (Bold) | `bastaman.woff2` (en el repositorio) | Todo el texto: titulares, interfaz, precios y párrafos | Autor: Mohamad Farhan Ramadhan. El archivo permite incrustarla (`fsType 0`), pero no trae texto de licencia: **confirma con el autor que la licencia cubre el uso comercial** antes de lanzar la tienda. |
+| **Aerosoldier Basic** | `licensed/aerosoldier.woff2` (**fuera del repositorio**) | Una palabra de acento por titular, nombres de colección | El archivo recibido es la versión **PERSONAL USE ONLY**: prohíbe el uso comercial y la incrustación (`fsType` restringido) y sustituye las cifras por una marca de agua. Hay que comprar la licencia comercial en https://mn.sg/aerosoldier. |
 
 ## Activar Aerosoldier
 
@@ -21,5 +20,5 @@ Bastaman. Aunque esté, las cifras nunca se pintan en Aerosoldier (se excluyen c
 ## Limitaciones de Bastaman
 
 - Solo tiene mayúsculas (las minúsculas son las mismas letras) y un peso (Bold).
-- No incluye `¿ ¡ « » · – —`: esos signos salen de la fuente del sistema. En titulares conviene
-  evitarlos.
+- No incluye `¿ ¡ « » · – —`: esos signos salen de la fuente del sistema. En los textos de la web
+  los separadores son barras («Negro / Talla M»); en el packaging el ¿ se compone con un ? girado.

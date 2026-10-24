@@ -181,7 +181,7 @@ function OrderCard({ order }: { order: OrderSummary }) {
       <ul role="list" className={styles.orderItems}>
         {order.items.map((item) => (
           <li key={`${item.productId}-${item.colorName}-${item.size}`}>
-            {item.quantity} × {item.name} · {item.colorName} · {item.size}
+            {item.quantity} × {item.name} / {item.colorName} / {item.size}
           </li>
         ))}
       </ul>
@@ -274,7 +274,7 @@ function AddressesSection() {
               <article key={address.id} className={styles.address} aria-label={address.label || `${address.firstName} ${address.lastName}`}>
                 <p className={styles.cardLabel}>
                   {address.label || 'Dirección'}
-                  {address.isDefault && ' · Predeterminada'}
+                  {address.isDefault && ' / Predeterminada'}
                 </p>
                 <p>
                   {address.firstName} {address.lastName}

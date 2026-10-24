@@ -16,7 +16,7 @@ export default function NotFoundPage() {
   return (
     <div className={`container ${styles.page}`}>
       <section className={styles.poster} data-theme="dark" aria-labelledby="not-found-title">
-        <p className={styles.label}>Error 404 · Página no encontrada</p>
+        <p className={styles.label}>Error 404 / Página no encontrada</p>
         <div className={styles.codeWrap} aria-hidden="true">
           <span className={styles.code}>404</span>
           <span className={styles.sticker}>

@@ -132,14 +132,15 @@
 
 @media (hover: hover) and (pointer: fine) {
   .primary:hover {
-    --btn-bg: var(--c-red-deep);
-    --btn-border: var(--c-red-deep);
+    --btn-bg: var(--c-red-hover);
+    --btn-border: var(--c-red-hover);
   }
 
   [data-theme='red'] .primary:hover,
   [data-theme='lime'] .primary:hover {
-    --btn-bg: var(--c-coffee-2);
-    --btn-border: var(--c-coffee-2);
+    --btn-bg: var(--c-white);
+    --btn-fg: var(--c-coffee);
+    --btn-border: var(--c-white);
   }
 
   .accent:hover {

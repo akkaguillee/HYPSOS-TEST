@@ -235,7 +235,7 @@ function ProductView({ product }: { product: Product }) {
   const related = relatedProducts(product, 8);
   const reference = size ? variantSku(product, colorId, size) : product.code;
   const lowStock = stock !== null && stock > 0 && stock <= 3;
-  const stickyMeta = [product.colors.length > 1 ? color.name : null, !singleSize && size ? `Talla ${size}` : null].filter(Boolean).join(' · ');
+  const stickyMeta = [product.colors.length > 1 ? color.name : null, !singleSize && size ? `Talla ${size}` : null].filter(Boolean).join(' / ');
 
   // «Avísame»: enlace de texto que despliega el formulario en su sitio (bajo las tallas o bajo la compra).
   const stockAlert =
@@ -479,9 +479,9 @@ function ProductView({ product }: { product: Product }) {
                 inCart > 0 &&
                 stock !== null &&
                 inCart >= Math.min(stock, store.maxQuantityPerLine) &&
-                ' · Ya tienes todas en el carrito'}
+                ' / Ya tienes todas en el carrito'}
             </p>
-            {store.demoCatalog && <p className={styles.demoNote}>Producto de demostración · precio y stock no son reales</p>}
+            {store.demoCatalog && <p className={styles.demoNote}>Producto de demostración / precio y stock no son reales</p>}
           </div>
 
           {singleSize && stockAlert && <div className={styles.singleAlert}>{stockAlert}</div>}
@@ -491,7 +491,7 @@ function ProductView({ product }: { product: Product }) {
             {shippingMethods.map((method) => (
               <li key={method.id}>
                 <Truck aria-hidden="true" />
-                {method.name}: {method.description} · {formatPrice(method.price)}
+                {method.name}: {method.description} / {formatPrice(method.price)}
                 {method.freeFrom !== undefined && ` (gratis desde ${formatPrice(method.freeFrom)})`}
               </li>
             ))}
@@ -618,7 +618,7 @@ function ProductView({ product }: { product: Product }) {
         <span className={styles.stickyName}>
           <strong>{product.name}</strong>
           <span>
-            {stickyMeta && `${stickyMeta} · `}
+            {stickyMeta && `${stickyMeta} / `}
             <Price amount={product.price} />
           </span>
         </span>

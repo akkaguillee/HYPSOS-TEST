@@ -21,7 +21,7 @@ export function Signature() {
           <CampaignImage photo={signature.photo} sizes="(min-width: 1024px) 26vw, 60vw" focus="70% 70%" />
         </ImageReveal>
         <SplitHeadline id="signature-title" className={styles.title}>
-          {signature.title}
+          {signature.titleLines[0]} <span className="mix-accent">{signature.titleLines[1]}</span>
         </SplitHeadline>
         <p className={styles.text}>{signature.text}</p>
         <ol className={styles.system} aria-label="The Climb System">

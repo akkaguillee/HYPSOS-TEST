@@ -138,7 +138,7 @@ export function Footer() {
             © {year} {store.name}. Todos los derechos reservados.
           </p>
           <div className={styles.bottomMeta}>
-            <span>España · EUR €</span>
+            <span>España / EUR €</span>
           </div>
         </div>
       </div>

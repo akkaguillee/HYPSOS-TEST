@@ -1,9 +1,7 @@
 /*
- * Jerarquía tipográfica (v3). Dos familias de marca y la fuente del sistema para leer:
- * - Bastaman: titulares, navegación, botones, etiquetas y precios. Siempre en mayúsculas.
- * - Aerosoldier: acento puntual (el nombre del capítulo, una palabra firma). Nunca cifras.
- * - Sistema: descripciones, textos legales y formularios (párrafos largos en mayúsculas negras
- *   no se leen bien).
+ * Jerarquía tipográfica (v3). Solo las dos familias de HYPSOS:
+ * - Bastaman: todo el texto (titulares, interfaz, precios y párrafos). Siempre en mayúsculas.
+ * - Aerosoldier: una palabra de acento en cada titular (`.mix-accent`). Nunca cifras.
  * Salto de escala (21 TSI): la interfaz vive entre 11 y 20 px y los titulares empiezan en 44 px.
  */
 
@@ -197,18 +195,26 @@
 }
 
 /*
- * Titular con palabra de acento: el titular en Bastaman y una palabra en Aerosoldier, roja y algo
- * más grande, encajada en medio («Built for · Ascent · the climb»).
+ * Palabra de acento dentro de un titular: en Aerosoldier (minúsculas de rotulista, algo más
+ * grande para igualar la altura de las mayúsculas de Bastaman) y en el color de acento de la banda.
+ * Sin el archivo de Aerosoldier se queda en Bastaman y solo cambia el color.
  */
 .mix-line {
   display: block;
 }
 
 .mix-accent {
-  font-family: var(--font-accent);
-  font-weight: 400;
-  letter-spacing: 0;
-  text-transform: none;
+  display: inline-block;
   color: var(--accent);
   font-synthesis: none;
+}
+
+:root[data-accent-font='ready'] .mix-accent {
+  font-family: var(--font-accent);
+  font-size: 1.12em;
+  font-weight: 400;
+  line-height: 0.8;
+  letter-spacing: 0;
+  text-transform: none;
+  rotate: -4deg;
 }

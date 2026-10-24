@@ -29,7 +29,7 @@ export function AboutPage() {
         </ImageReveal>
         <div className={`container ${styles.heroContent}`}>
           <Breadcrumbs items={[{ label: 'Inicio', to: paths.home }, { label: 'Quiénes somos' }]} />
-          <p className="eyebrow">Sobre HYPSOS · Movimiento</p>
+          <p className="eyebrow">Sobre HYPSOS / Movimiento</p>
           {/* «The» pequeña y «Ascent» como acento: el nombre del movimiento como un rótulo. */}
           <SplitHeadline as="h1" id="about-title" trigger="mount" className={styles.heroTitle}>
             <span className={styles.heroSmall}>The</span> <span className={styles.heroAccent}>Ascent</span>

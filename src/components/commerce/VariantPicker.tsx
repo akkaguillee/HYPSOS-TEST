@@ -69,7 +69,7 @@ export function SizePicker({ product, colorId, value, onChange, stock, stockKnow
     <fieldset ref={groupRef} className={cn(styles.group, error && styles.invalid)} aria-describedby={error ? errorId : undefined} tabIndex={-1}>
       <legend className={styles.legend}>
         <span>
-          Talla{value && <span className={styles.legendValue}> · {value}</span>}
+          Talla{value && <span className={styles.legendValue}> / {value}</span>}
         </span>
         {action}
       </legend>

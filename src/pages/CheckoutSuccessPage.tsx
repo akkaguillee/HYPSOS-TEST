@@ -84,7 +84,7 @@ export default function CheckoutSuccessPage() {
           {state.kind === 'order' && state.order.status === 'paid' && (
             <Alert tone="success" title={`Pedido ${state.order.orderNumber} confirmado`}>
               <p>
-                {state.order.itemCount} {state.order.itemCount === 1 ? 'artículo' : 'artículos'} · {formatPrice(state.order.total)}. Enviaremos la
+                {state.order.itemCount} {state.order.itemCount === 1 ? 'artículo' : 'artículos'} / {formatPrice(state.order.total)}. Enviaremos la
                 confirmación a {state.order.email}.
               </p>
             </Alert>

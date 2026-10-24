@@ -244,7 +244,7 @@ export default function CheckoutPage() {
                     <span className={styles.summaryCode}>{line.product.code}</span>
                     {line.product.name}
                     <span className={styles.summaryMeta}>
-                      {line.colorName} · {line.size} · {line.quantity} {line.quantity === 1 ? 'ud.' : 'uds.'}
+                      {line.colorName} / {line.size} / {line.quantity} {line.quantity === 1 ? 'ud.' : 'uds.'}
                     </span>
                   </span>
                   <Price amount={line.lineTotal} className={styles.summaryPrice} />

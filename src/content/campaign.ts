@@ -20,11 +20,11 @@ export const ticker = {
 /** Aviso fijo mientras el catálogo sea de demostración (store.demoCatalog). */
 export const demoNotice = {
   long: 'Catálogo de demostración: productos, precios y stock no son reales',
-  short: 'Demo · datos no reales',
+  short: 'Demo / datos no reales',
 };
 
 /** Aviso sobre las imágenes de campaña provisionales. */
-export const generatedImageNotice = 'Imágenes de campaña generadas con IA · provisionales';
+export const generatedImageNotice = 'Imágenes de campaña generadas con IA / provisionales';
 
 export const hero = {
   chapter: 'Chapter 01 / Ascent',
@@ -42,8 +42,10 @@ export const hero = {
 };
 
 export const editorial = {
-  kicker: 'Lookbook · Chapter 01',
+  kicker: 'Lookbook / Chapter 01',
   title: 'Above ordinary.',
+  /** Juntas = `title`; la segunda va como acento. */
+  titleLines: ['Above', 'ordinary.'] as const,
   text: 'Siluetas amplias, algodón con peso y una trabilla roja siempre en el mismo sitio. Así se lleva el primer capítulo.',
 };
 
@@ -56,7 +58,7 @@ export const signature = {
 };
 
 export const limited = {
-  kicker: 'Cápsula Signal · Ediciones cortas',
+  kicker: 'Cápsula Signal / Ediciones cortas',
   title: 'Reach higher.',
   titleLines: ['Reach', 'higher.'] as const,
   /** Nombre de la cápsula, como acento. */

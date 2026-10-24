@@ -159,7 +159,7 @@ export function SearchPanel() {
                 <ButtonLink to={searchUrl} variant="outline" onClick={close}>
                   Ver los {results.length} resultados
                 </ButtonLink>
-                <span className="t-micro">↑ ↓ para elegir · Intro para abrir</span>
+                <span className="t-micro">↑ ↓ para elegir / Intro para abrir</span>
               </div>
             </>
           )}

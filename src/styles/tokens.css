@@ -21,30 +21,29 @@
   --c-lime: #96de2b; /* Yellow Green: «recibo» (avisos, disponibilidad, foco). Poco y pequeño */
   --c-white: #ffffff; /* White: texto sobre café y bandas claras */
 
-  /* Derivados de las cuatro tintas (mezclas, nunca colores nuevos) */
-  --c-coffee-2: #210d0e; /* café 6 % más claro: superficies elevadas sobre café */
-  --c-coffee-3: #2e1a1b; /* café 12 % más claro: tarjetas oscuras, campos */
-  --c-coffee-deep: #0b0001; /* café más hundido: pie, fondos de vídeo */
-  --c-paper: #f6f2f2; /* blanco con 4 % de café: banda clara secundaria */
-  --c-red-deep: #b4060f; /* rojo con 20 % de café: hover y pulsado del rojo */
-  --c-grey: #b8adad; /* blanco al 68 % sobre café: texto secundario sobre oscuro (AA) */
-  --c-grey-700: #5a4a4b; /* café al 70 % sobre blanco: texto secundario sobre claro (AA) */
-  --c-studio: #ece9e3; /* fondo fotográfico de los mockups (forma parte de la foto) */
-  --c-error-on-dark: #ff6b72; /* rojo aclarado: mensajes de error legibles sobre café (AA) */
-  --c-error-on-light: #b4060f;
+  /*
+   * Sin tonos intermedios: no hay cafés aclarados ni rojos oscurecidos (se leían como granate).
+   * La jerarquía sale de la transparencia del texto, de las líneas finas y de las bandas.
+   */
+  --c-grey: rgb(255 255 255 / 0.72); /* texto secundario sobre café (AA) */
+  --c-grey-700: rgb(20 1 2 / 0.72); /* texto secundario sobre blanco (AA) */
+  --c-red-hover: color-mix(in srgb, var(--c-red) 86%, var(--c-white)); /* hover del rojo: más luz, no más oscuro */
+  --c-studio: #ece9e3; /* fondo fotográfico de los mockups (forma parte de la foto, no de la interfaz) */
+  --c-error-on-dark: color-mix(in srgb, var(--c-red) 62%, var(--c-white)); /* rojo legible sobre café (AA) */
+  --c-error-on-light: var(--c-red);
 
   /* ─── Superficies semánticas (café por defecto) ───────────────────── */
   --bg: var(--c-coffee);
-  --bg-raised: var(--c-coffee-2);
-  --bg-sunken: var(--c-coffee-deep);
-  --surface: var(--c-coffee-3);
+  --bg-raised: var(--c-coffee);
+  --bg-sunken: var(--c-coffee);
+  --surface: var(--c-coffee);
   --fg: var(--c-white);
   --fg-soft: rgb(255 255 255 / 0.88);
   --fg-muted: var(--c-grey);
-  --line: rgb(255 255 255 / 0.14);
-  --line-strong: rgb(255 255 255 / 0.4);
+  --line: rgb(255 255 255 / 0.16);
+  --line-strong: rgb(255 255 255 / 0.42);
   --accent: var(--c-red);
-  --accent-strong: var(--c-red-deep);
+  --accent-strong: var(--c-red-hover);
   --receipt: var(--c-lime);
   --receipt-ink: var(--c-coffee);
   --error: var(--c-error-on-dark);
@@ -86,8 +85,8 @@
   --font-label: var(--font-display);
   /* Acento: Aerosoldier (solo si su archivo con licencia está presente; si no, Bastaman). */
   --font-accent: 'Aerosoldier', var(--font-display);
-  /* Texto corrido (descripciones, legales, formularios): la fuente del sistema, sin descargas. */
-  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* Texto corrido: también Bastaman (más pequeña, con aire entre letras y líneas). Solo dos familias. */
+  --font-body: var(--font-display);
 
   /* Escala con salto (21 TSI): interfaz hasta 20 px, titulares desde 44 px. */
   --fs-campaign: clamp(3.25rem, 11.5vw, 13.5rem);
@@ -95,9 +94,10 @@
   --fs-h1: clamp(2.75rem, 3.4vw + 1.2rem, 5rem);
   --fs-h2: clamp(2.75rem, 2.4vw + 1.6rem, 4rem);
   --fs-h3: 1.25rem;
-  --fs-lg: 1.125rem;
-  --fs-md: 1rem;
-  --fs-sm: 0.875rem;
+  /* Bastaman solo tiene mayúsculas y su altura es grande: el texto corrido va un punto más pequeño. */
+  --fs-lg: 1rem;
+  --fs-md: 0.9375rem;
+  --fs-sm: 0.8125rem;
   --fs-xs: 0.75rem;
   --fs-2xs: 0.6875rem;
 
@@ -105,7 +105,7 @@
   --lh-tight: 0.9;
   --lh-heading: 0.94;
   --lh-snug: 1.25;
-  --lh-body: 1.55;
+  --lh-body: 1.5;
 
   --tracking-display: -0.02em;
   --tracking-tight: -0.01em;
@@ -141,7 +141,7 @@
   --glass-border: rgb(255 255 255 / 0.16);
   --glass-highlight: inset 0 1px 0 rgb(255 255 255 / 0.12);
   --glass-shadow: 0 0 0 transparent; /* plano: el cristal no proyecta sombra */
-  --glass-solid: #210d0e; /* sin backdrop-filter o con transparencia reducida */
+  --glass-solid: #140102; /* sin backdrop-filter o con transparencia reducida */
   /* Variante clara, sobre superficies claras. */
   --glass-light-bg: rgb(255 255 255 / 0.58);
   --glass-light-border: rgb(20 1 2 / 0.14);
@@ -176,29 +176,29 @@
 [data-theme='light'] {
   --bg: var(--c-white);
   --bg-raised: var(--c-white);
-  --bg-sunken: var(--c-paper);
-  --surface: var(--c-paper);
+  --bg-sunken: var(--c-white);
+  --surface: var(--c-studio);
   --fg: var(--c-coffee);
   --fg-soft: rgb(20 1 2 / 0.86);
   --fg-muted: var(--c-grey-700);
   --line: rgb(20 1 2 / 0.12);
   --line-strong: rgb(20 1 2 / 0.42);
   --error: var(--c-error-on-light);
-  --success: #3d7a0a; /* verde de la paleta oscurecido con café para texto sobre blanco (AA) */
+  --success: var(--c-coffee); /* el verde no se lee sobre blanco: el éxito va en café con su icono */
   --focus-ring: var(--c-coffee);
   color-scheme: light;
 }
 
 [data-theme='dark'] {
   --bg: var(--c-coffee);
-  --bg-raised: var(--c-coffee-2);
-  --bg-sunken: var(--c-coffee-deep);
-  --surface: var(--c-coffee-3);
+  --bg-raised: var(--c-coffee);
+  --bg-sunken: var(--c-coffee);
+  --surface: var(--c-coffee);
   --fg: var(--c-white);
   --fg-soft: rgb(255 255 255 / 0.88);
   --fg-muted: var(--c-grey);
-  --line: rgb(255 255 255 / 0.14);
-  --line-strong: rgb(255 255 255 / 0.4);
+  --line: rgb(255 255 255 / 0.16);
+  --line-strong: rgb(255 255 255 / 0.42);
   --error: var(--c-error-on-dark);
   --success: var(--c-lime);
   --focus-ring: var(--c-lime);
@@ -212,15 +212,15 @@
 [data-theme='red'] {
   --bg: var(--c-red);
   --bg-raised: var(--c-red);
-  --bg-sunken: var(--c-red-deep);
-  --surface: var(--c-red-deep);
+  --bg-sunken: var(--c-red);
+  --surface: var(--c-red);
   --fg: var(--c-white);
   --fg-soft: var(--c-white);
   --fg-muted: var(--c-white);
   --line: rgb(255 255 255 / 0.3);
   --line-strong: rgb(255 255 255 / 0.7);
   --accent: var(--c-coffee);
-  --accent-strong: var(--c-coffee-deep);
+  --accent-strong: var(--c-coffee);
   --error: var(--c-white);
   --success: var(--c-white);
   --focus-ring: var(--c-white);
@@ -231,15 +231,15 @@
 [data-theme='lime'] {
   --bg: var(--c-lime);
   --bg-raised: var(--c-lime);
-  --bg-sunken: #86c826;
-  --surface: #86c826;
+  --bg-sunken: var(--c-lime);
+  --surface: var(--c-lime);
   --fg: var(--c-coffee);
   --fg-soft: var(--c-coffee);
   --fg-muted: rgb(20 1 2 / 0.78);
   --line: rgb(20 1 2 / 0.2);
   --line-strong: rgb(20 1 2 / 0.6);
   --accent: var(--c-coffee);
-  --accent-strong: var(--c-coffee-deep);
+  --accent-strong: var(--c-coffee);
   --error: var(--c-coffee);
   --success: var(--c-coffee);
   --focus-ring: var(--c-coffee);

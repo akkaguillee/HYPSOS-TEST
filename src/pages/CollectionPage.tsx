@@ -146,7 +146,7 @@ function CatalogView({ handle, collection }: { handle: string; collection: Resol
         cta={handle === 'all' ? 'Ver colecciones' : 'Ver toda la tienda'}
         photo={collection.band?.endPhoto}
         focus={collection.band?.endFocus}
-        note={collection.band ? 'Imagen provisional · IA' : undefined}
+        note={collection.band ? 'Imagen provisional / IA' : undefined}
       />
     );
 
@@ -156,7 +156,7 @@ function CatalogView({ handle, collection }: { handle: string; collection: Resol
         <PageHeader
           variant="campaign"
           title={collection.title}
-          eyebrow={`${collection.kicker} · ${total} ${total === 1 ? 'pieza' : 'piezas'}`}
+          eyebrow={`${collection.kicker} / ${total} ${total === 1 ? 'pieza' : 'piezas'}`}
           description={collection.description}
           breadcrumbs={crumbs}
           tone={collection.band.tone}

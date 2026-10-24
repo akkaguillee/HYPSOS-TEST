@@ -14,7 +14,7 @@
   position: relative;
   height: clamp(460px, 74svh, 980px);
   overflow: hidden;
-  background: var(--c-coffee-deep);
+  background: var(--c-coffee);
 }
 
 @media (min-width: 1024px) {

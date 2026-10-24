@@ -40,7 +40,7 @@ export function Editorial() {
             <Scramble>{editorial.kicker}</Scramble>
           </p>
           <SplitHeadline id="editorial-title" className={styles.title}>
-            {editorial.title}
+            {editorial.titleLines[0]} <span className="mix-accent">{editorial.titleLines[1]}</span>
           </SplitHeadline>
           <p className={styles.text}>{editorial.text}</p>
           <ButtonLink to={paths.collection('drop-01-ascenso')} variant="outline">

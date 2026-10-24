@@ -54,6 +54,8 @@ body {
   font-family: var(--font-body);
   font-size: var(--fs-md);
   line-height: var(--lh-body);
+  letter-spacing: 0.02em;
+  font-synthesis: none;
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

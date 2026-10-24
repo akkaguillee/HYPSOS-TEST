@@ -100,7 +100,7 @@ export function CategoryIndex() {
             <Scramble>Categorías</Scramble>
           </p>
           <SplitHeadline id="categories-title" className={styles.title}>
-            Viste la subida
+            Viste la <span className="mix-accent">subida</span>
           </SplitHeadline>
         </header>
 

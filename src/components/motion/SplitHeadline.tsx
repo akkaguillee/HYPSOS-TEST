@@ -1,5 +1,5 @@
 import { useReducedMotion } from '@/hooks/useMediaQuery';
-import { pressIn, SplitText, useGSAP } from '@/lib/motion';
+import { EASE, gsap, pressIn, SplitText, useGSAP } from '@/lib/motion';
 import { useRef, type ElementType, type ReactNode } from 'react';
 
 interface SplitHeadlineProps {
@@ -30,22 +30,34 @@ export function SplitHeadline({ as: Tag = 'h2', className, children, trigger = '
     () => {
       const element = ref.current;
       if (!element || reduced) return;
+      // La palabra de acento (Aerosoldier) no se trocea: partirla rompería sus ligaduras de
+      // rotulista. Cae entera como un sello cuando las letras ya se han prensado.
+      const accents = Array.from(element.querySelectorAll<HTMLElement>('.mix-accent'));
+      const scrollTrigger = trigger === 'scroll' ? { trigger: element, start: 'top 88%', once: true } : undefined;
       const split = SplitText.create(element, {
         type: 'words,chars',
         wordsClass: 'split-word',
         charsClass: 'split-char',
         autoSplit: true,
+        ignore: accents,
         onSplit(self) {
-          const tween = pressIn(self.chars, {
-            delay,
-            paused: trigger === 'manual',
-            scrollTrigger: trigger === 'scroll' ? { trigger: element, start: 'top 88%', once: true } : undefined,
-          });
+          const tween = pressIn(self.chars, { delay, paused: trigger === 'manual', scrollTrigger });
           if (trigger === 'manual') onReady?.(tween);
           return tween;
         },
       });
-      return () => split.revert();
+      const sealed = accents.length
+        ? gsap.fromTo(
+            accents,
+            { autoAlpha: 0, scale: 1.7, rotation: -16 },
+            { autoAlpha: 1, scale: 1, rotation: 0, duration: 0.6, ease: EASE.stamp, delay: delay + 0.45, stagger: 0.1, paused: trigger === 'manual', scrollTrigger },
+          )
+        : null;
+      return () => {
+        sealed?.scrollTrigger?.kill();
+        sealed?.revert();
+        split.revert();
+      };
     },
     { scope: ref, dependencies: [reduced, text], revertOnUpdate: true },
   );

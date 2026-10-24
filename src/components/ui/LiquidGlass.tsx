@@ -6,7 +6,7 @@
  *   tamaño exacto del elemento (ver src/lib/liquid-glass.ts). Solo Chromium/Blink.
  * - "blur": `backdrop-filter: blur() saturate()` con las mismas capas especulares y de luz de borde.
  *   Safari, Firefox, SSR/primer render, `forceFallback`, o mientras aún no se ha medido.
- * - Con `prefers-reduced-transparency: reduce` el CSS pasa a superficie sólida (#210d0e / #ffffff).
+ * - Con `prefers-reduced-transparency: reduce` el CSS pasa a superficie sólida (#140102 / #ffffff).
  *
  * RESTRICCIÓN IMPORTANTE (igual que `.glass` en src/styles/glass.css): un elemento con
  * `backdrop-filter` solo ve lo que hay detrás hasta su "backdrop root". Si algún ancestro tiene

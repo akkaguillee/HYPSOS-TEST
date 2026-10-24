@@ -42,7 +42,7 @@ test('compra: talla obligatoria, carrito y checkout honesto sin envíos ni pagos
   await page.getByRole('button', { name: 'Añadir al carrito' }).click();
   const drawer = page.getByRole('dialog', { name: /Carrito/ });
   await expect(drawer).toBeVisible();
-  await expect(drawer.getByText('Negro · Talla M')).toBeVisible();
+  await expect(drawer.getByText('Negro / Talla M')).toBeVisible();
   // Sin política de envíos configurada no se promete envío gratuito.
   await expect(drawer.getByText(/envío.*gratu/i)).toHaveCount(0);
 

@@ -41,7 +41,7 @@ export function LimitedDrop() {
             <Scramble>{limited.kicker}</Scramble>
           </p>
           <SplitHeadline id="limited-title" className={styles.title}>
-            {limited.title}
+            {limited.titleLines[0]} <span className="mix-accent">{limited.titleLines[1]}</span>
           </SplitHeadline>
           <p className={styles.text}>{limited.text}</p>
           <ButtonLink to={limited.cta.to} size="lg">

@@ -27,7 +27,7 @@
   --lg-rim-soft: rgb(255 255 255 / 0.22);
   --lg-sheen: rgb(255 255 255 / 0.09);
   --lg-spot: rgb(255 255 255 / 0.08);
-  --lg-solid: var(--glass-solid, #210d0e);
+  --lg-solid: var(--glass-solid, #140102);
   --lg-fallback-blur: blur(16px) saturate(170%);
   --lg-drop: 0 12px 32px rgb(0 0 0 / 0.28), 0 2px 6px rgb(0 0 0 / 0.18);
 
@@ -155,7 +155,7 @@
   }
 }
 
-/* Transparencia reducida: superficie sólida (#210d0e / #ffffff), sin refracción ni especular.
+/* Transparencia reducida: superficie sólida (#140102 / #ffffff), sin refracción ni especular.
    Especificidad alta para ganar a cualquier override: la preferencia del usuario manda. */
 @media (prefers-reduced-transparency: reduce) {
   .root > .lens,

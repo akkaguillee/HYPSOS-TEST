@@ -41,7 +41,7 @@ export function CartLineItem({ line, onNavigate, variant = 'drawer' }: CartLineI
               {line.product.name}
             </Link>
             <p className={styles.lineMeta}>
-              {line.colorName} · Talla {line.size}
+              {line.colorName} / Talla {line.size}
             </p>
             {line.quantity > 1 && (
               <p className={styles.lineMeta}>

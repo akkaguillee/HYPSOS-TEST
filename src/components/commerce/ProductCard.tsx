@@ -69,7 +69,7 @@ export function ProductCard({ product, priority, sizes, headingLevel: Heading = 
         <WishlistButton product={product} />
         {available && known && (
           <div className={`glass glass--strong ${styles.quickAdd}`} data-theme="dark" data-gl-calm="">
-            <p className={styles.quickLabel}>Añadido rápido · {color.name}</p>
+            <p className={styles.quickLabel}>Añadido rápido / {color.name}</p>
             <div className={styles.quickSizes}>
               {product.sizes.map((size) => {
                 const inStock = getStock(product, colorId, size, lookup) > 0;

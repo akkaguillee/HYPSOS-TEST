@@ -43,7 +43,7 @@ export function ShippingPage() {
                       <td>{method.description}</td>
                       <td className="t-num">
                         {formatPrice(method.price)}
-                        {method.freeFrom !== undefined && ` · gratis desde ${formatPrice(method.freeFrom)}`}
+                        {method.freeFrom !== undefined && ` / gratis desde ${formatPrice(method.freeFrom)}`}
                       </td>
                     </tr>
                   ))}

@@ -23,7 +23,7 @@ export function ChapterDrop() {
             <Scramble>{`${collection?.name ?? ''} / ${items.length} piezas`}</Scramble>
           </p>
           <SplitHeadline id="chapter-title" className={styles.title}>
-            Chapter 01
+            <span className="mix-accent">Chapter</span> 01
           </SplitHeadline>
           <p className={styles.lead}>Chapter 01 es el primer paso de la subida HYPSOS. Piezas base, gráficos con intención y la firma roja en cada prenda.</p>
           <ButtonLink to={paths.collection(HANDLE)} variant="outline">

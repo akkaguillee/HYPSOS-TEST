@@ -102,13 +102,12 @@ fijó HYPSOS. Todos los valores viven en `src/styles/tokens.css`:
 - **Shelby (bandas de color):** lienzo café casi negro; cada sección es un campo de color a sangre (café → rojo → blanco → café…), con titulares enormes centrados y una etiqueta tipo código de producto encima. Todo plano, sin sombras.
 - **Cake Equity (orden comercial):** un solo color de relleno para convertir (rojo), un verde «recibo» usado poco y a propósito (la franja de avisos, la disponibilidad, el foco), tarjetas con borde fino en vez de sombra, botones en píldora y una tarjeta oscura de producto por página.
 
-**Paleta (las cuatro tintas de HYPSOS):** Coffee Bean `#140102` (lienzo y tinta sobre claro), Racing Red `#e90c17` (acción principal, banda de señal, trabilla), Yellow Green `#96de2b` (recibo) y White `#ffffff`. Los derivados son mezclas de esas cuatro (café más claro para superficies, rojo con café para el hover, café al 70 % para texto secundario) y todos cumplen AA. Temas por banda: `data-theme="dark" | "light" | "red" | "lime"`.
+**Paleta (las cuatro tintas de HYPSOS):** Coffee Bean `#140102` (lienzo y tinta sobre claro), Racing Red `#e90c17` (acción principal, banda de señal, trabilla), Yellow Green `#96de2b` (recibo) y White `#ffffff`. No hay tonos intermedios (cafés aclarados ni rojos oscurecidos): la jerarquía sale de la transparencia del texto (blanco o café al 72 %), de las líneas finas y de las bandas. El hover del rojo aclara en lugar de oscurecer. El gris cálido `#ece9e3` solo aparece como fondo de las fotos de producto. Todo cumple AA. Temas por banda: `data-theme="dark" | "light" | "red" | "lime"`.
 
 **Tipografía:** solo las dos familias que entregó HYPSOS (`src/assets/fonts/README.md`):
 
-- **Bastaman** (solo mayúsculas, un peso): titulares, navegación, botones, etiquetas y precios.
-- **Aerosoldier** (acento): el nombre del capítulo en el hero, la cápsula Signal, «The Ascent» del manifiesto y los nombres de colección. **Nunca para cifras**: se excluyen con `unicode-range` porque la versión recibida las sustituye por una marca de agua.
-- **Texto corrido** (descripciones, legales, formularios): la fuente del sistema del visitante, sin descargas. Párrafos largos en mayúsculas negras no se leen bien.
+- **Bastaman** (solo mayúsculas, un peso): todo el texto, desde los titulares hasta los párrafos, los formularios y los precios. El texto corrido va un punto más pequeño y con aire entre letras. Le faltan `¿ ¡ « » · – —`, que salen de la fuente del sistema; en los textos de la web los separadores son barras.
+- **Aerosoldier** (acento): una palabra en cada titular de la portada («Ascent», «Chapter», «subida», «ordinary.», «roja.», «higher.»), la cápsula Signal, «The Ascent» del manifiesto y los nombres de colección. **Nunca para cifras**: se excluyen con `unicode-range` porque la versión recibida las sustituye por una marca de agua.
 
 **Licencias:**
 

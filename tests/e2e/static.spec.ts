@@ -33,7 +33,7 @@ test('se navega, se añade al carrito y el checkout explica que no hay compra on
   await page.locator('label').filter({ has: page.getByRole('radio', { name: /^Talla L/ }) }).click();
   await page.getByRole('button', { name: 'Añadir al carrito' }).first().click();
   const drawer = page.getByRole('dialog', { name: /Carrito/ });
-  await expect(drawer.getByText('Negro · Talla L')).toBeVisible();
+  await expect(drawer.getByText('Negro / Talla L')).toBeVisible();
   await drawer.getByRole('button', { name: 'Finalizar compra' }).click();
   await expect(page.getByText(/La compra online necesita el servidor de la tienda/)).toBeVisible();
 });
